@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Laboratório</title>
+    <title>SMT Pro - Fiação Fase</title>
     <style>
         body { 
             margin: 0; 
@@ -54,31 +54,35 @@
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
+        /* --- FIOS (Imagens das pastas) --- */
+        .fio {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            display: none; /* Escondido até ser conectado */
+            pointer-events: none;
+        }
+
         /* --- BORNES DE CONEXÃO --- */
         .borne {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: rgba(0, 255, 255, 0.3);
+            width: 15px;
+            height: 15px;
+            background: rgba(0, 255, 255, 0.2);
             border: 1px solid #00ffff;
             border-radius: 50%;
             z-index: 150;
             cursor: pointer;
-            box-shadow: 0 0 8px #00ffff;
-            transition: 0.3s;
+            box-shadow: 0 0 5px #00ffff;
         }
 
-        .borne:hover {
-            background: rgba(0, 255, 255, 0.8);
-            transform: scale(1.2);
-        }
+        /* Posicionamento dos Bornes da Fase - AJUSTE AQUI */
+        #borne-dj16-saida { top: 35%; left: 33%; } 
+        #borne-inter-entrada { top: 75%; left: 70%; }
 
-        /* Exemplos de posições de bornes - Ajuste conforme o fundo */
-        #borne-fase-entrada { top: 10%; left: 10%; } 
-        #borne-dg-entrada { top: 18%; left: 11%; }
-        #borne-dr-entrada { top: 18%; left: 23%; }
-
-        /* --- INTERFACE --- */
         .status-box {
             margin: 15px 0;
             padding: 10px;
@@ -104,40 +108,54 @@
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box">
-        <span id="status-texto">Inicie a fiação clicando nos bornes</span>
+        <span id="status-texto">CONECTE A FASE: SAÍDA DO DJ16 -> INTERRUPTOR</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
 
+        <img id="fio-fase" src="./FASE/fase.png" class="fio">
+
         <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="bloqueio()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="bloqueio()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="bloqueio()">
 
-        <div id="borne-fase-entrada" class="borne" onclick="conectar('fase1')"></div>
-        <div id="borne-dg-entrada" class="borne" onclick="conectar('dg1')"></div>
-        <div id="borne-dr-entrada" class="borne" onclick="conectar('dr1')"></div>
+        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
+        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter')"></div>
     </div>
 
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
 
     <script>
-        function conectar(id) {
-            document.getElementById('som-conexao').play();
+        let pontoA = false;
+
+        function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
-            txt.innerText = "Borne " + id + " selecionado. Faça a próxima conexão.";
-            txt.style.color = "#00ffff";
+            const som = document.getElementById('som-conexao');
+
+            if (local === 'dj16') {
+                pontoA = true;
+                som.play();
+                txt.innerText = "SAÍDA DO DJ16 CONECTADA. LEVE ATÉ O INTERRUPTOR.";
+                txt.style.color = "#00ffff";
+            } 
+            else if (local === 'inter' && pontoA) {
+                som.play();
+                document.getElementById('fio-fase').style.display = 'block';
+                txt.innerText = "FASE CONECTADA COM SUCESSO!";
+                txt.style.color = "#00ff00";
+            } 
+            else if (local === 'inter' && !pontoA) {
+                txt.innerText = "ERRO: COMECE A FIAÇÃO PELA SAÍDA DO DISJUNTOR!";
+                txt.style.color = "#ff4444";
+            }
         }
 
         function bloqueio() {
             const txt = document.getElementById('status-texto');
-            txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO PRIMEIRO";
+            txt.innerText = "ALAVANCA TRAVADA: FIAÇÃO INCOMPLETA!";
             txt.style.color = "#ff4444";
-            setTimeout(() => {
-                txt.innerText = "Inicie a fiação clicando nos bornes";
-                txt.style.color = "#ffcc00";
-            }, 2000);
         }
     </script>
 </body>
