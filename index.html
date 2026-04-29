@@ -16,7 +16,7 @@
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
-        /* AQUI ESTÁ O EFEITO NOS CABOS FASE, NEUTRO E RETORNO */
+        /* EFEITO DE SOMBRA NOS CABOS FASE, NEUTRO E RETORNO */
         .fio { 
             position: absolute; 
             top: 0; 
@@ -26,8 +26,7 @@
             z-index: 40; 
             display: none; 
             pointer-events: none; 
-            /* drop-shadow aplica a sombra apenas na parte colorida do PNG (o cabo) */
-            filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.8)); 
+            filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); 
         }
 
         .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0, 255, 255, 0.4); }
