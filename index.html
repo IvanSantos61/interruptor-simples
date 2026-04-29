@@ -54,23 +54,25 @@
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
-        /* --- FIOS (Imagens das pastas) --- */
+        /* --- FIOS (AJUSTE DE VISIBILIDADE) --- */
         .fio {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 50;
-            display: none; /* Escondido até ser conectado */
+            z-index: 40; /* Fica atrás das alavancas mas na frente do fundo */
+            display: none; 
             pointer-events: none;
+            /* Se o fio não aparecer, você verá uma borda vermelha ao redor do quadro */
+            /* border: 2px solid red; */ 
         }
 
         /* --- BORNES DE CONEXÃO --- */
         .borne {
             position: absolute;
-            width: 15px;
-            height: 15px;
+            width: 20px;
+            height: 20px;
             background: rgba(0, 255, 255, 0.2);
             border: 1px solid #00ffff;
             border-radius: 50%;
@@ -79,7 +81,7 @@
             box-shadow: 0 0 5px #00ffff;
         }
 
-        /* Posicionamento dos Bornes da Fase - AJUSTE AQUI */
+        /* Suas posições salvas anteriormente */
         #borne-dj16-saida { top: 35%; left: 33%; } 
         #borne-inter-entrada { top: 75%; left: 70%; }
 
@@ -112,20 +114,20 @@
     </div>
 
     <div id="quadro">
-        <img src="./ambiente.jpg" class="fundo">
+        <img src="ambiente.jpg" class="fundo">
 
-        <img id="fio-fase" src="./FASE/fase.png" class="fio">
+        <img id="fio-fase" src="FASE/fase.png?v=1" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="bloqueio()">
-        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="bloqueio()">
-        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dg" src="al_dg_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dr" src="al_dr_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dj16" src="al_dj16_off.png" class="alavanca" onclick="bloqueio()">
 
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter')"></div>
     </div>
 
-    <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
-    <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
+    <audio id="som-conexao" src="conexão.mp3" preload="auto"></audio>
+    <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
 
     <script>
         let pontoA = false;
@@ -136,13 +138,16 @@
 
             if (local === 'dj16') {
                 pontoA = true;
-                som.play();
-                txt.innerText = "SAÍDA DO DJ16 CONECTADA. LEVE ATÉ O INTERRUPTOR.";
+                if(som) som.play();
+                txt.innerText = "SAÍDA DO DJ16 CONECTADA. AGORA CLIQUE NO INTERRUPTOR.";
                 txt.style.color = "#00ffff";
             } 
             else if (local === 'inter' && pontoA) {
-                som.play();
-                document.getElementById('fio-fase').style.display = 'block';
+                if(som) som.play();
+                // Mudança aqui: usamos display block e garantimos visibilidade
+                const fio = document.getElementById('fio-fase');
+                fio.style.display = 'block';
+                
                 txt.innerText = "FASE CONECTADA COM SUCESSO!";
                 txt.style.color = "#00ff00";
             } 
