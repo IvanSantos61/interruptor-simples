@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Laboratório Interativo</title>
+    <title>SMT Pro - Posicionamento</title>
     <style>
         body { 
             margin: 0; 
@@ -43,19 +43,42 @@
             -webkit-user-drag: none;
         }
 
-        /* IMAGENS DAS ALAVANCAS (ESTADO INICIAL OFF) */
+        /* IMAGENS DAS ALAVANCAS - AJUSTE AQUI */
         .alavanca {
             position: absolute;
             z-index: 50;
-            pointer-events: auto;
             cursor: pointer;
-            transition: transform 0.1s;
+            /* Se quiser ver uma borda para ajudar a posicionar, use a linha abaixo: */
+            /* outline: 1px solid red; */
         }
 
-        /* Posicionamento - Ajuste conforme sua imagem AMBIENTE.jpg */
-        #img-dg { width: 45px; top: 20%; left: 15%; }
-        #img-dr { width: 45px; top: 20%; left: 30%; }
-        #img-dj16 { width: 40px; top: 20%; left: 45%; }
+        /* Mude os valores de top e left para alinhar com o seu fundo */
+        #img-dg { 
+            width: 45px; 
+            top: 25%; 
+            left: 20%; 
+        }
+
+        #img-dr { 
+            width: 45px; 
+            top: 25%; 
+            left: 35%; 
+        }
+
+        #img-dj16 { 
+            width: 40px; 
+            top: 25%; 
+            left: 50%; 
+        }
+
+        /* O interruptor geralmente fica mais abaixo */
+        #img-interrup {
+            width: 50px;
+            bottom: 20%;
+            right: 15%;
+            position: absolute;
+            z-index: 50;
+        }
 
         .status-box {
             margin: 15px 0;
@@ -67,40 +90,24 @@
             border-radius: 8px;
             border: 1px solid #2c3e50;
             min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         #status-texto { 
             color: #ffcc00; 
             font-weight: bold; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
-            font-size: 14px; 
+            font-size: 13px; 
         }
 
-        /* Alerta de tentativa bloqueada */
-        .alerta-erro {
-            color: #ff4444 !important;
-            animation: tremer 0.3s;
-        }
-
-        @keyframes tremer {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
+        .alerta-erro { color: #ff4444 !important; }
     </style>
 </head>
 <body>
 
-    <h2>Laboratório de Comandos</h2>
+    <h2>Laboratório Interativo</h2>
     
     <div class="status-box">
-        <span id="status-texto">FINALIZE A MONTAGEM DO CIRCUITO PRIMEIRO</span>
+        <span id="status-texto">POSICIONE OS COMPONENTES E FINALIZE A MONTAGEM</span>
     </div>
 
     <div id="quadro">
@@ -109,35 +116,26 @@
         <img id="img-dg" src="AL_DG_OFF.png" class="alavanca" onclick="tentarAcionar('Geral')">
         <img id="img-dr" src="AL_DR_OFF.png" class="alavanca" onclick="tentarAcionar('DR')">
         <img id="img-dj16" src="AL_DJ16_OFF.png" class="alavanca" onclick="tentarAcionar('Circuito')">
+        
+        <img id="img-interrup" src="AL_DJ16_OFF.png" class="alavanca" onclick="tentarAcionar('Interruptor')">
     </div>
 
     <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
 
     <script>
-        // Premissa: O circuito começa NÃO finalizado
         let circuitoFinalizado = false; 
 
-        function tentarAcionar(nomeComponente) {
+        function tentarAcionar(nome) {
             const txt = document.getElementById('status-texto');
-            const som = document.getElementById('som-disj');
-
             if (!circuitoFinalizado) {
-                // Toca som de erro ou apenas impede a ação
-                txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO DO " + nomeComponente.toUpperCase();
+                txt.innerText = "ERRO: O " + nome.toUpperCase() + " NÃO PODE SER LIGADO SEM A FIAÇÃO!";
                 txt.classList.add('alerta-erro');
                 
-                // Remove a cor de erro após 2 segundos
                 setTimeout(() => {
                     txt.classList.remove('alerta-erro');
-                    txt.innerText = "FINALIZE A MONTAGEM DO CIRCUITO PRIMEIRO";
+                    txt.innerText = "POSICIONE OS COMPONENTES E FINALIZE A MONTAGEM";
                 }, 2000);
-                
-                return;
             }
-
-            // Lógica de acionamento real (será ativada quando circuitoFinalizado = true)
-            som.play();
-            console.log(nomeComponente + " acionado!");
         }
     </script>
 </body>
