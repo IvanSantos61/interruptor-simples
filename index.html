@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Fiação Completa</title>
+    <title>SMT Pro - Fiação Final</title>
     <style>
         body { 
             margin: 0; 
@@ -49,7 +49,6 @@
             display: block;
         }
 
-        /* Posições das alavancas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -65,7 +64,6 @@
             pointer-events: none;
         }
 
-        /* Bornes pequenos como solicitado */
         .borne {
             position: absolute;
             width: 12px;
@@ -79,20 +77,15 @@
             box-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
         }
 
-        .borne:hover { 
-            background: rgba(0, 255, 255, 0.5); 
-            border: 1px solid #00ffff; 
-        }
+        .borne:hover { background: rgba(0, 255, 255, 0.5); border: 1px solid #00ffff; }
 
-        /* Coordenadas dos Bornes */
-        #borne-dj16-saida { top: 37%; left: 34%; } 
-        #borne-inter-entrada { top: 81%; left: 68%; } 
-        #borne-inter-saida { top: 75%; left: 68%; }   
-        #borne-lampada-retorno { top: 55%; left: 89%; }
-        
-        /* Novos bornes do Neutro */
-        #borne-barramento-neutro { top: 33%; left: 44%; }
-        #borne-lampada-neutro { top: 55%; left: 92%; }
+        /* Mantenha suas coordenadas ajustadas aqui */
+        #borne-dj16-saida { top: 35%; left: 33%; } 
+        #borne-inter-entrada { top: 75%; left: 65%; } 
+        #borne-inter-saida { top: 75%; left: 75%; }   
+        #borne-lampada-retorno { top: 15%; left: 80%; }
+        #borne-barramento-neutro { top: 10%; left: 45%; }
+        #borne-lampada-neutro { top: 10%; left: 82%; }
 
         .status-box {
             margin: 15px 0;
@@ -135,10 +128,8 @@
 
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
-        
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
         <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
-
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
@@ -156,11 +147,22 @@
 
         function animarFio(id, lista, index) {
             const el = document.getElementById(id);
-            el.style.display = 'block';
+            
+            if (index === 0) {
+                el.style.display = 'block';
+            }
+
             if (index < lista.length) {
                 const pasta = id.replace('fio-', '').toUpperCase();
+                // Forçamos a atualização do SRC
                 el.src = `./${pasta}/${lista[index]}`;
-                setTimeout(() => animarFio(id, lista, index + 1), 80);
+                
+                // Usamos um tempo levemente maior para o Neutro se a lista for longa
+                let tempo = (id === 'fio-neutro') ? 90 : 80;
+
+                setTimeout(() => {
+                    animarFio(id, lista, index + 1);
+                }, tempo);
             }
         }
 
@@ -168,7 +170,6 @@
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
 
-            // FASE
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado';
                 if(som) som.play();
@@ -178,11 +179,9 @@
                 faseStatus = 'concluido';
                 if(som) som.play();
                 animarFio('fio-fase', arquivosFase, 0);
-                txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+                txt.innerText = "FASE OK! AGORA O RETORNO: INTERRUPTOR -> LÂMPADA.";
                 txt.style.color = "#00ffff";
             } 
-
-            // RETORNO
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado';
                 if(som) som.play();
@@ -193,10 +192,7 @@
                 if(som) som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0);
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
-                txt.style.color = "#00ffff";
             }
-
-            // NEUTRO
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado';
                 if(som) som.play();
@@ -209,24 +205,12 @@
                 txt.innerText = "FIAÇÃO CONCLUÍDA! AGORA VOCÊ PODE LIGAR OS DISJUNTORES.";
                 txt.style.color = "#00ff00";
             }
-            
-            // Tratamento de Erro de Sequência
-            else {
-                if (faseStatus !== 'concluido') {
-                    txt.innerText = "ERRO: CONECTE A FASE PRIMEIRO!";
-                } else if (retornoStatus !== 'concluido') {
-                    txt.innerText = "ERRO: CONECTE O RETORNO PRIMEIRO!";
-                }
-                txt.style.color = "#ff4444";
-            }
         }
 
         function bloqueio() {
             const txt = document.getElementById('status-texto');
             if (faseStatus === 'concluido' && retornoStatus === 'concluido' && neutroStatus === 'concluido') {
-                txt.innerText = "SISTEMA PRONTO PARA TESTE!";
-                txt.style.color = "#00ff00";
-                // Aqui no futuro adicionaremos a lógica de ligar a lâmpada
+                txt.innerText = "SISTEMA PRONTO!";
             } else {
                 txt.innerText = "ALAVANCA TRAVADA: TERMINE A FIAÇÃO!";
                 txt.style.color = "#ff4444";
