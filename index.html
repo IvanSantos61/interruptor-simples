@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Laboratório SMT Pro</title>
+    <title>SMT Pro - Ajuste de Tamanho</title>
     <style>
         body { 
             margin: 0; 
@@ -42,19 +42,37 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS */
+        /* CONFIGURAÇÃO DAS ALAVANCAS (ONDE AJUSTAMOS O TAMANHO) */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            /* Borda verde para ajuste de posição */
-            outline: 1px solid #00ff00;
+            /* Borda verde para te ajudar a enxergar o encaixe */
+            outline: 2px solid #00ff00;
+            display: block;
         }
 
-        /* Ajuste as posições conforme sua imagem de fundo */
-        #img-dg { width: 50px; top: 20%; left: 15%; }
-        #img-dr { width: 50px; top: 20%; left: 35%; }
-        #img-dj16 { width: 45px; top: 20%; left: 55%; }
+        /* --- AJUSTE AQUI O TAMANHO (WIDTH) E POSIÇÃO (TOP/LEFT) --- */
+        
+        #img-dg { 
+            width: 90px;   /* Aumentei o tamanho. Se precisar de mais, aumente este número */
+            top: 25%;      /* Altura */
+            left: 15%;     /* Distância da esquerda */
+        }
+
+        #img-dr { 
+            width: 90px;   /* Aumentei o tamanho */
+            top: 25%; 
+            left: 38%; 
+        }
+
+        #img-dj16 { 
+            width: 80px;   /* Aumentei o tamanho */
+            top: 25%; 
+            left: 60%; 
+        }
+        
+        /* -------------------------------------------------------- */
 
         .status-box {
             margin: 15px 0;
@@ -74,35 +92,49 @@
             font-size: 13px; 
             text-transform: uppercase;
         }
+
+        /* Alerta visual de bloqueio */
+        .alerta {
+            color: #ff4444 !important;
+            animation: tremer 0.3s;
+        }
+
+        @keyframes tremer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
 
-    <h2>Laboratório Interativo</h2>
+    <h2>Laboratório de Comandos</h2>
     
     <div class="status-box">
-        <span id="status-texto">AJUSTANDO POSICIONAMENTO</span>
+        <span id="status-texto">ENCAIXE AS ALAVANCAS OFF NO QUADRO</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
 
-        <img id="img-dg" src="./al_dg_off.png?v=2" class="alavanca" onclick="bloqueio()">
-        <img id="img-dr" src="./al_dr_off.png?v=2" class="alavanca" onclick="bloqueio()">
-        <img id="img-dj16" src="./al_dj16_off.png?v=2" class="alavanca" onclick="bloqueio()">
+        <img id="img-dg" src="./al_dg_off.png?v=2" class="alavanca" onclick="avisar()">
+        <img id="img-dr" src="./al_dr_off.png?v=2" class="alavanca" onclick="avisar()">
+        <img id="img-dj16" src="./al_dj16_off.png?v=2" class="alavanca" onclick="avisar()">
     </div>
 
     <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
 
     <script>
-        function bloqueio() {
+        function avisar() {
             const txt = document.getElementById('status-texto');
             txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO PRIMEIRO";
-            txt.style.color = "#ff4444";
+            txt.classList.add('alerta');
             
             setTimeout(() => {
-                txt.innerText = "AJUSTANDO POSICIONAMENTO";
-                txt.style.color = "#ffcc00";
+                txt.classList.remove('alerta');
+                txt.innerText = "ENCAIXE AS ALAVANCAS OFF NO QUADRO";
             }, 2000);
         }
     </script>
