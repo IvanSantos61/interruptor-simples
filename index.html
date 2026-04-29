@@ -11,13 +11,13 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Posições das Alavancas (OFF) */
+        /* Posições Originais das Alavancas (Estado OFF) */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
-        /* POSIÇÃO DA TECLA DO INTERRUPTOR - Ajuste se necessário */
-        #img-interruptor { width: 26px; top: 73%; left: 71.6%; z-index: 110; }
+        /* POSIÇÃO INICIAL DA TECLA (OFF) */
+        #img-interruptor { width: 45px; top: 76%; left: 63.5%; z-index: 110; }
 
         .fio { 
             position: absolute; 
@@ -184,7 +184,7 @@
             }
         }
 
-        // NOVA FUNÇÃO PARA O INTERRUPTOR
+        // FUNÇÃO DO INTERRUPTOR COM CONTROLE DE TAMANHO E COORDENADAS
         function alternarInterruptor() {
             if (!djLigado) {
                 const txt = document.getElementById('status-texto');
@@ -198,10 +198,20 @@
             
             if (interLigado) {
                 img.src = "./tec_int_on.png";
+                // --- AJUSTE O ESTADO 'ON' AQUI ---
+                img.style.width = "50px";   // TAMANHO QUANDO LIGADO
+                img.style.top = "76%";     // COORDENADA VERTICAL ON
+                img.style.left = "63.5%";  // COORDENADA HORIZONTAL ON
+                // --------------------------------
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
             } else {
                 img.src = "./tec_int_off.png";
+                // --- AJUSTE O ESTADO 'OFF' AQUI ---
+                img.style.width = "45px";   // TAMANHO QUANDO DESLIGADO
+                img.style.top = "76%";     // COORDENADA VERTICAL OFF
+                img.style.left = "63.5%";  // COORDENADA HORIZONTAL OFF
+                // ---------------------------------
                 txt.innerText = "LUZ APAGADA.";
                 txt.style.color = "#ffffff";
             }
