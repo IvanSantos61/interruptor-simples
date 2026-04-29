@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Ajuste de Tamanho</title>
+    <title>SMT Pro - Ajuste Fino</title>
     <style>
         body { 
             margin: 0; 
@@ -42,35 +42,34 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS */
+        /* CONFIGURAÇÃO DAS ALAVANCAS SEM SOBRAS */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            outline: 2px solid #00ff00;
+            /* Borda verde para ajuste preciso */
+            outline: 1px solid #00ff00;
             display: block;
-            /* Garante que a imagem se ajuste à caixa sem sobras excessivas */
-            object-fit: contain; 
         }
 
-        /* --- AJUSTE O TAMANHO (WIDTH) PARA DIMINUIR A ÁREA DE CONTATO --- */
+        /* --- AJUSTE AS POSIÇÕES AGORA QUE AS IMAGENS ESTÃO LIMPAS --- */
         
         #img-dg { 
-            width: 80px;   /* Diminuí para a área de contato ficar menor */
+            width: 45px;   /* Comece com um tamanho menor e aumente se precisar */
             top: 20%;      
-            left: 10%;     
+            left: 15%;     
         }
 
         #img-dr { 
-            width: 80px;   
+            width: 45px;   
             top: 20%; 
             left: 35%; 
         }
 
         #img-dj16 { 
-            width: 80px;   
+            width: 40px;   
             top: 20%; 
-            left: 60%; 
+            left: 55%; 
         }
         
         /* -------------------------------------------------------- */
@@ -84,7 +83,7 @@
             background: rgba(0,0,0,0.8);
             border-radius: 8px;
             border: 1px solid #2c3e50;
-            min-height: 30px;
+            min-height: 35px;
         }
 
         #status-texto { 
@@ -113,15 +112,15 @@
     <h2>Laboratório de Comandos</h2>
     
     <div class="status-box">
-        <span id="status-texto">ENCAIXE AS ALAVANCAS OFF NO QUADRO</span>
+        <span id="status-texto">POSICIONE AS NOVAS IMAGENS CORTADAS</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
 
-        <img id="img-dg" src="./al_dg_off.png?v=2" class="alavanca" onclick="avisar()">
-        <img id="img-dr" src="./al_dr_off.png?v=2" class="alavanca" onclick="avisar()">
-        <img id="img-dj16" src="./al_dj16_off.png?v=2" class="alavanca" onclick="avisar()">
+        <img id="img-dg" src="./al_dg_off.png?v=3" class="alavanca" onclick="avisar()">
+        <img id="img-dr" src="./al_dr_off.png?v=3" class="alavanca" onclick="avisar()">
+        <img id="img-dj16" src="./al_dj16_off.png?v=3" class="alavanca" onclick="avisar()">
     </div>
 
     <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
@@ -134,7 +133,7 @@
             
             setTimeout(() => {
                 txt.classList.remove('alerta');
-                txt.innerText = "ENCAIXE AS ALAVANCAS OFF NO QUADRO";
+                txt.innerText = "POSICIONE AS NOVAS IMAGENS CORTADAS";
             }, 2000);
         }
     </script>
