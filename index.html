@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Energização</title>
+    <title>SMT Pro - Lógica Simplificada</title>
     <style>
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
-        .alavanca { position: absolute; z-index: 100; cursor: pointer; display: block; transition: transform 0.1s; }
+        .alavanca { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Posições das alavancas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -59,16 +58,13 @@
     </div>
 
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
-    <audio id="som-disjuntor" src="./click.mp3" preload="auto"></audio>
 
     <script>
         let faseStatus = 'desconectado';
         let retornoStatus = 'desconectado';
         let neutroStatus = 'desconectado';
 
-        // Estados das alavancas
         let dgLigado = false;
-        let drLigado = false;
         let djLigado = false;
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
@@ -119,32 +115,33 @@
             }
         }
 
-        // Funções para as alavancas
         function alternarDG() {
             if (neutroStatus !== 'concluido') { bloqueio(); return; }
             dgLigado = !dgLigado;
             document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
-            document.getElementById('status-texto').innerText = dgLigado ? "GERAL LIGADO. LIGUE O DR." : "GERAL DESLIGADO.";
+            document.getElementById('status-texto').innerText = dgLigado ? "GERAL LIGADO. AGORA LIGUE O DJ16." : "GERAL DESLIGADO.";
+            document.getElementById('status-texto').style.color = dgLigado ? "#00ff00" : "#ffcc00";
         }
 
         function alternarDR() {
-            if (!dgLigado) { 
-                document.getElementById('status-texto').innerText = "ERRO: LIGUE O GERAL PRIMEIRO!";
-                return; 
+            // Apenas visual por enquanto
+            const img = document.getElementById('img-dr');
+            if (img.src.includes('off')) {
+                img.src = "./al_dr_on.png";
+            } else {
+                img.src = "./al_dr_off.png";
             }
-            drLigado = !drLigado;
-            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
-            document.getElementById('status-texto').innerText = drLigado ? "DR LIGADO. LIGUE O DJ16." : "DR DESLIGADO.";
         }
 
         function alternarDJ16() {
-            if (!drLigado) { 
-                document.getElementById('status-texto').innerText = "ERRO: LIGUE O DR PRIMEIRO!";
+            if (!dgLigado) { 
+                document.getElementById('status-texto').innerText = "ERRO: LIGUE O DISJUNTOR GERAL PRIMEIRO!";
+                document.getElementById('status-texto').style.color = "#ff4444";
                 return; 
             }
             djLigado = !djLigado;
             document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
-            document.getElementById('status-texto').innerText = djLigado ? "CIRCUITO ENERGIZADO! LIGUE O INTERRUPTOR." : "CIRCUITO DESLIGADO.";
+            document.getElementById('status-texto').innerText = djLigado ? "CIRCUITO ENERGIZADO! ACIONE O INTERRUPTOR." : "CIRCUITO DESENERGIZADO.";
         }
 
         function bloqueio() {
