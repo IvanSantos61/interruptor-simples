@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Posicionamento</title>
+    <title>SMT Pro - Ajuste de Imagens</title>
     <style>
         body { 
             margin: 0; 
@@ -32,7 +32,7 @@
             border: 2px solid #2c3e50; 
             border-radius: 12px; 
             overflow: hidden; 
-            background: #000; 
+            background: #222; /* Cor de fundo caso a imagem falhe */
             margin-top: 10px; 
         }
 
@@ -40,45 +40,22 @@
             width: 100%; 
             display: block; 
             pointer-events: none; 
-            -webkit-user-drag: none;
         }
 
-        /* IMAGENS DAS ALAVANCAS - AJUSTE AQUI */
+        /* CONFIGURAÇÃO DAS ALAVANCAS */
         .alavanca {
             position: absolute;
-            z-index: 50;
+            z-index: 100;
             cursor: pointer;
-            /* Se quiser ver uma borda para ajudar a posicionar, use a linha abaixo: */
-            /* outline: 1px solid red; */
+            display: block !important;
+            /* Se as imagens ainda não aparecerem, a borda vermelha vai te mostrar onde elas deveriam estar */
+            border: 1px solid rgba(255, 0, 0, 0.5);
         }
 
-        /* Mude os valores de top e left para alinhar com o seu fundo */
-        #img-dg { 
-            width: 45px; 
-            top: 25%; 
-            left: 20%; 
-        }
-
-        #img-dr { 
-            width: 45px; 
-            top: 25%; 
-            left: 35%; 
-        }
-
-        #img-dj16 { 
-            width: 40px; 
-            top: 25%; 
-            left: 50%; 
-        }
-
-        /* O interruptor geralmente fica mais abaixo */
-        #img-interrup {
-            width: 50px;
-            bottom: 20%;
-            right: 15%;
-            position: absolute;
-            z-index: 50;
-        }
+        /* Posições iniciais para você ajustar */
+        #img-dg { width: 50px; top: 20%; left: 15%; }
+        #img-dr { width: 50px; top: 20%; left: 35%; }
+        #img-dj16 { width: 45px; top: 20%; left: 55%; }
 
         .status-box {
             margin: 15px 0;
@@ -86,57 +63,37 @@
             width: 90%;
             max-width: 480px;
             text-align: center;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             border-radius: 8px;
-            border: 1px solid #2c3e50;
-            min-height: 40px;
+            border: 1px solid #00ffff;
+            min-height: 30px;
         }
 
         #status-texto { 
-            color: #ffcc00; 
+            color: #00ffff; 
             font-weight: bold; 
-            text-transform: uppercase; 
             font-size: 13px; 
         }
-
-        .alerta-erro { color: #ff4444 !important; }
     </style>
 </head>
 <body>
 
-    <h2>Laboratório Interativo</h2>
+    <h2>Laboratório de Teste</h2>
     
     <div class="status-box">
-        <span id="status-texto">POSICIONE OS COMPONENTES E FINALIZE A MONTAGEM</span>
+        <span id="status-texto">VERIFIQUE SE AS BORDAS VERMELHAS APARECEM</span>
     </div>
 
     <div id="quadro">
-        <img src="AMBIENTE.jpg" class="fundo">
+        <img src="AMBIENTE.jpg" class="fundo" onerror="this.src='https://via.placeholder.com/500x300?text=Erro+ao+carregar+AMBIENTE.jpg'">
 
-        <img id="img-dg" src="AL_DG_OFF.png" class="alavanca" onclick="tentarAcionar('Geral')">
-        <img id="img-dr" src="AL_DR_OFF.png" class="alavanca" onclick="tentarAcionar('DR')">
-        <img id="img-dj16" src="AL_DJ16_OFF.png" class="alavanca" onclick="tentarAcionar('Circuito')">
-        
-        <img id="img-interrup" src="AL_DJ16_OFF.png" class="alavanca" onclick="tentarAcionar('Interruptor')">
+        <img id="img-dg" src="AL_DG_OFF.PNG" class="alavanca">
+        <img id="img-dr" src="AL_DR_OFF.PNG" class="alavanca">
+        <img id="img-dj16" src="AL_DJ16_OFF.PNG" class="alavanca">
     </div>
 
-    <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
-
     <script>
-        let circuitoFinalizado = false; 
-
-        function tentarAcionar(nome) {
-            const txt = document.getElementById('status-texto');
-            if (!circuitoFinalizado) {
-                txt.innerText = "ERRO: O " + nome.toUpperCase() + " NÃO PODE SER LIGADO SEM A FIAÇÃO!";
-                txt.classList.add('alerta-erro');
-                
-                setTimeout(() => {
-                    txt.classList.remove('alerta-erro');
-                    txt.innerText = "POSICIONE OS COMPONENTES E FINALIZE A MONTAGEM";
-                }, 2000);
-            }
-        }
+        console.log("Sistema carregado. Verifique os nomes dos arquivos no GitHub.");
     </script>
 </body>
 </html>
