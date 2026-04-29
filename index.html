@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Laboratório Animado</title>
+    <title>SMT Pro - Animação de Fiação</title>
     <style>
         body { 
             margin: 0; 
@@ -104,7 +104,7 @@
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box">
-        <span id="status-texto">CONECTE A FASE: SAÍDA DO DJ16 -> INTERRUPTOR</span>
+        <span id="status-texto">FIAÇÃO: SAÍDA DO DJ16 -> INTERRUPTOR</span>
     </div>
 
     <div id="quadro">
@@ -123,22 +123,27 @@
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
 
     <script>
-        let faseConectada = false;
-        let frameAtual = 0;
-        const totalFrames = 5; // Vai do 0000 ao 0005 conforme seu print
+        let faseStatus = 'desconectado';
+        const totalFramesFase = 5; 
+        const imagensFase = [];
 
-        function animarFase() {
-            const fio = document.getElementById('fio-fase');
-            fio.style.display = 'block';
+        // PRÉ-CARREGAMENTO: Baixa as imagens antes do aluno clicar
+        for (let i = 0; i <= totalFramesFase; i++) {
+            const img = new Image();
+            let num = i.toString().padStart(4, '0');
+            img.src = `./FASE/quadro${num}.png`;
+            imagensFase.push(img.src);
+        }
 
-            if (frameAtual <= totalFrames) {
-                // Formata o número para ter 4 dígitos (ex: 0001, 0002...)
-                let numeroFrame = frameAtual.toString().padStart(4, '0');
-                fio.src = `./FASE/quadro${numeroFrame}.png`;
-                frameAtual++;
-                
-                // Velocidade da animação (100ms = 10 quadros por segundo)
-                setTimeout(animarFase, 100);
+        function animarFase(frame) {
+            const elementoFio = document.getElementById('fio-fase');
+            elementoFio.style.display = 'block';
+
+            if (frame <= totalFramesFase) {
+                elementoFio.src = imagensFase[frame];
+                setTimeout(() => {
+                    animarFase(frame + 1);
+                }, 80); // Velocidade da fiação
             }
         }
 
@@ -146,20 +151,20 @@
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
 
-            if (local === 'dj16') {
-                faseConectada = 'iniciada';
+            if (local === 'dj16' && faseStatus === 'desconectado') {
+                faseStatus = 'iniciado';
                 if(som) som.play();
-                txt.innerText = "SAÍDA DO DJ16 CONECTADA. AGORA CLIQUE NO INTERRUPTOR.";
+                txt.innerText = "SAÍDA CONECTADA. AGORA CLIQUE NO INTERRUPTOR.";
                 txt.style.color = "#00ffff";
             } 
-            else if (local === 'inter' && faseConectada === 'iniciada') {
+            else if (local === 'inter' && faseStatus === 'iniciado') {
+                faseStatus = 'concluido';
                 if(som) som.play();
-                faseConectada = 'concluida';
                 txt.innerText = "FASE CONECTADA COM SUCESSO!";
                 txt.style.color = "#00ff00";
                 
-                // Inicia a sequência de imagens
-                animarFase();
+                // Inicia a animação a partir do frame 0
+                animarFase(0);
             } 
         }
 
