@@ -11,6 +11,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
+        /* Posições Originais (Estado OFF) */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -18,7 +19,7 @@
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; }
         .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0, 255, 255, 0.4); }
 
-        /* Suas coordenadas calibradas */
+        /* Suas coordenadas calibradas das bolinhas */
         #borne-dj16-saida { top: 37%; left: 34%; } 
         #borne-inter-entrada { top: 81%; left: 68%; } 
         #borne-inter-saida { top: 75%; left: 68%; }   
@@ -65,6 +66,7 @@
         let neutroStatus = 'desconectado';
 
         let dgLigado = false;
+        let drLigado = false;
         let djLigado = false;
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
@@ -118,30 +120,60 @@
         function alternarDG() {
             if (neutroStatus !== 'concluido') { bloqueio(); return; }
             dgLigado = !dgLigado;
-            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
-            document.getElementById('status-texto').innerText = dgLigado ? "GERAL LIGADO. AGORA LIGUE O DJ16." : "GERAL DESLIGADO.";
-            document.getElementById('status-texto').style.color = dgLigado ? "#00ff00" : "#ffcc00";
+            const img = document.getElementById('img-dg');
+            const txt = document.getElementById('status-texto');
+
+            if (dgLigado) {
+                img.src = "./al_dg_on.png";
+                img.style.top = "25%";   // AJUSTE AQUI SE PRECISAR
+                img.style.left = "11.2%"; // AJUSTE AQUI SE PRECISAR
+                txt.innerText = "GERAL LIGADO. AGORA LIGUE O DJ16.";
+                txt.style.color = "#00ff00";
+            } else {
+                img.src = "./al_dg_off.png";
+                img.style.top = "25%";    // VOLTA PARA O ORIGINAL
+                img.style.left = "11.2%";
+                txt.innerText = "GERAL DESLIGADO.";
+                txt.style.color = "#ffcc00";
+            }
         }
 
         function alternarDR() {
-            // Apenas visual por enquanto
+            drLigado = !drLigado;
             const img = document.getElementById('img-dr');
-            if (img.src.includes('off')) {
+            if (drLigado) {
                 img.src = "./al_dr_on.png";
+                img.style.top = "27.8%"; // AJUSTE AQUI
+                img.style.left = "23%";  // AJUSTE AQUI
             } else {
                 img.src = "./al_dr_off.png";
+                img.style.top = "27.8%";
+                img.style.left = "23%";
             }
         }
 
         function alternarDJ16() {
             if (!dgLigado) { 
-                document.getElementById('status-texto').innerText = "ERRO: LIGUE O DISJUNTOR GERAL PRIMEIRO!";
-                document.getElementById('status-texto').style.color = "#ff4444";
+                const txt = document.getElementById('status-texto');
+                txt.innerText = "ERRO: LIGUE O DISJUNTOR GERAL PRIMEIRO!";
+                txt.style.color = "#ff4444";
                 return; 
             }
             djLigado = !djLigado;
-            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
-            document.getElementById('status-texto').innerText = djLigado ? "CIRCUITO ENERGIZADO! ACIONE O INTERRUPTOR." : "CIRCUITO DESENERGIZADO.";
+            const img = document.getElementById('img-dj16');
+            const txt = document.getElementById('status-texto');
+
+            if (djLigado) {
+                img.src = "./al_dj16_on.png";
+                img.style.top = "26%";   // AJUSTE AQUI PARA O ESTADO LIGADO
+                img.style.left = "32.2%"; // AJUSTE AQUI PARA O ESTADO LIGADO
+                txt.innerText = "CIRCUITO ENERGIZADO! ACIONE O INTERRUPTOR.";
+            } else {
+                img.src = "./al_dj16_off.png";
+                img.style.top = "26%";    // ORIGINAL
+                img.style.left = "32.2%"; // ORIGINAL
+                txt.innerText = "CIRCUITO DESENERGIZADO.";
+            }
         }
 
         function bloqueio() {
