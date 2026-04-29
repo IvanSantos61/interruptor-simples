@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Ajuste Final</title>
+    <title>SMT Pro - Laboratório</title>
     <style>
         body { 
             margin: 0; 
@@ -42,38 +42,43 @@
             pointer-events: none; 
         }
 
+        /* --- ALAVANCAS --- */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            outline: 1px solid #00ff00; /* Borda de guia */
             display: block;
         }
 
-        /* ============================================================
-           AQUI É ONDE VOCÊ ALTERA O TAMANHO (width) E A POSIÇÃO
-           ============================================================ */
-        
-        #img-dg { 
-            width: 28.5px;   /* <--- ALTERE O TAMANHO AQUI */
-            top: 25%;      /* <--- MOVE PARA CIMA/BAIXO */
-            left: 11.2%;     /* <--- MOVE PARA ESQUERDA/DIREITA */
+        #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
+        #img-dr { width: 30px; top: 27.8%; left: 23%; }
+        #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
+
+        /* --- BORNES DE CONEXÃO --- */
+        .borne {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(0, 255, 255, 0.3);
+            border: 1px solid #00ffff;
+            border-radius: 50%;
+            z-index: 150;
+            cursor: pointer;
+            box-shadow: 0 0 8px #00ffff;
+            transition: 0.3s;
         }
 
-        #img-dr { 
-            width: 30px;   /* <--- ALTERE O TAMANHO AQUI */
-            top: 27.8%; 
-            left: 23%; 
+        .borne:hover {
+            background: rgba(0, 255, 255, 0.8);
+            transform: scale(1.2);
         }
 
-        #img-dj16 { 
-            width: 20px;   /* <--- ALTERE O TAMANHO AQUI */
-            top: 26%; 
-            left: 32.2%; 
-        }
-        
-        /* ============================================================ */
+        /* Exemplos de posições de bornes - Ajuste conforme o fundo */
+        #borne-fase-entrada { top: 10%; left: 10%; } 
+        #borne-dg-entrada { top: 18%; left: 11%; }
+        #borne-dr-entrada { top: 18%; left: 23%; }
 
+        /* --- INTERFACE --- */
         .status-box {
             margin: 15px 0;
             padding: 10px;
@@ -92,48 +97,46 @@
             font-size: 13px; 
             text-transform: uppercase;
         }
-
-        .alerta {
-            color: #ff4444 !important;
-            animation: tremer 0.3s;
-        }
-
-        @keyframes tremer {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            50% { transform: translateX(4px); }
-            75% { transform: translateX(-4px); }
-            100% { transform: translateX(0); }
-        }
     </style>
 </head>
 <body>
 
-    <h2>Laboratório de Comandos</h2>
+    <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box">
-        <span id="status-texto">AJUSTE O TAMANHO E A POSIÇÃO DAS ALAVANCAS</span>
+        <span id="status-texto">Inicie a fiação clicando nos bornes</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
 
-        <img id="img-dg" src="./al_dg_off.png?v=4" class="alavanca" onclick="avisar()">
-        <img id="img-dr" src="./al_dr_off.png?v=4" class="alavanca" onclick="avisar()">
-        <img id="img-dj16" src="./al_dj16_off.png?v=4" class="alavanca" onclick="avisar()">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="bloqueio()">
+
+        <div id="borne-fase-entrada" class="borne" onclick="conectar('fase1')"></div>
+        <div id="borne-dg-entrada" class="borne" onclick="conectar('dg1')"></div>
+        <div id="borne-dr-entrada" class="borne" onclick="conectar('dr1')"></div>
     </div>
 
+    <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
 
     <script>
-        function avisar() {
+        function conectar(id) {
+            document.getElementById('som-conexao').play();
+            const txt = document.getElementById('status-texto');
+            txt.innerText = "Borne " + id + " selecionado. Faça a próxima conexão.";
+            txt.style.color = "#00ffff";
+        }
+
+        function bloqueio() {
             const txt = document.getElementById('status-texto');
             txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO PRIMEIRO";
-            txt.classList.add('alerta');
-            
+            txt.style.color = "#ff4444";
             setTimeout(() => {
-                txt.classList.remove('alerta');
-                txt.innerText = "AJUSTE O TAMANHO E A POSIÇÃO DAS ALAVANCAS";
+                txt.innerText = "Inicie a fiação clicando nos bornes";
+                txt.style.color = "#ffcc00";
             }, 2000);
         }
     </script>
