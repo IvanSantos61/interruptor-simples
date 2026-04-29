@@ -64,25 +64,29 @@
             pointer-events: none;
         }
 
+        /* --- BOLINHAS DE CONEXÃO (DIMINUÍDAS) --- */
         .borne {
             position: absolute;
-            width: 25px;
-            height: 25px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.5);
+            width: 12px;  /* Tamanho reduzido */
+            height: 12px; /* Tamanho reduzido */
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.6);
             border-radius: 50%;
             z-index: 150;
             cursor: pointer;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* Centraliza no ponto exato */
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
         }
 
-        .borne:hover { background: rgba(0, 255, 255, 0.4); border: 1px solid #00ffff; }
+        .borne:hover { 
+            background: rgba(0, 255, 255, 0.5); 
+            border: 1px solid #00ffff; 
+        }
 
-        /* Posições dos Bornes - AJUSTE SE NECESSÁRIO */
+        /* Ajuste as posições conforme sua imagem */
         #borne-dj16-saida { top: 35%; left: 33%; } 
-        #borne-inter-entrada { top: 75%; left: 65%; } /* Entrada da Fase */
-        
-        #borne-inter-saida { top: 75%; left: 75%; }   /* Saída para Retorno */
+        #borne-inter-entrada { top: 75%; left: 65%; } 
+        #borne-inter-saida { top: 75%; left: 75%; }   
         #borne-lampada-entrada { top: 15%; left: 80%; }
 
         .status-box {
@@ -125,7 +129,6 @@
 
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
-
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
         <div id="borne-lampada-entrada" class="borne" onclick="cliqueBorne('lamp')"></div>
     </div>
@@ -161,7 +164,6 @@
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
 
-            // Lógica da FASE
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado';
                 if(som) som.play();
@@ -171,11 +173,9 @@
                 faseStatus = 'concluido';
                 if(som) som.play();
                 animarFase(0);
-                txt.innerText = "FASE OK! AGORA CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+                txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
                 txt.style.color = "#00ffff";
             } 
-
-            // Lógica do RETORNO (Só funciona se faseStatus for 'concluido')
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado';
                 if(som) som.play();
@@ -185,10 +185,10 @@
                 retornoStatus = 'concluido';
                 if(som) som.play();
                 animarRetorno(0);
-                txt.innerText = "RETORNO CONECTADO! FALTA APENAS O NEUTRO.";
+                txt.innerText = "RETORNO CONECTADO! AGORA O NEUTRO.";
                 txt.style.color = "#00ff00";
             }
-            else if (faseStatus !== 'concluido') {
+            else if (faseStatus !== 'concluido' && (local === 'inter_out' || local === 'lamp')) {
                 txt.innerText = "ERRO: CONECTE A FASE PRIMEIRO!";
                 txt.style.color = "#ff4444";
             }
