@@ -11,7 +11,6 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Posições Originais das Alavancas (Estado OFF) */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -79,7 +78,6 @@
         let faseStatus = 'desconectado';
         let retornoStatus = 'desconectado';
         let neutroStatus = 'desconectado';
-
         let dgLigado = false;
         let drLigado = false;
         let djLigado = false;
@@ -184,7 +182,6 @@
             }
         }
 
-        // FUNÇÃO DO INTERRUPTOR COM CONTROLE DE TAMANHO E COORDENADAS
         function alternarInterruptor() {
             if (!djLigado) {
                 const txt = document.getElementById('status-texto');
@@ -198,20 +195,16 @@
             
             if (interLigado) {
                 img.src = "./tec_int_on.png";
-                // --- AJUSTE O ESTADO 'ON' AQUI ---
-                img.style.width = "35px";   // TAMANHO QUANDO LIGADO
-                img.style.top = "72.4%";     // COORDENADA VERTICAL ON
-                img.style.left = "70.3%";  // COORDENADA HORIZONTAL ON
-                // --------------------------------
+                img.style.width = "35px"; 
+                img.style.top = "72.4%";   // VALOR SINCRONIZADO
+                img.style.left = "70.3%";  // VALOR SINCRONIZADO
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
             } else {
                 img.src = "./tec_int_off.png";
-                // --- AJUSTE O ESTADO 'OFF' AQUI ---
-                img.style.width = "28.5px";   // TAMANHO QUANDO DESLIGADO
-                img.style.top = "72.4%";     // COORDENADA VERTICAL OFF
-                img.style.left = "73%";  // COORDENADA HORIZONTAL OFF
-                // ---------------------------------
+                img.style.width = "28.5px"; 
+                img.style.top = "72.4%";   // VALOR SINCRONIZADO
+                img.style.left = "70.3%";  // VALOR SINCRONIZADO (MUDADO DE 73% PARA 70.3%)
                 txt.innerText = "LUZ APAGADA.";
                 txt.style.color = "#ffffff";
             }
