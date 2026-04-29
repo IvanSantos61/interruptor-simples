@@ -9,30 +9,15 @@
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
-        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
+        .alavanca, .tecla { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
         /* Ajustes das Alavancas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
-        /* ============================================================ */
-        /* 1. AJUSTE AQUI A POSIÇÃO DA TECLA QUE APARECE AO ABRIR O SITE */
-        #img-interruptor { 
-            width: 29px; 
-            top: 72.4%; 
-            left: 75%;  /* <--- COLOQUE SEU VALOR AQUI */
-            z-index: 110; 
-        }
-
-        /* 2. AJUSTE A POSIÇÃO DA LÂMPADA (ENCAIXE NO BOCAL) */
-        #img-lampada { 
-            width: 55px; 
-            top: 43%; 
-            left: 88.5%; 
-            z-index: 105; 
-        }
-        /* ============================================================ */
+        /* POSIÇÃO INICIAL (Quando a página carrega) */
+        #img-interruptor { width: 29px; top: 72.4%; left: 75%; z-index: 110; }
 
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
         .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
@@ -65,8 +50,6 @@
         <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
-        
-        <img id="img-lampada" src="./lamp_off.png" class="lampada">
         
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
@@ -160,32 +143,25 @@
             if (!djLigado) return;
             
             interLigado = !interLigado;
-            const imgTecla = document.getElementById('img-interruptor');
-            const imgLampada = document.getElementById('img-lampada');
+            const img = document.getElementById('img-interruptor');
             const txt = document.getElementById('status-texto');
             
             if (interLigado) {
-                // ============================================================
-                // 3. AJUSTE AQUI A POSIÇÃO DA TECLA LIGADA (ON)
-                imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "35px";
-                imgTecla.style.top = "72.4%";
-                imgTecla.style.left = "70.3%"; // <--- COLOQUE SEU VALOR AQUI
-                // ============================================================
+                // --- AJUSTES DA IMAGEM LIGADA (ON) ---
+                img.src = "./tec_int_on.png";
+                img.style.width = "35px";   // Mude o tamanho ON aqui
+                img.style.top = "72.4%";    // Mude a altura ON aqui
+                img.style.left = "70.3%";   // Mude a posição lateral ON aqui
                 
-                imgLampada.src = "./lamp_on.png";
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
             } else {
-                // ============================================================
-                // 4. AJUSTE AQUI A POSIÇÃO DA TECLA DESLIGADA (OFF)
-                imgTecla.src = "./tec_int_off.png";
-                imgTecla.style.width = "29px";
-                imgTecla.style.top = "72.4%";
-                imgTecla.style.left = "75%";   // <--- COLOQUE SEU VALOR AQUI
-                // ============================================================
+                // --- AJUSTES DA IMAGEM DESLIGADA (OFF) ---
+                img.src = "./tec_int_off.png";
+                img.style.width = "29px";   // Mude o tamanho OFF aqui
+                img.style.top = "72.4%";    // Mude a altura OFF aqui
+                img.style.left = "75%";   // Mude a posição lateral OFF aqui
                 
-                imgLampada.src = "./lamp_off.png";
                 txt.innerText = "LUZ APAGADA.";
                 txt.style.color = "#ffffff";
             }
