@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Animação de Fiação</title>
+    <title>SMT Pro - Fiação Fase</title>
     <style>
         body { 
             margin: 0; 
@@ -49,6 +49,7 @@
             display: block;
         }
 
+        /* Coordenadas das alavancas conforme seu ajuste */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -124,26 +125,34 @@
 
     <script>
         let faseStatus = 'desconectado';
-        const totalFramesFase = 5; 
-        const imagensFase = [];
+        
+        // Lista exata dos arquivos que você informou
+        const listaArquivosFase = [
+            "quadro0000.png",
+            "quadro0006.png",
+            "quadro0012.png",
+            "quadro0018.png",
+            "quadro0024.png",
+            "quadro0030.png"
+        ];
 
-        // PRÉ-CARREGAMENTO: Baixa as imagens antes do aluno clicar
-        for (let i = 0; i <= totalFramesFase; i++) {
+        // Pré-carregamento para evitar atrasos
+        const imagensPreload = [];
+        listaArquivosFase.forEach(nome => {
             const img = new Image();
-            let num = i.toString().padStart(4, '0');
-            img.src = `./FASE/quadro${num}.png`;
-            imagensFase.push(img.src);
-        }
+            img.src = `./FASE/${nome}`;
+            imagensPreload.push(img);
+        });
 
-        function animarFase(frame) {
+        function animarFase(index) {
             const elementoFio = document.getElementById('fio-fase');
             elementoFio.style.display = 'block';
 
-            if (frame <= totalFramesFase) {
-                elementoFio.src = imagensFase[frame];
+            if (index < listaArquivosFase.length) {
+                elementoFio.src = `./FASE/${listaArquivosFase[index]}`;
                 setTimeout(() => {
-                    animarFase(frame + 1);
-                }, 80); // Velocidade da fiação
+                    animarFase(index + 1);
+                }, 100); // Velocidade da animação
             }
         }
 
@@ -163,7 +172,6 @@
                 txt.innerText = "FASE CONECTADA COM SUCESSO!";
                 txt.style.color = "#00ff00";
                 
-                // Inicia a animação a partir do frame 0
                 animarFase(0);
             } 
         }
