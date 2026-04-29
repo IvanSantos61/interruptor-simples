@@ -42,33 +42,34 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS (ONDE AJUSTAMOS O TAMANHO) */
+        /* CONFIGURAÇÃO DAS ALAVANCAS */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            /* Borda verde para te ajudar a enxergar o encaixe */
             outline: 2px solid #00ff00;
             display: block;
+            /* Garante que a imagem se ajuste à caixa sem sobras excessivas */
+            object-fit: contain; 
         }
 
-        /* --- AJUSTE AQUI O TAMANHO (WIDTH) E POSIÇÃO (TOP/LEFT) --- */
+        /* --- AJUSTE O TAMANHO (WIDTH) PARA DIMINUIR A ÁREA DE CONTATO --- */
         
         #img-dg { 
-            width: 250px;   /* Aumentei o tamanho. Se precisar de mais, aumente este número */
-            top: 10%;      /* Altura */
-            left: 5%;     /* Distância da esquerda */
+            width: 80px;   /* Diminuí para a área de contato ficar menor */
+            top: 20%;      
+            left: 10%;     
         }
 
         #img-dr { 
-            width: 250px;   /* Aumentei o tamanho */
-            top: 10%; 
-            left: 38%; 
+            width: 80px;   
+            top: 20%; 
+            left: 35%; 
         }
 
         #img-dj16 { 
-            width: 250px;   /* Aumentei o tamanho */
-            top: 10%; 
+            width: 70px;   
+            top: 20%; 
             left: 60%; 
         }
         
@@ -93,7 +94,6 @@
             text-transform: uppercase;
         }
 
-        /* Alerta visual de bloqueio */
         .alerta {
             color: #ff4444 !important;
             animation: tremer 0.3s;
