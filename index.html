@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Laboratório</title>
+    <title>SMT Pro - Ajuste de Imagens</title>
     <style>
         body { 
             margin: 0; 
@@ -32,7 +32,7 @@
             border: 2px solid #2c3e50; 
             border-radius: 12px; 
             overflow: hidden; 
-            background: #000; 
+            background: #222; /* Cor de fundo caso a imagem falhe */
             margin-top: 10px; 
         }
 
@@ -42,19 +42,20 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS (TUDO EM MINÚSCULAS) */
+        /* CONFIGURAÇÃO DAS ALAVANCAS */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            /* Borda temporária para te ajudar a enxergar o posicionamento */
-            outline: 1px solid rgba(0, 255, 255, 0.4);
+            display: block !important;
+            /* Se as imagens ainda não aparecerem, a borda vermelha vai te mostrar onde elas deveriam estar */
+            border: 1px solid rgba(255, 0, 0, 0.5);
         }
 
-        /* Ajuste as posições abaixo conforme seu fundo */
-        #img-dg { width: 45px; top: 20%; left: 15%; }
-        #img-dr { width: 45px; top: 20%; left: 32%; }
-        #img-dj16 { width: 40px; top: 20%; left: 48%; }
+        /* Posições iniciais para você ajustar */
+        #img-dg { width: 50px; top: 20%; left: 15%; }
+        #img-dr { width: 50px; top: 20%; left: 35%; }
+        #img-dj16 { width: 45px; top: 20%; left: 55%; }
 
         .status-box {
             margin: 15px 0;
@@ -64,47 +65,35 @@
             text-align: center;
             background: rgba(0,0,0,0.8);
             border-radius: 8px;
-            border: 1px solid #2c3e50;
+            border: 1px solid #00ffff;
             min-height: 30px;
         }
 
         #status-texto { 
-            color: #ffcc00; 
+            color: #00ffff; 
             font-weight: bold; 
             font-size: 13px; 
-            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <h2>Laboratório Interativo</h2>
+    <h2>Laboratório de Teste</h2>
     
     <div class="status-box">
-        <span id="status-texto">Aguardando novos arquivos...</span>
+        <span id="status-texto">VERIFIQUE SE AS IMAGENS APARECEM</span>
     </div>
 
     <div id="quadro">
-        <img src="ambiente.jpg" class="fundo">
+        <img src="ambiente.jpg" class="fundo" onerror="this.src='https://via.placeholder.com/500x300?text=Erro+ao+carregar+ambiente.jpg'">
 
-        <img id="img-dg" src="al_dg_off.png" class="alavanca" onclick="avisar()">
-        <img id="img-dr" src="al_dr_off.png" class="alavanca" onclick="avisar()">
-        <img id="img-dj16" src="al_dj16_off.png" class="alavanca" onclick="avisar()">
+        <img id="img-dg" src="al_dg_off.png" class="alavanca">
+        <img id="img-dr" src="al_dr_off.png" class="alavanca">
+        <img id="img-dj16" src="al_dj16_off.png" class="alavanca">
     </div>
 
-    <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
-
     <script>
-        function avisar() {
-            const txt = document.getElementById('status-texto');
-            txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO PRIMEIRO";
-            txt.style.color = "#ff4444";
-            
-            setTimeout(() => {
-                txt.innerText = "Aguardando novos arquivos...";
-                txt.style.color = "#ffcc00";
-            }, 2000);
-        }
+        console.log("Sistema carregado. Verifique os nomes dos arquivos no GitHub.");
     </script>
 </body>
 </html>
