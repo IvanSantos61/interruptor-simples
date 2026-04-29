@@ -9,14 +9,16 @@
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
-        .alavanca { position: absolute; z-index: 100; cursor: pointer; display: block; }
+        .alavanca, .tecla { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Posições Originais (Estado OFF - Desligado) */
+        /* Posições das Alavancas (OFF) */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
 
-        /* EFEITO DE SOMBRA NOS CABOS FASE, NEUTRO E RETORNO */
+        /* POSIÇÃO DA TECLA DO INTERRUPTOR - Ajuste se necessário */
+        #img-interruptor { width: 45px; top: 76%; left: 63.5%; z-index: 110; }
+
         .fio { 
             position: absolute; 
             top: 0; 
@@ -60,6 +62,8 @@
         <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
+        
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
@@ -79,6 +83,7 @@
         let dgLigado = false;
         let drLigado = false;
         let djLigado = false;
+        let interLigado = false;
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
@@ -133,17 +138,14 @@
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
             const txt = document.getElementById('status-texto');
-
             if (dgLigado) {
                 img.src = "./al_dg_on.png";
-                img.style.top = "25%";   
-                img.style.left = "11.2%"; 
+                img.style.top = "25%"; img.style.left = "11%"; 
                 txt.innerText = "GERAL LIGADO. AGORA LIGUE O DJ16.";
                 txt.style.color = "#00ff00";
             } else {
                 img.src = "./al_dg_off.png";
-                img.style.top = "25%";
-                img.style.left = "11.2%";
+                img.style.top = "25%"; img.style.left = "11.2%";
                 txt.innerText = "GERAL DESLIGADO.";
                 txt.style.color = "#ffcc00";
             }
@@ -154,12 +156,10 @@
             const img = document.getElementById('img-dr');
             if (drLigado) {
                 img.src = "./al_dr_on.png";
-                img.style.top = "25%"; 
-                img.style.left = "23%";  
+                img.style.top = "25%"; img.style.left = "23%";  
             } else {
                 img.src = "./al_dr_off.png";
-                img.style.top = "27.8%";
-                img.style.left = "23%";
+                img.style.top = "27.8%"; img.style.left = "23%";
             }
         }
 
@@ -173,17 +173,37 @@
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
             const txt = document.getElementById('status-texto');
-
             if (djLigado) {
                 img.src = "./al_dj16_on.png";
-                img.style.top = "25%";   
-                img.style.left = "31.6%"; 
+                img.style.top = "25%"; img.style.left = "31.6%"; 
                 txt.innerText = "CIRCUITO ENERGIZADO! ACIONE O INTERRUPTOR.";
             } else {
                 img.src = "./al_dj16_off.png";
-                img.style.top = "26%";    
-                img.style.left = "32.2%"; 
+                img.style.top = "26%"; img.style.left = "32.2%"; 
                 txt.innerText = "CIRCUITO DESENERGIZADO.";
+            }
+        }
+
+        // NOVA FUNÇÃO PARA O INTERRUPTOR
+        function alternarInterruptor() {
+            if (!djLigado) {
+                const txt = document.getElementById('status-texto');
+                txt.innerText = "ERRO: O CIRCUITO NÃO TEM ENERGIA (DJ16 DESLIGADO)!";
+                txt.style.color = "#ff4444";
+                return;
+            }
+            interLigado = !interLigado;
+            const img = document.getElementById('img-interruptor');
+            const txt = document.getElementById('status-texto');
+            
+            if (interLigado) {
+                img.src = "./tec_int_on.png";
+                txt.innerText = "LUZ ACESA!";
+                txt.style.color = "#00ff00";
+            } else {
+                img.src = "./tec_int_off.png";
+                txt.innerText = "LUZ APAGADA.";
+                txt.style.color = "#ffffff";
             }
         }
 
