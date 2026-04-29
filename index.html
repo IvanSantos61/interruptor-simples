@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aula Interativa - Interruptor Simples</title>
+    <style>
+        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        
+        /* Título no estilo Dark Electric */
+        h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; }
 
+        #quadro { 
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            border: 2px solid #2c3e50; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            background: #000; 
+            margin-top: 10px; 
+        }
+
+        .fundo { width: 100%; display: block; pointer-events: none; }
+        .camada-fio { position: absolute; top: 0; left: 0; width: 100%; height: auto; display: none; pointer-events: none; }
+
+        /* Brilho Azul 70% quando energizado */
+        .energizado { filter: drop-shadow(0 0 4px rgba(0, 170, 255, 0.7)); }
+
+        /* Controles de Disjuntores e DR */
+        .dispositivo { position: absolute; cursor: pointer; z-index: 100; transition: transform 0.1s; }
+        .dispositivo:active { transform: scale(0.95); }
+
+        /* Posicionamento manual sugerido - Ajuste conforme sua imagem AMBIENTE */
+        #dj-geral { width: 15%; top: 10%; left: 10%; }
+        #dr-protecao { width: 15%; top: 10%; left: 30%; }
+        #interruptor { width: 12%; bottom: 20%; right: 15%; }
+
+        .mensagens { margin: 15px 0; text-align: center; color: #ffcc00; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <h2>Laboratório: Interruptor Simples</h2>
+    
+    <div class="mensagens" id="status">Monte o circuito ou acione os dispositivos</div>
+
+    <div id="quadro">
+        <img src="AMBIENTE.jpg" class="fundo">
+
+        <img id="dj-geral" src="AL_DG_OFF.png" class="dispositivo" onclick="alternar('dj-geral', 'AL_DG')">
+        <img id="dr-protecao" src="AL_DR_OFF.png" class="dispositivo" onclick="alternar('dr-protecao', 'AL_DR')">
+        <img id="interruptor" src="AL_DJ16_OFF.png" class="dispositivo" onclick="alternar('interruptor', 'AL_DJ16')">
+
+        <div id="camadas-fios"></div>
+    </div>
+
+    <audio id="som-conexao" src="conexão.mp3" preload="auto"></audio>
+    <audio id="som-disjuntor" src="disj.mp3" preload="auto"></audio>
+
+    <script>
+        let estados = { 'dj-geral': false, 'dr-protecao': false, 'interruptor': false };
+
+        function alternar(id, prefixo) {
+            const el = document.getElementById(id);
+            const som = document.getElementById('som-disjuntor');
+            
+            estados[id] = !estados[id];
+            som.currentTime = 0;
+            som.play().catch(() => {});
+
+            // Muda a imagem de ON para OFF baseado no seu padrão de nome
+            el.src = estados[id] ? prefixo + '_ON.png' : prefixo + '_OFF.png';
+
+            atualizarCircuito();
+        }
+
+        function atualizarCircuito() {
+            const msg = document.getElementById('status');
+            if (estados['dj-geral'] && estados['dr-protecao'] && estados['interruptor']) {
+                msg.innerText = "⚡ Lâmpada Acesa!";
+                msg.style.color = "#00ff00";
+            } else {
+                msg.innerText = "Circuito Desligado";
+                msg.style.color = "#ffcc00";
+            }
+        }
+    </script>
+</body>
+</html>
