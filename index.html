@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SMT Pro - Ajuste Fino</title>
+    <title>SMT Pro - Ajuste Final</title>
     <style>
         body { 
             margin: 0; 
@@ -42,37 +42,37 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS SEM SOBRAS */
         .alavanca {
             position: absolute;
             z-index: 100;
             cursor: pointer;
-            /* Borda verde para ajuste preciso */
-            outline: 1px solid #00ff00;
+            outline: 1px solid #00ff00; /* Borda de guia */
             display: block;
         }
 
-        /* --- AJUSTE AS POSIÇÕES AGORA QUE AS IMAGENS ESTÃO LIMPAS --- */
+        /* ============================================================
+           AQUI É ONDE VOCÊ ALTERA O TAMANHO (width) E A POSIÇÃO
+           ============================================================ */
         
         #img-dg { 
-            width: 45px;   /* Comece com um tamanho menor e aumente se precisar */
-            top: 20%;      
-            left: 15%;     
+            width: 45px;   /* <--- ALTERE O TAMANHO AQUI */
+            top: 20%;      /* <--- MOVE PARA CIMA/BAIXO */
+            left: 15%;     /* <--- MOVE PARA ESQUERDA/DIREITA */
         }
 
         #img-dr { 
-            width: 45px;   
+            width: 45px;   /* <--- ALTERE O TAMANHO AQUI */
             top: 20%; 
             left: 35%; 
         }
 
         #img-dj16 { 
-            width: 40px;   
+            width: 40px;   /* <--- ALTERE O TAMANHO AQUI */
             top: 20%; 
             left: 55%; 
         }
         
-        /* -------------------------------------------------------- */
+        /* ============================================================ */
 
         .status-box {
             margin: 15px 0;
@@ -112,15 +112,15 @@
     <h2>Laboratório de Comandos</h2>
     
     <div class="status-box">
-        <span id="status-texto">POSICIONE AS NOVAS IMAGENS CORTADAS</span>
+        <span id="status-texto">AJUSTE O TAMANHO E A POSIÇÃO DAS ALAVANCAS</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
 
-        <img id="img-dg" src="./al_dg_off.png?v=3" class="alavanca" onclick="avisar()">
-        <img id="img-dr" src="./al_dr_off.png?v=3" class="alavanca" onclick="avisar()">
-        <img id="img-dj16" src="./al_dj16_off.png?v=3" class="alavanca" onclick="avisar()">
+        <img id="img-dg" src="./al_dg_off.png?v=4" class="alavanca" onclick="avisar()">
+        <img id="img-dr" src="./al_dr_off.png?v=4" class="alavanca" onclick="avisar()">
+        <img id="img-dj16" src="./al_dj16_off.png?v=4" class="alavanca" onclick="avisar()">
     </div>
 
     <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
@@ -133,7 +133,7 @@
             
             setTimeout(() => {
                 txt.classList.remove('alerta');
-                txt.innerText = "POSICIONE AS NOVAS IMAGENS CORTADAS";
+                txt.innerText = "AJUSTE O TAMANHO E A POSIÇÃO DAS ALAVANCAS";
             }, 2000);
         }
     </script>
