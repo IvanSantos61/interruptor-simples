@@ -43,37 +43,19 @@
             -webkit-user-drag: none;
         }
 
-        /* ÁREAS DE CLIQUE (AJUSTE AS POSIÇÕES AQUI) */
-        .area-clique { 
-            position: absolute; 
-            cursor: pointer; 
-            z-index: 100;
-            /* REMOVA AS LINHAS ABAIXO QUANDO TERMINAR DE POSICIONAR */
-            background: rgba(0, 255, 255, 0.3); 
-            border: 1px solid #00ffff;
+        /* IMAGENS DAS ALAVANCAS (ESTADO INICIAL OFF) */
+        .alavanca {
+            position: absolute;
+            z-index: 50;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.1s;
         }
 
-        /* Ajuste top, left, width e height conforme os componentes na sua foto */
-        #alavanca-dg { 
-            width: 50px; 
-            height: 70px; 
-            top: 20%; 
-            left: 15%; 
-        }
-
-        #alavanca-dj16 { 
-            width: 40px; 
-            height: 70px; 
-            top: 20%; 
-            left: 40%; 
-        }
-
-        #alavanca-interrup { 
-            width: 60px; 
-            height: 60px; 
-            bottom: 25%; 
-            right: 20%; 
-        }
+        /* Posicionamento - Ajuste conforme sua imagem AMBIENTE.jpg */
+        #img-dg { width: 45px; top: 20%; left: 15%; }
+        #img-dr { width: 45px; top: 20%; left: 30%; }
+        #img-dj16 { width: 40px; top: 20%; left: 45%; }
 
         .status-box {
             margin: 15px 0;
@@ -84,6 +66,10 @@
             background: rgba(0,0,0,0.5);
             border-radius: 8px;
             border: 1px solid #2c3e50;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #status-texto { 
@@ -94,19 +80,18 @@
             font-size: 14px; 
         }
 
-        .camada-fio {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            display: none;
-            pointer-events: none;
+        /* Alerta de tentativa bloqueada */
+        .alerta-erro {
+            color: #ff4444 !important;
+            animation: tremer 0.3s;
         }
 
-        /* Efeito de energização suave em azul 70% */
-        .fio-aceso {
-            filter: drop-shadow(0 0 4px rgba(0, 170, 255, 0.7));
+        @keyframes tremer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
         }
     </style>
 </head>
@@ -115,57 +100,44 @@
     <h2>Laboratório de Comandos</h2>
     
     <div class="status-box">
-        <span id="status-texto">AGUARDANDO ENERGIZAÇÃO GERAL</span>
+        <span id="status-texto">FINALIZE A MONTAGEM DO CIRCUITO PRIMEIRO</span>
     </div>
 
     <div id="quadro">
         <img src="AMBIENTE.jpg" class="fundo">
 
-        <div id="alavanca-dg" class="area-clique" onclick="acionar('dg')"></div>
-        <div id="alavanca-dj16" class="area-clique" onclick="acionar('dj16')"></div>
-        <div id="alavanca-interrup" class="area-clique" onclick="acionar('interrup')"></div>
-
-        <div id="camadas-fios"></div>
+        <img id="img-dg" src="AL_DG_OFF.png" class="alavanca" onclick="tentarAcionar('Geral')">
+        <img id="img-dr" src="AL_DR_OFF.png" class="alavanca" onclick="tentarAcionar('DR')">
+        <img id="img-dj16" src="AL_DJ16_OFF.png" class="alavanca" onclick="tentarAcionar('Circuito')">
     </div>
 
     <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
-    <audio id="som-conexao" src="conexão.mp3" preload="auto"></audio>
 
     <script>
-        let ligado = { dg: false, dj16: false, interrup: false };
+        // Premissa: O circuito começa NÃO finalizado
+        let circuitoFinalizado = false; 
 
-        function acionar(comp) {
-            const sDisj = document.getElementById('som-disj');
-            
-            // Toca o som do clique
-            sDisj.currentTime = 0;
-            sDisj.play().catch(() => {});
-
-            // Alterna o estado lógico
-            ligado[comp] = !ligado[comp];
-
-            atualizarPainel();
-        }
-
-        function atualizarPainel() {
+        function tentarAcionar(nomeComponente) {
             const txt = document.getElementById('status-texto');
+            const som = document.getElementById('som-disj');
 
-            if (!ligado.dg) {
-                txt.innerText = "SISTEMA DESLIGADO - LIGUE O DISJUNTOR GERAL";
-                txt.style.color = "#ff4444";
-            } 
-            else if (ligado.dg && !ligado.dj16) {
-                txt.innerText = "GERAL LIGADO - LIGUE O DISJUNTOR DO CIRCUITO";
-                txt.style.color = "#ffcc00";
+            if (!circuitoFinalizado) {
+                // Toca som de erro ou apenas impede a ação
+                txt.innerText = "BLOQUEADO: FINALIZE A FIAÇÃO DO " + nomeComponente.toUpperCase();
+                txt.classList.add('alerta-erro');
+                
+                // Remove a cor de erro após 2 segundos
+                setTimeout(() => {
+                    txt.classList.remove('alerta-erro');
+                    txt.innerText = "FINALIZE A MONTAGEM DO CIRCUITO PRIMEIRO";
+                }, 2000);
+                
+                return;
             }
-            else if (ligado.dg && ligado.dj16 && !ligado.interrup) {
-                txt.innerText = "CIRCUITO PRONTO - ACIONE O INTERRUPTOR";
-                txt.style.color = "#00ffff";
-            }
-            else if (ligado.dg && ligado.dj16 && ligado.interrup) {
-                txt.innerText = "⚡ CIRCUITO EM FUNCIONAMENTO (LÂMPADA ACESA)";
-                txt.style.color = "#00ff00";
-            }
+
+            // Lógica de acionamento real (será ativada quando circuitoFinalizado = true)
+            som.play();
+            console.log(nomeComponente + " acionado!");
         }
     </script>
 </body>
