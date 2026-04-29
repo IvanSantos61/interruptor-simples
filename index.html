@@ -42,7 +42,7 @@
             pointer-events: none; 
         }
 
-        /* CONFIGURAÇÃO DAS ALAVANCAS (NOMES EXATOS DO GITHUB) */
+        /* CONFIGURAÇÃO DAS ALAVANCAS */
         .alavanca {
             position: absolute;
             z-index: 100;
@@ -51,7 +51,7 @@
             outline: 1px solid #00ff00;
         }
 
-        /* AJUSTE AS POSIÇÕES ABAIXO CONFORME O SEU FUNDO */
+        /* Ajuste as posições conforme sua imagem de fundo */
         #img-dg { width: 50px; top: 20%; left: 15%; }
         #img-dr { width: 50px; top: 20%; left: 35%; }
         #img-dj16 { width: 45px; top: 20%; left: 55%; }
@@ -81,18 +81,18 @@
     <h2>Laboratório Interativo</h2>
     
     <div class="status-box">
-        <span id="status-texto">POSICIONE AS ALAVANCAS SOBRE O QUADRO</span>
+        <span id="status-texto">AJUSTANDO POSICIONAMENTO</span>
     </div>
 
     <div id="quadro">
-        <img src="ambiente.jpg" class="fundo">
+        <img src="./ambiente.jpg" class="fundo">
 
-        <img id="img-dg" src="al_dg_off.png" class="alavanca" onclick="bloqueio()">
-        <img id="img-dr" src="al_dr_off.png" class="alavanca" onclick="bloqueio()">
-        <img id="img-dj16" src="al_dj16_off.png" class="alavanca" onclick="bloqueio()">
+        <img id="img-dg" src="./al_dg_off.png?v=2" class="alavanca" onclick="bloqueio()">
+        <img id="img-dr" src="./al_dr_off.png?v=2" class="alavanca" onclick="bloqueio()">
+        <img id="img-dj16" src="./al_dj16_off.png?v=2" class="alavanca" onclick="bloqueio()">
     </div>
 
-    <audio id="som-disj" src="disj.mp3" preload="auto"></audio>
+    <audio id="som-disj" src="./disj.mp3" preload="auto"></audio>
 
     <script>
         function bloqueio() {
@@ -101,7 +101,7 @@
             txt.style.color = "#ff4444";
             
             setTimeout(() => {
-                txt.innerText = "POSICIONE AS ALAVANCAS SOBRE O QUADRO";
+                txt.innerText = "AJUSTANDO POSICIONAMENTO";
                 txt.style.color = "#ffcc00";
             }, 2000);
         }
