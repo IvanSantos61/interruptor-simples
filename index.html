@@ -2,27 +2,29 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; }
+        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; padding-bottom: 40px; }
+        h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
+        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* POSIÇÃO CORRIGIDA BASEADA NA IMAGEM GRV.PNG */
+        /* POSIÇÃO EXATA CONFORME grv.png (Abaixo do QD, alinhado ao DR) */
         .btn-reset { 
             position: absolute; 
-            top: 65%;      /* Logo abaixo da moldura cinza */
-            left: 23%;     /* Alinhado na direção do DR, como indicado na seta */
-            transform: translateX(-50%); /* Centraliza o próprio botão no eixo do DR */
-            
-            padding: 2px 8px; 
-            background: rgba(255, 0, 0, 0.1); 
+            top: 64%;      /* Ajustado para a área azul logo abaixo da moldura cinza */
+            left: 35%;     /* Alinhado horizontalmente com a área indicada na grv.png */
+            transform: translateX(-50%); 
+            padding: 3px 12px; 
+            background: rgba(255, 68, 68, 0.15); 
             color: #ff4444; 
             border: 1px solid #ff4444; 
-            border-radius: 3px; 
+            border-radius: 4px; 
             cursor: pointer; 
-            font-size: 7px; 
+            font-size: 9px; 
             text-transform: uppercase; 
             font-weight: bold; 
             z-index: 200;
@@ -30,54 +32,157 @@
         }
         .btn-reset:active { background: #ff4444; color: #000; }
 
-        /* Coordenadas mantidas para não quebrar o simulador */
-        #img-dg { width: 28.5px; top: 25%; left: 11.2%; position: absolute; z-index: 100; }
-        #img-dr { width: 30px; top: 27.8%; left: 23%; position: absolute; z-index: 100; }
-        #img-dj16 { width: 20px; top: 26%; left: 32.2%; position: absolute; z-index: 100; }
-        #img-interruptor { width: 29px; top: 72.4%; left: 72%; position: absolute; z-index: 110; }
-        #img-lampada { width: 120px; top: 46.8%; left: 76%; position: absolute; z-index: 105; display: none; }
+        /* Coordenadas de Funcionamento */
+        #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
+        #img-dr { width: 30px; top: 27.8%; left: 23%; }
+        #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
+        #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
+        #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
-        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; }
-        .borne { position: absolute; width: 12px; height: 12px; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
-        
-        .status-box { margin: 10px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; }
-        #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; }
+        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
+        .borne { position: absolute; width: 15px; height: 15px; background: rgba(0, 255, 255, 0.1); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
+
+        #borne-dj16-saida { top: 37%; left: 34%; } 
+        #borne-inter-entrada { top: 81%; left: 68%; } 
+        #borne-inter-saida { top: 75%; left: 68%; }    
+        #borne-lampada-retorno { top: 56%; left: 89%; }
+        #borne-barramento-neutro { top: 33%; left: 44%; }
+        #borne-lampada-neutro { top: 56%; left: 92%; }
+
+        .status-box { margin: 10px 0 5px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
+        #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
+
+        footer { position: fixed; bottom: 5px; width: 100%; text-align: center; font-size: 7px; color: rgba(255, 255, 255, 0.3); }
     </style>
 </head>
 <body>
 
-    <div class="status-box">
+    <h2>Laboratório SMT Pro</h2>
+    
+    <div class="status-box" id="caixa-status">
         <span id="status-texto">CONECTE A FASE: DJ16 -> INTERRUPTOR</span>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         
-        <!-- BOTÃO NA POSIÇÃO DA SETA DA IMAGEM GRV.PNG -->
         <button class="btn-reset" onclick="reiniciarLaboratorio()">REINICIAR</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" onclick="alternarDG()">
-        <img id="img-dr" src="./al_dr_off.png" onclick="alternarDR()">
-        <img id="img-dj16" src="./al_dj16_off.png" onclick="alternarDJ16()">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
         
-        <img id="img-lampada" src="./lamp_on.png">
-        <img id="img-interruptor" src="./tec_int_off.png" onclick="alternarInterruptor()">
+        <img id="img-lampada" src="./lamp_on.png" class="lampada">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
-        <div id="borne-dj16-saida" class="borne" style="top: 37%; left: 34%;" onclick="cliqueBorne('dj16')"></div>
-        <!-- ... demais bornes ... -->
+        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
+        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
+        <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
+        <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
+        <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
+        <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
+    <footer>&copy; desenvolvido por ivan santos - conectaeadplus - 2026</footer>
+
+    <audio id="som-conexao" src="./conexão.mp3"></audio>
+    <audio id="som-disjuntor" src="./disj.mp3"></audio>
+    <audio id="som-interruptor" src="./int.mp3"></audio>
+
     <script>
+        let faseStatus = 'desconectado';
+        let retornoStatus = 'desconectado';
+        let neutroStatus = 'desconectado';
+        let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
+        
+        const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
+        const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
+        const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
+
         function reiniciarLaboratorio() {
-            // Lógica de reset
-            location.reload(); // Forma mais limpa de garantir o reset total
+            location.reload(); 
         }
 
-        // Funções de alternar componentes (DG, DR, DJ, INT) e bornes...
+        function animarFio(id, lista, index) {
+            const el = document.getElementById(id);
+            if (index === 0) el.style.display = 'block';
+            if (index < lista.length) {
+                const pasta = id.replace('fio-', '').toUpperCase();
+                el.src = `./${pasta}/${lista[index]}`;
+                setTimeout(() => animarFio(id, lista, index + 1), 80);
+            }
+        }
+
+        function cliqueBorne(local) {
+            const txt = document.getElementById('status-texto');
+            const som = document.getElementById('som-conexao');
+            
+            if (local === 'dj16' && faseStatus === 'desconectado') {
+                faseStatus = 'iniciado'; som.play();
+                txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
+            } else if (local === 'inter_in' && faseStatus === 'iniciado') {
+                faseStatus = 'concluido'; som.play();
+                animarFio('fio-fase', arquivosFase, 0);
+                txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+            } else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
+                retornoStatus = 'iniciado'; som.play();
+                txt.innerText = "RETORNO: SAÍDA CONECTADA. VÁ ATÉ A LÂMPADA.";
+            } else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
+                retornoStatus = 'concluido'; som.play();
+                animarFio('fio-retorno', arquivosRetorno, 0);
+                txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
+            } else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
+                neutroStatus = 'iniciado'; som.play();
+                txt.innerText = "NEUTRO: BARRAMENTO CONECTADO. VÁ ATÉ A LÂMPADA.";
+            } else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
+                neutroStatus = 'concluido'; som.play();
+                animarFio('fio-neutro', arquivosNeutro, 0);
+                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
+                txt.style.color = "#00ff00";
+            }
+        }
+
+        function alternarDG() {
+            if (neutroStatus !== 'concluido') return;
+            dgLigado = !dgLigado;
+            document.getElementById('som-disjuntor').play();
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            atualizarEstadoLampada();
+        }
+
+        function alternarDR() {
+            drLigado = !drLigado;
+            document.getElementById('som-disjuntor').play();
+            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
+        }
+
+        function alternarDJ16() {
+            if (!dgLigado) return;
+            djLigado = !djLigado;
+            document.getElementById('som-disjuntor').play();
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            atualizarEstadoLampada();
+        }
+
+        function alternarInterruptor() {
+            interLigado = !interLigado;
+            document.getElementById('som-interruptor').play();
+            document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
+            atualizarEstadoLampada();
+        }
+
+        function atualizarEstadoLampada() {
+            const lampada = document.getElementById('img-lampada');
+            if (dgLigado && djLigado && interLigado) {
+                lampada.style.display = "block";
+            } else {
+                lampada.style.display = "none";
+            }
+        }
     </script>
 </body>
 </html>
