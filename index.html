@@ -37,24 +37,46 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Estilo do Botão Reiniciar */
+        /* Estilo do NOVO Botão Reiniciar 3D */
         #btn-reiniciar {
             position: absolute;
-            top: 96%;
+            top: 94%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 5px 7px;
-            background-color: red;
-            border: 1px solid red;
+            
+            /* Design 3D */
+            background: linear-gradient(to bottom, #ff4b2b, #ff416c);
+            border: none;
+            border-bottom: 4px solid #b30000;
             color: white;
-            font-size: 7px;
+            padding: 6px 12px;
+            font-size: 10px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 50px; /* Formato pílula */
             z-index: 200;
-            text-transform: none;   
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            transition: all 0.1s ease;
+            text-transform: uppercase;
         }
-        #btn-reiniciar:hover { background-color: rgba(255, 0, 0, 0.5); }
+
+        #btn-reiniciar span {
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        #btn-reiniciar:hover {
+            background: linear-gradient(to bottom, #ff5f43, #ff4b7a);
+        }
+
+        #btn-reiniciar:active {
+            margin-top: 2px;
+            border-bottom: 1px solid #b30000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
     </style>
 </head>
 <body>
@@ -68,8 +90,10 @@
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         
-        <!-- Botão Reiniciar posicionado conforme grv.png -->
-        <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar Simulador</button>
+        <!-- Botão Reiniciar 3D com Seta -->
+        <button id="btn-reiniciar" onclick="reiniciarSimulador()">
+            <span>&#8635;</span> REINICIAR
+        </button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
@@ -109,7 +133,6 @@
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
         function reiniciarSimulador() {
-            // Reset de Variáveis
             faseStatus = 'desconectado';
             retornoStatus = 'desconectado';
             neutroStatus = 'desconectado';
@@ -118,18 +141,15 @@
             djLigado = false;
             interLigado = false;
 
-            // Reset de Textos
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
 
-            // Reset de Imagens (Fios e Lâmpada)
             document.getElementById('fio-fase').style.display = 'none';
             document.getElementById('fio-retorno').style.display = 'none';
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
 
-            // Reset de Disjuntores e Posições
             const dg = document.getElementById('img-dg');
             dg.src = "./al_dg_off.png";
             dg.style.top = "25%"; dg.style.left = "11.2%";
