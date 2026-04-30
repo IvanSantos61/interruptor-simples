@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; padding-bottom: 40px; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
@@ -36,6 +36,9 @@
             0% { background-color: rgba(255, 0, 0, 0.4); }
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
+
+        /* Estilo do Rodapé solicitado */
+        footer { position: fixed; bottom: 5px; width: 100%; text-align: center; font-size: 10px; color: rgba(255, 255, 255, 0.5); letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -66,6 +69,10 @@
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
+
+    <footer>
+        &copy; Desenvolvido por Ivan Santos - ConectaeadPlus - 2026
+    </footer>
 
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
@@ -192,12 +199,10 @@
             
             if (dgLigado) {
                 img.src = "./al_dg_on.png";
-                // --- AJUSTE FINO DG LIGADO ---
                 img.style.top = "25%";  
-                img.style.left = "10.9%";
+                img.style.left = "11.2%";
             } else {
                 img.src = "./al_dg_off.png";
-                // --- AJUSTE FINO DG DESLIGADO ---
                 img.style.top = "25%"; 
                 img.style.left = "11.2%";
             }
@@ -208,15 +213,12 @@
             playSomDisj();
             drLigado = !drLigado;
             const img = document.getElementById('img-dr');
-            
             if (drLigado) {
                 img.src = "./al_dr_on.png";
-                // --- AJUSTE FINO DR LIGADO ---
                 img.style.top = "24.8%";  
                 img.style.left = "23%";
             } else {
                 img.src = "./al_dr_off.png";
-                // --- AJUSTE FINO DR DESLIGADO ---
                 img.style.top = "27.8%"; 
                 img.style.left = "23%";
             }
@@ -229,7 +231,7 @@
             const img = document.getElementById('img-dj16');
             if (djLigado) {
                 img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "31.8%"; 
+                img.style.top = "25%"; img.style.left = "32%"; 
             } else {
                 img.src = "./al_dj16_off.png";
                 img.style.top = "26%"; img.style.left = "32.2%";
