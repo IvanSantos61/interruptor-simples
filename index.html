@@ -8,9 +8,10 @@
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; z-index: 10; }
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         
+        /* Elementos interativos */
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
@@ -22,6 +23,7 @@
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
         .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
 
+        /* Coordenadas dos Bornes */
         #borne-dj16-saida { top: 37%; left: 34%; } 
         #borne-inter-entrada { top: 81%; left: 68%; } 
         #borne-inter-saida { top: 75%; left: 68%; }    
@@ -32,25 +34,29 @@
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 
-        /* Botão Reiniciar - Compacto e não obstrutivo */
+        /* NOVO BOTÃO REINICIAR: Pequeno, sem negrito e 3D */
         #btn-reiniciar {
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 5px 10px;
+            padding: 4px 10px;
             background: linear-gradient(to bottom, #ff4b2b, #ff416c);
             border: none;
-            border-bottom: 2px solid #b30000;
+            border-bottom: 3px solid #b30000;
             color: white;
             font-size: 10px;
+            font-weight: normal; /* Sem negrito */
             cursor: pointer;
             border-radius: 20px;
             z-index: 200;
             text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        #btn-reiniciar:active { border-bottom: none; bottom: 8px; }
+        #btn-reiniciar:active {
+            border-bottom: none;
+            bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -64,18 +70,19 @@
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         
-        <!-- Elementos interativos -->
+        <!-- Fios -->
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
+        <!-- Disjuntores e Teclas -->
         <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
-        
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
+        <!-- Bornes de Conexão -->
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
@@ -83,14 +90,14 @@
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
 
-        <!-- Botão posicionado internamente ao quadro para não quebrar o layout -->
+        <!-- Botão Reiniciar -->
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">&#8635; Reiniciar</button>
     </div>
 
+    <!-- Áudios -->
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
-    <audio id="som-erro" src="./erro.mp3" preload="auto"></audio>
 
     <script>
         let faseStatus = 'desconectado';
@@ -106,33 +113,12 @@
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
         function reiniciarSimulador() {
-            faseStatus = 'desconectado';
-            retornoStatus = 'desconectado';
-            neutroStatus = 'desconectado';
-            dgLigado = false;
-            drLigado = false;
-            djLigado = false;
-            interLigado = false;
-
-            document.getElementById('status-texto').innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
-            document.getElementById('status-texto').style.color = "#ffcc00";
-
-            document.getElementById('fio-fase').style.display = 'none';
-            document.getElementById('fio-retorno').style.display = 'none';
-            document.getElementById('fio-neutro').style.display = 'none';
-            document.getElementById('img-lampada').style.display = 'none';
-
-            document.getElementById('img-dg').src = "./al_dg_off.png";
-            document.getElementById('img-dr').src = "./al_dr_off.png";
-            document.getElementById('img-dj16').src = "./al_dj16_off.png";
-            document.getElementById('img-interruptor').src = "./tec_int_off.png";
-            document.getElementById('img-interruptor').style.width = "29px";
+            location.reload(); // Forma mais segura de limpar todos os estados e fios
         }
 
         function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
-            
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; som.play();
                 txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
