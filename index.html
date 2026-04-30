@@ -11,7 +11,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas Iniciais do CSS */
+        /* Coordenadas Originais */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -37,7 +37,6 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Estilo do Botão Reiniciar - MODELO PÍLULA ALTERADO */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
@@ -51,7 +50,7 @@
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 50px; /* Formato pílula */
+            border-radius: 50px;
             z-index: 200;
             text-transform: uppercase;
             transition: all 0.1s;
@@ -61,6 +60,46 @@
             border-bottom: 1px solid #660000;
             transform: translate(-50%, -48%);
         }
+
+        /* ESTILO DOS BALÕES PEDAGÓGICOS */
+        .tooltip-balao {
+            position: absolute;
+            background: #fff;
+            color: #222;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 1.4;
+            width: 160px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 400;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: scale(0.8);
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .tooltip-balao::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid #fff;
+            bottom: -11px;
+            left: 20px;
+        }
+
+        .tooltip-balao small { display: block; margin-top: 5px; color: #d32f2f; font-size: 9px; }
+        .show-balao { opacity: 1 !important; transform: scale(1) !important; }
+
+        /* Posicionamento dos balões no quadro */
+        #fase-b1, #fase-b2 { bottom: 40%; left: 10%; }
+        #retorno-b1 { bottom: 30%; left: 55%; }
+        #neutro-b1 { top: 15%; left: 45%; }
     </style>
 </head>
 <body>
@@ -72,9 +111,13 @@
     </div>
 
     <div id="quadro">
+        <!-- Balões Pedagógicos NBR 5410 -->
+        <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
+        <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
+        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (é uma continuidade da fase)</div>
+        <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro (Item 6.1.5.3.1 da NBR-5410)</div>
+
         <img src="./ambiente.jpg" class="fundo">
-        
-        <!-- Botão Reiniciar 3D -->
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
@@ -102,59 +145,32 @@
     <audio id="som-erro" src="./erro.mp3" preload="auto"></audio>
 
     <script>
-        let faseStatus = 'desconectado';
-        let retornoStatus = 'desconectado';
-        let neutroStatus = 'desconectado';
-        let dgLigado = false;
-        let drLigado = false;
-        let djLigado = false;
-        let interLigado = false;
+        let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
+        let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        function reiniciarSimulador() {
-            faseStatus = 'desconectado';
-            retornoStatus = 'desconectado';
-            neutroStatus = 'desconectado';
-            dgLigado = false;
-            drLigado = false;
-            djLigado = false;
-            interLigado = false;
-
-            const txt = document.getElementById('status-texto');
-            txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
-            txt.style.color = "#ffcc00";
-
-            document.getElementById('fio-fase').style.display = 'none';
-            document.getElementById('fio-retorno').style.display = 'none';
-            document.getElementById('fio-neutro').style.display = 'none';
-            document.getElementById('img-lampada').style.display = 'none';
-
-            const dg = document.getElementById('img-dg');
-            dg.src = "./al_dg_off.png";
-            dg.style.top = "25%"; dg.style.left = "11.2%";
-
-            const dr = document.getElementById('img-dr');
-            dr.src = "./al_dr_off.png";
-            dr.style.top = "27.8%"; dr.style.left = "23%";
-
-            const dj16 = document.getElementById('img-dj16');
-            dj16.src = "./al_dj16_off.png";
-            dj16.style.top = "26%"; dj16.style.left = "32.2%";
-
-            const inter = document.getElementById('img-interruptor');
-            inter.src = "./tec_int_off.png";
-            inter.style.width = "29px"; inter.style.top = "72.4%"; inter.style.left = "72%";
+        function exibirSequenciaBaloes(ids, index = 0) {
+            if (index >= ids.length) return;
+            const balao = document.getElementById(ids[index]);
+            if (!balao) return;
+            balao.classList.add('show-balao');
+            setTimeout(() => {
+                balao.classList.remove('show-balao');
+                setTimeout(() => exibirSequenciaBaloes(ids, index + 1), 500);
+            }, 3000);
         }
+
+        function reiniciarSimulador() { location.reload(); }
 
         function dispararErro(mensagem) {
             const box = document.getElementById('caixa-status');
             const txt = document.getElementById('status-texto');
             const somErro = document.getElementById('som-erro');
             somErro.currentTime = 0; somErro.play();
-            txt.innerText = message; // Nota: Mantive exatamente como no seu código original
+            txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
             setTimeout(() => {
@@ -173,15 +189,8 @@
             }
         }
 
-        function playSomDisj() {
-            const som = document.getElementById('som-disjuntor');
-            som.currentTime = 0; som.play();
-        }
-
-        function playSomInter() {
-            const som = document.getElementById('som-interruptor');
-            som.currentTime = 0; som.play();
-        }
+        function playSomDisj() { const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play(); }
+        function playSomInter() { const som = document.getElementById('som-interruptor'); som.currentTime = 0; som.play(); }
 
         function atualizarEstadoLampada() {
             const imgLampada = document.getElementById('img-lampada');
@@ -220,6 +229,7 @@
                 faseStatus = 'concluido'; som.play();
                 animarFio('fio-fase', arquivosFase, 0);
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+                exibirSequenciaBaloes(['fase-b1', 'fase-b2']);
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
@@ -229,6 +239,7 @@
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0);
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
+                exibirSequenciaBaloes(['retorno-b1']);
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
@@ -239,28 +250,22 @@
                 animarFio('fio-neutro', arquivosNeutro, 0);
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
+                exibirSequenciaBaloes(['neutro-b1']);
             }
-            else {
-                dispararErro("SEQUÊNCIA INCORRETA!");
-            }
+            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
 
         function alternarDG() {
-            if (neutroStatus !== 'concluido') { 
-                dispararErro("TERMINE A FIAÇÃO!"); 
-                return; 
-            }
+            if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
             playSomDisj();
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
             if (dgLigado) {
                 img.src = "./al_dg_on.png";
-                img.style.top = "25%";  
-                img.style.left = "10.9%";
+                img.style.top = "25%"; img.style.left = "10.9%";
             } else {
                 img.src = "./al_dg_off.png";
-                img.style.top = "25%"; 
-                img.style.left = "11.2%";
+                img.style.top = "25%"; img.style.left = "11.2%";
             }
             atualizarEstadoLampada();
         }
@@ -271,12 +276,10 @@
             const img = document.getElementById('img-dr');
             if (drLigado) {
                 img.src = "./al_dr_on.png";
-                img.style.top = "24.8%";  
-                img.style.left = "23%";
+                img.style.top = "24.8%"; img.style.left = "23%";
             } else {
                 img.src = "./al_dr_off.png";
-                img.style.top = "27.8%"; 
-                img.style.left = "23%";
+                img.style.top = "27.8%"; img.style.left = "23%";
             }
         }
 
