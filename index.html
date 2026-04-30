@@ -11,6 +11,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
+        /* Posições Iniciais (Estado OFF) */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -89,12 +90,10 @@
             som.play();
         }
 
-        // NOVA FUNÇÃO: Gerencia o estado real da lâmpada baseado no circuito completo
         function atualizarEstadoLampada() {
             const imgLampada = document.getElementById('img-lampada');
             const txt = document.getElementById('status-texto');
 
-            // A lâmpada só acende se DG, DJ16 e Interruptor estiverem ligados SIMULTANEAMENTE
             if (dgLigado && djLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerText = "LUZ ACESA!";
@@ -157,7 +156,7 @@
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
             img.src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
-            atualizarEstadoLampada(); // Verifica se deve apagar a luz
+            atualizarEstadoLampada();
         }
 
         function alternarDR() {
@@ -172,14 +171,22 @@
             playSomDisj();
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
-            img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
-            atualizarEstadoLampada(); // Verifica se deve apagar a luz
+            
+            if (djLigado) {
+                img.src = "./al_dj16_on.png";
+                // --- FAÇA O SEU AJUSTE FINO LIGADO AQUI ---
+                img.style.top = "26%";   // Exemplo: "25.8%"
+                img.style.left = "32.2%"; // Exemplo: "32.1%"
+            } else {
+                img.src = "./al_dj16_off.png";
+                // --- VOLTA AO PADRÃO DESLIGADO DO CSS ---
+                img.style.top = "26%"; 
+                img.style.left = "32.2%";
+            }
+            atualizarEstadoLampada();
         }
 
         function alternarInterruptor() {
-            // Removi a trava do djLigado aqui para permitir clicar na tecla mesmo sem energia,
-            // refletindo o comportamento real de um interruptor físico.
-            
             playSomInter();
             interLigado = !interLigado;
             const imgTecla = document.getElementById('img-interruptor');
@@ -195,7 +202,7 @@
                 imgTecla.style.top = "72.4%";
                 imgTecla.style.left = "72%"; 
             }
-            atualizarEstadoLampada(); // Centraliza a decisão de acender/apagar
+            atualizarEstadoLampada();
         }
 
         function bloqueio() {
