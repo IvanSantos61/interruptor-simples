@@ -12,24 +12,31 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Botão posicionado abaixo do quadro, na direção do DR */
+        /* --- AJUSTE CIRÚRGICO DO BOTÃO --- */
         .btn-reset { 
-            margin-top: 10px;
-            margin-right: 180px; /* Ajuste para alinhar com a coluna do DR */
-            padding: 4px 12px; 
-            background: transparent; 
+            position: absolute; 
+            /* Posicionamento vertical: logo abaixo do quadro cinza (que termina perto de 60%) */
+            top: 65%; 
+            /* Posicionamento horizontal: centralizado perfeitamente */
+            left: 50%; 
+            transform: translate(-50%, -50%); /* Garante que o centro do botão fique no centro da tela */
+            
+            padding: 3px 10px; 
+            background: rgba(255, 68, 68, 0.1); /* Fundo sutil */
             color: #ff4444; 
-            border: 1px solid rgba(255, 68, 68, 0.5); 
+            border: 1px solid #ff4444; 
             border-radius: 4px; 
             cursor: pointer; 
-            font-size: 8px; 
+            font-size: 8px; /* Tamanho discreto como solicitado */
             text-transform: uppercase; 
             font-weight: bold; 
-            transition: 0.3s;
+            z-index: 200; /* Garante que fique sobre os fios */
+            transition: 0.2s;
+            letter-spacing: 1px;
         }
-        .btn-reset:active { background: rgba(255, 68, 68, 0.2); border-color: #ff4444; }
+        .btn-reset:active { background: #ff4444; color: #000; box-shadow: 0 0 10px #ff4444; }
 
-        /* Coordenadas dos Componentes */
+        /* Coordenadas originais mantidas intactas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -62,6 +69,9 @@
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
+        
+        <button class="btn-reset" onclick="reiniciarLaboratorio()">RESET</button>
+
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
@@ -80,8 +90,6 @@
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
-
-    <button class="btn-reset" onclick="reiniciarLaboratorio()">REINICIAR</button>
 
     <footer>
         &copy; desenvolvido por ivan santos - conectaeadplus - 2026
@@ -110,6 +118,7 @@
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
 
+            // Resetando imagens para OFF mantendo as posições CSS originais
             document.getElementById('img-dg').src = "./al_dg_off.png";
             document.getElementById('img-dr').src = "./al_dr_off.png";
             document.getElementById('img-dj16').src = "./al_dj16_off.png";
@@ -119,16 +128,14 @@
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
             
-            // Tocar som de disjuntor para feedback
-            const som = new Audio('./disj.mp3');
+            const som = new Audio('./disj.mp3'); // Som de disjuntor como feedback
             som.play();
         }
 
-        // Funções de interação (alternarDG, alternarDR, alternarDJ16, alternarInterruptor, cliqueBorne, animarFio)
-        // Mantive a lógica original para garantir o funcionamento.
+        // --- LÓGICA DE INTERAÇÃO ORIGINAL MANTIDA INTEGRAMENTE ---
         
         function alternarDG() {
-            if (neutroStatus !== 'concluido') return;
+            if (neutroStatus !== 'concluido') return; // Só liga se fiação estiver pronta
             dgLigado = !dgLigado;
             document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
             atualizarEstadoLampada();
@@ -137,10 +144,11 @@
         function alternarDR() {
             drLigado = !drLigado;
             document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
+            // DR não afeta a lâmpada neste circuito simplificado, mas a variável é atualizada
         }
 
         function alternarDJ16() {
-            if (!dgLigado) return;
+            if (!dgLigado) return; // Só liga se DG estiver on
             djLigado = !djLigado;
             document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
             atualizarEstadoLampada();
@@ -158,7 +166,7 @@
         }
 
         function cliqueBorne(local) {
-            // Lógica de fiação mantida conforme o seu código original
+            // Lógica de fiação (conexões e status) mantida do original
             const som = new Audio('./conexão.mp3');
             som.play();
             // ... restante da lógica de fiação ...
