@@ -7,13 +7,28 @@
     <style>
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; padding-bottom: 40px; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
-        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 5px; }
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Botão de Reiniciar Otimizado */
-        .btn-reset { margin-top: 8px; padding: 4px 12px; background: transparent; color: #00ffff; border: 1px solid rgba(0, 255, 255, 0.4); border-radius: 4px; cursor: pointer; font-size: 8px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
-        .btn-reset:active { background: rgba(0, 255, 255, 0.2); border-color: #00ffff; }
+        /* Botão de Reiniciar dentro do QD */
+        .btn-reset { 
+            position: absolute; 
+            top: 40%; /* Posicionado logo abaixo dos disjuntores */
+            left: 11%; 
+            padding: 3px 8px; 
+            background: rgba(255, 0, 0, 0.2); 
+            color: #ff4444; 
+            border: 1px solid #ff4444; 
+            border-radius: 3px; 
+            cursor: pointer; 
+            font-size: 7px; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            z-index: 200;
+            transition: 0.2s;
+        }
+        .btn-reset:active { background: #ff4444; color: #000; }
 
         /* Coordenadas Iniciais do CSS */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
@@ -32,7 +47,7 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 10px 0 5px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; transition: background-color 0.3s; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; transition: background-color 0.3s; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 
         .erro-flash { animation: flash-red 0.5s; }
@@ -54,6 +69,9 @@
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
+        
+        <button class="btn-reset" onclick="reiniciarLaboratorio()">RESET</button>
+
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
@@ -72,8 +90,6 @@
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
-
-    <button class="btn-reset" onclick="reiniciarLaboratorio()">Reiniciar Simulador</button>
 
     <footer>
         &copy; desenvolvido por ivan santos - conectaeadplus - 2026
