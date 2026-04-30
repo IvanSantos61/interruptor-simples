@@ -11,48 +11,44 @@
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         
-        /* Sistema de Flash Card (Estilo Recorte) */
-        #flash-card {
+        /* Estilo dos Balões de Texto (Tooltips) */
+        .tooltip-balao {
             position: absolute;
-            top: -150px; /* Escondido */
-            left: 5%;
-            width: 84%;
-            background: #fffbe6;
-            color: #333;
-            padding: 12px;
-            border-left: 5px solid #ffcc00;
-            border-radius: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-            z-index: 300;
-            transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 11px;
-            line-height: 1.4;
+            background: rgba(255, 255, 255, 0.95);
+            color: #222;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1.2;
+            width: 140px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 400;
+            opacity: 0;
+            transition: opacity 0.4s;
             pointer-events: none;
+            border: 1px solid #00ffff;
         }
 
-        #flash-card.show { top: 15px; }
-
-        #card-titulo {
-            display: block;
-            color: #b35900;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 12px;
+        .tooltip-balao::after {
+            content: "";
+            position: absolute;
+            border-style: solid;
         }
 
-        .norma-ref {
-            display: block;
-            margin-top: 6px;
-            font-weight: bold;
-            color: #555;
-            font-style: italic;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding-top: 4px;
-        }
+        /* Posicionamento dos Balões */
+        #balao-fase { top: 60%; left: 45%; } /* Próximo ao interruptor */
+        #balao-fase::after { top: 50%; right: 100%; margin-top: -5px; border-width: 5px; border-color: transparent rgba(255, 255, 255, 0.95) transparent transparent; }
+
+        #balao-retorno { top: 40%; left: 60%; } /* Entre interruptor e lâmpada */
+        #balao-retorno::after { top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent; }
+
+        #balao-neutro { top: 25%; left: 55%; } /* Próximo ao barramento */
+        #balao-neutro::after { bottom: 100%; left: 20%; border-width: 5px; border-color: transparent transparent rgba(255, 255, 255, 0.95) transparent; }
+
+        .show-balao { opacity: 1 !important; }
 
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
-        
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -96,10 +92,7 @@
         }
 
         .erro-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red {
-            0% { background-color: rgba(255, 0, 0, 0.4); }
-            100% { background-color: rgba(0, 0, 0, 0.8); }
-        }
+        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(0, 0, 0, 0.8); } }
     </style>
 </head>
 <body>
@@ -111,12 +104,10 @@
     </div>
 
     <div id="quadro">
-        <!-- Elemento Flash Card -->
-        <div id="flash-card">
-            <span id="card-titulo">Dica Técnica</span>
-            <span id="card-texto"></span>
-            <span class="norma-ref" id="card-norma"></span>
-        </div>
+        <!-- Balões de Texto -->
+        <div id="balao-fase" class="tooltip-balao">💡 O interruptor deve sempre seccionar a FASE (NBR 5410, 6.2.11).</div>
+        <div id="balao-retorno" class="tooltip-balao">⚡ O Retorno leva a fase para a lâmpada apenas quando acionado.</div>
+        <div id="balao-neutro" class="tooltip-balao">🔵 O Neutro deve ser azul-claro (NBR 5410, 6.1.5.2.1).</div>
 
         <img src="./ambiente.jpg" class="fundo">
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
@@ -149,30 +140,22 @@
         let faseStatus = 'desconectado';
         let retornoStatus = 'desconectado';
         let neutroStatus = 'desconectado';
-        let dgLigado = false;
-        let drLigado = false;
-        let djLigado = false;
-        let interLigado = false;
+        let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        function exibirCard(titulo, texto, norma) {
-            const card = document.getElementById('flash-card');
-            document.getElementById('card-titulo').innerText = titulo;
-            document.getElementById('card-texto').innerText = texto;
-            document.getElementById('card-norma').innerText = norma;
-            card.classList.add('show');
-            setTimeout(() => card.classList.remove('show'), 6500);
+        function exibirBalao(id) {
+            const balao = document.getElementById(id);
+            balao.classList.add('show-balao');
+            setTimeout(() => balao.classList.remove('show-balao'), 5000);
         }
 
         function reiniciarSimulador() {
-            faseStatus = 'desconectado';
-            retornoStatus = 'desconectado';
-            neutroStatus = 'desconectado';
+            faseStatus = 'desconectado'; retornoStatus = 'desconectado'; neutroStatus = 'desconectado';
             dgLigado = false; drLigado = false; djLigado = false; interLigado = false;
-            document.getElementById('flash-card').classList.remove('show');
+            document.querySelectorAll('.tooltip-balao').forEach(b => b.classList.remove('show-balao'));
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
@@ -198,7 +181,7 @@
                 faseStatus = 'concluido'; som.play();
                 animarFio('fio-fase', arquivosFase, 0);
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
-                exibirCard("Seccionamento da Fase", "O interruptor deve sempre interromper a FASE. Isso garante que não haja tensão no bocal da lâmpada com a luz apagada.", "NBR 5410 - Item 6.2.11.1.1");
+                exibirBalao('balao-fase');
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
@@ -208,7 +191,7 @@
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0);
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
-                exibirCard("Condutor de Retorno", "O retorno é uma fase seccionada. Utilizar cores diferentes da fase principal facilita a identificação em manutenções.", "Prática Recomendada NBR 5410");
+                exibirBalao('balao-retorno');
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
@@ -219,7 +202,7 @@
                 animarFio('fio-neutro', arquivosNeutro, 0);
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-                exibirCard("Padrão do Neutro", "O condutor azul-claro é de uso exclusivo para o Neutro. Jamais utilize esta cor para fase ou retorno.", "NBR 5410 - Item 6.1.5.2.1");
+                exibirBalao('balao-neutro');
             }
             else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
@@ -230,8 +213,7 @@
             const somErro = document.getElementById('som-erro');
             somErro.currentTime = 0; somErro.play();
             const original = txt.innerText;
-            txt.innerText = msg;
-            txt.style.color = "#ff4444";
+            txt.innerText = msg; txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
             setTimeout(() => {
                 box.classList.remove('erro-flash');
