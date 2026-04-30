@@ -11,15 +11,10 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Seus ajustes das Alavancas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
-
-        /* SEU AJUSTE MANUAL - MANTIDO EM 75% */
         #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
-
-        /* AJUSTE DA LÂMPADA - AGORA INVISÍVEL POR PADRÃO */
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
@@ -94,6 +89,25 @@
             som.play();
         }
 
+        // NOVA FUNÇÃO: Gerencia o estado real da lâmpada baseado no circuito completo
+        function atualizarEstadoLampada() {
+            const imgLampada = document.getElementById('img-lampada');
+            const txt = document.getElementById('status-texto');
+
+            // A lâmpada só acende se DG, DJ16 e Interruptor estiverem ligados SIMULTANEAMENTE
+            if (dgLigado && djLigado && interLigado) {
+                imgLampada.style.display = "block";
+                txt.innerText = "LUZ ACESA!";
+                txt.style.color = "#00ff00";
+            } else {
+                imgLampada.style.display = "none";
+                if (neutroStatus === 'concluido') {
+                    txt.innerText = "LUZ APAGADA.";
+                    txt.style.color = "#ffffff";
+                }
+            }
+        }
+
         function animarFio(id, lista, index) {
             const el = document.getElementById(id);
             if (index === 0) el.style.display = 'block';
@@ -143,6 +157,7 @@
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
             img.src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            atualizarEstadoLampada(); // Verifica se deve apagar a luz
         }
 
         function alternarDR() {
@@ -158,36 +173,29 @@
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
             img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            atualizarEstadoLampada(); // Verifica se deve apagar a luz
         }
 
         function alternarInterruptor() {
-            if (!djLigado) return;
+            // Removi a trava do djLigado aqui para permitir clicar na tecla mesmo sem energia,
+            // refletindo o comportamento real de um interruptor físico.
             
-            playSomInter(); // SOM DO INTERRUPTOR ADICIONADO AQUI
+            playSomInter();
             interLigado = !interLigado;
             const imgTecla = document.getElementById('img-interruptor');
-            const imgLampada = document.getElementById('img-lampada');
-            const txt = document.getElementById('status-texto');
             
             if (interLigado) {
                 imgTecla.src = "./tec_int_on.png";
                 imgTecla.style.width = "35px";
                 imgTecla.style.top = "72.4%";
                 imgTecla.style.left = "70.3%"; 
-                
-                imgLampada.style.display = "block";
-                txt.innerText = "LUZ ACESA!";
-                txt.style.color = "#00ff00";
             } else {
                 imgTecla.src = "./tec_int_off.png";
                 imgTecla.style.width = "29px";
                 imgTecla.style.top = "72.4%";
                 imgTecla.style.left = "72%"; 
-                
-                imgLampada.style.display = "none";
-                txt.innerText = "LUZ APAGADA.";
-                txt.style.color = "#ffffff";
             }
+            atualizarEstadoLampada(); // Centraliza a decisão de acender/apagar
         }
 
         function bloqueio() {
