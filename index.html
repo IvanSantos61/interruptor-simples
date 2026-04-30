@@ -37,24 +37,31 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Estilo do Botão Reiniciar */
+        /* Estilo do Botão Reiniciar - EFEITO 3D DISCRETO */
         #btn-reiniciar {
             position: absolute;
-            top: 96%;
+            top: 95%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 5px 7px;
-            background-color: red;
-            border: 1px solid red;
+            padding: 4px 10px;
+            background: linear-gradient(to bottom, #e60000, #990000);
+            border: none;
+            border-bottom: 3px solid #660000; /* Sombra que dá o efeito 3D */
             color: white;
-            font-size: 7px;
+            font-size: 9px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
             z-index: 200;
-            text-transform: none;   
+            text-transform: uppercase;
+            transition: all 0.1s;
         }
-        #btn-reiniciar:hover { background-color: rgba(255, 0, 0, 0.5); }
+        
+        /* Efeito de clique: o botão afunda */
+        #btn-reiniciar:active {
+            border-bottom: 1px solid #660000;
+            transform: translate(-50%, -48%);
+        }
     </style>
 </head>
 <body>
@@ -68,8 +75,8 @@
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         
-        <!-- Botão Reiniciar posicionado conforme grv.png -->
-        <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar Simulador</button>
+        <!-- Botão Reiniciar 3D -->
+        <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
@@ -109,7 +116,6 @@
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
         function reiniciarSimulador() {
-            // Reset de Variáveis
             faseStatus = 'desconectado';
             retornoStatus = 'desconectado';
             neutroStatus = 'desconectado';
@@ -118,18 +124,15 @@
             djLigado = false;
             interLigado = false;
 
-            // Reset de Textos
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
 
-            // Reset de Imagens (Fios e Lâmpada)
             document.getElementById('fio-fase').style.display = 'none';
             document.getElementById('fio-retorno').style.display = 'none';
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
 
-            // Reset de Disjuntores e Posições
             const dg = document.getElementById('img-dg');
             dg.src = "./al_dg_off.png";
             dg.style.top = "25%"; dg.style.left = "11.2%";
@@ -251,7 +254,6 @@
             playSomDisj();
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
-            
             if (dgLigado) {
                 img.src = "./al_dg_on.png";
                 img.style.top = "25%";  
@@ -268,7 +270,6 @@
             playSomDisj();
             drLigado = !drLigado;
             const img = document.getElementById('img-dr');
-            
             if (drLigado) {
                 img.src = "./al_dr_on.png";
                 img.style.top = "24.8%";  
