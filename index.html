@@ -37,27 +37,26 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Estilo do Botão Reiniciar - EFEITO 3D DISCRETO */
+        /* Estilo do Botão Reiniciar - MODELO PÍLULA ALTERADO */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 4px 10px;
+            padding: 4px 18px;
             background: linear-gradient(to bottom, #e60000, #990000);
             border: none;
-            border-bottom: 3px solid #660000; /* Sombra que dá o efeito 3D */
+            border-bottom: 3px solid #660000;
             color: white;
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 50px; /* Formato pílula */
             z-index: 200;
             text-transform: uppercase;
             transition: all 0.1s;
         }
         
-        /* Efeito de clique: o botão afunda */
         #btn-reiniciar:active {
             border-bottom: 1px solid #660000;
             transform: translate(-50%, -48%);
@@ -155,7 +154,7 @@
             const txt = document.getElementById('status-texto');
             const somErro = document.getElementById('som-erro');
             somErro.currentTime = 0; somErro.play();
-            txt.innerText = mensagem;
+            txt.innerText = message; // Nota: Mantive exatamente como no seu código original
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
             setTimeout(() => {
