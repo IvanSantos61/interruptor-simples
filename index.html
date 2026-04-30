@@ -31,7 +31,6 @@
             text-align: center;
         }
 
-        /* Pontinha do balão */
         .tooltip-balao::after {
             content: '';
             position: absolute;
@@ -44,13 +43,7 @@
             left: 20px;
         }
 
-        .tooltip-balao small {
-            display: block;
-            margin-top: 5px;
-            color: #d32f2f;
-            font-size: 9px;
-        }
-
+        .tooltip-balao small { display: block; margin-top: 5px; color: #d32f2f; font-size: 9px; }
         .show-balao { opacity: 1 !important; transform: scale(1) !important; }
 
         /* Posicionamento dos balões */
@@ -58,7 +51,6 @@
         #retorno-b1 { bottom: 30%; left: 55%; }
         #neutro-b1 { top: 15%; left: 45%; }
 
-        /* Elementos do Simulador */
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
@@ -79,7 +71,6 @@
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 
-        /* BOTÃO REINICIAR ORIGINAL */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
@@ -111,24 +102,10 @@
     </div>
 
     <div id="quadro">
-        <!-- BALÕES PEDAGÓGICOS -->
-        <div id="fase-b1" class="tooltip-balao">
-            A Fase pode ser de qualquer cor.<br>
-            <small>Item 6.1.5.3.4</small>
-        </div>
-        <div id="fase-b2" class="tooltip-balao">
-            O interruptor deve seccionar o condutor vivo.<br>
-            <small>Item 6.3.7.2.1 da NBR-5410</small>
-        </div>
-
-        <div id="retorno-b1" class="tooltip-balao">
-            O retorno, também, pode ser de qualquer cor (é uma continuidade da fase).
-        </div>
-
-        <div id="neutro-b1" class="tooltip-balao">
-            O neutro deve ser de cor azul claro.<br>
-            <small>Item 6.1.5.3.1 da NBR-5410</small>
-        </div>
+        <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>Item 6.1.5.3.4</small></div>
+        <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo.<br><small>Item 6.3.7.2.1 da NBR-5410</small></div>
+        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (é uma continuidade da fase).</div>
+        <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro.<br><small>Item 6.1.5.3.1 da NBR-5410</small></div>
 
         <img src="./ambiente.jpg" class="fundo">
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
@@ -172,7 +149,7 @@
             setTimeout(() => {
                 balao.classList.remove('show-balao');
                 setTimeout(() => exibirSequenciaBaloes(ids, index + 1), 500);
-            }, 3000); // 3 segundos conforme solicitado
+            }, 3000);
         }
 
         function cliqueBorne(local) {
@@ -182,34 +159,29 @@
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; som.play();
                 txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
-            } 
-            else if (local === 'inter_in' && faseStatus === 'iniciado') {
+            } else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
                 animarFio('fio-fase', arquivosFase, 0);
                 txt.innerText = "FASE OK! CONECTE O RETORNO.";
                 exibirSequenciaBaloes(['fase-b1', 'fase-b2']);
-            } 
-            else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
+            } else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
                 txt.innerText = "RETORNO: SAÍDA CONECTADA. VÁ À LÂMPADA.";
-            }
-            else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
+            } else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0);
                 txt.innerText = "RETORNO OK! CONECTE O NEUTRO.";
                 exibirSequenciaBaloes(['retorno-b1']);
-            }
-            else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
+            } else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
                 txt.innerText = "NEUTRO: BARRAMENTO CONECTADO. VÁ À LÂMPADA.";
-            }
-            else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
+            } else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
                 animarFio('fio-neutro', arquivosNeutro, 0);
-                txt.innerText = "FIAÇÃO PRONTA! LIGUE OS DISJUNTORES.";
+                txt.innerText = "FIAÇÃO PRONTA! LIGUE O GERAL (DG).";
+                txt.style.color = "#00ff00";
                 exibirSequenciaBaloes(['neutro-b1']);
-            }
-            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
+            } else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
 
         function reiniciarSimulador() { location.reload(); }
@@ -221,13 +193,24 @@
             const original = txt.innerText;
             txt.innerText = msg; txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
-            setTimeout(() => { box.classList.remove('erro-flash'); txt.innerText = original; txt.style.color = "#ffcc00"; }, 800);
+            setTimeout(() => { box.classList.remove('erro-flash'); txt.innerText = original; txt.style.color = (neutroStatus === 'concluido') ? "#00ff00" : "#ffcc00"; }, 800);
         }
 
-        function alternarDG() { playSomDisj(); dgLigado = !dgLigado; document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; atualizarLampada(); }
+        function alternarDG() { 
+            if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
+            playSomDisj(); dgLigado = !dgLigado; 
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; 
+            atualizarLampada(); 
+        }
         function alternarDR() { playSomDisj(); drLigado = !drLigado; document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; }
-        function alternarDJ16() { playSomDisj(); djLigado = !djLigado; document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; atualizarLampada(); }
+        function alternarDJ16() { 
+            if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
+            playSomDisj(); djLigado = !djLigado; 
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; 
+            atualizarLampada(); 
+        }
         function alternarInterruptor() { playSomInter(); interLigado = !interLigado; document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; atualizarLampada(); }
+        
         function atualizarLampada() { document.getElementById('img-lampada').style.display = (dgLigado && djLigado && interLigado) ? "block" : "none"; }
         function animarFio(id, lista, index) { const el = document.getElementById(id); el.style.display = 'block'; if (index < lista.length) { el.src = `./${id.replace('fio-', '').toUpperCase()}/${lista[index]}`; setTimeout(() => animarFio(id, lista, index + 1), 80); } }
         function playSomDisj() { document.getElementById('som-disjuntor').currentTime = 0; document.getElementById('som-disjuntor').play(); }
