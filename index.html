@@ -1,60 +1,176 @@
-<!-- BANNER CENTRALIZADO ATUALIZADO -->
-<div id="overlay-inicio">
-    <h1>Interruptor Simples</h1>
-    <span>MONTAGEM 127V (FASE + NEUTRO)</span>
-    <p>© 2026 - Desenvolvido por Ivan Santos - ConectaeadPLUs</p>
-</div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMT Pro - Laboratório</title>
+    <style>
+        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
+        
+        /* --- BANNER ORIGINAL RESTAURADO --- */
+        #overlay-inicio {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000; /* Fundo preto sólido original */
+            border: 2px solid #00ffff;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            width: 80%;
+            max-width: 400px;
+            pointer-events: none;
+            animation: entradaSaida 4.5s ease-in-out forwards;
+        }
 
-<style>
-    #overlay-inicio {
-        position: absolute;
-        top: 20%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* Fundo azul escuro com 65% de transparência */
-        background: rgba(11, 14, 20, 0.65); 
-        border: 2px solid #00ffff;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        z-index: 1000;
-        width: 80%;
-        max-width: 400px;
-        pointer-events: none;
-        box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-        animation: entradaSaida 4.5s ease-in-out forwards;
-    }
+        #overlay-inicio h1 { margin: 0; font-size: 22px; color: #00ffff; text-transform: uppercase; }
+        #overlay-inicio span { font-size: 14px; color: #fff; display: block; margin-top: 8px; font-weight: bold; }
+        
+        /* Créditos simples e pequenos */
+        #overlay-inicio p { 
+            margin: 12px 0 0 0; 
+            font-size: 9px; 
+            color: #aaa; 
+            border-top: 1px solid #333; 
+            padding-top: 8px; 
+        }
 
-    #overlay-inicio h1 {
-        margin: 0;
-        font-size: 24px;
-        color: #00ffff;
-        text-transform: uppercase;
-    }
+        @keyframes entradaSaida {
+            0% { transform: translate(-50%, -30%); opacity: 0; }
+            15% { transform: translate(-50%, -50%); opacity: 1; }
+            85% { transform: translate(-50%, -50%); opacity: 1; }
+            100% { transform: translate(-50%, -150%); opacity: 0; visibility: hidden; }
+        }
 
-    #overlay-inicio span {
-        font-size: 14px;
-        color: #ffffff;
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-    }
+        /* --- QUADRO E COMPONENTES --- */
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
+        .fundo { width: 100%; display: block; pointer-events: none; }
+        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
+        
+        #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
+        #img-dr { width: 30px; top: 27.8%; left: 23%; }
+        #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
+        #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
+        #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
-    /* Créditos com fonte reduzida */
-    #overlay-inicio p {
-        margin: 15px 0 0 0;
-        font-size: 9px; /* Fonte diminuída conforme solicitado */
-        color: rgba(255, 255, 255, 0.8);
-        font-family: monospace;
-        border-top: 1px solid rgba(0, 255, 255, 0.3);
-        padding-top: 10px;
-        letter-spacing: 0.5px;
-    }
+        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; }
+        .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
 
-    @keyframes entradaSaida {
-        0% { transform: translate(-50%, -30%); opacity: 0; }
-        15% { transform: translate(-50%, -50%); opacity: 1; }
-        85% { transform: translate(-50%, -50%); opacity: 1; }
-        100% { transform: translate(-50%, -150%); opacity: 0; visibility: hidden; }
-    }
-</style>
+        #borne-dj16-saida { top: 37%; left: 34%; } 
+        #borne-inter-entrada { top: 81%; left: 68%; } 
+        #borne-inter-saida { top: 75%; left: 68%; }    
+        #borne-lampada-retorno { top: 56%; left: 89%; }
+        #borne-barramento-neutro { top: 33%; left: 44%; }
+        #borne-lampada-neutro { top: 56%; left: 92%; }
+
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
+        #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+
+        #btn-reiniciar {
+            position: absolute;
+            top: 95%; left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 4px 18px;
+            background: linear-gradient(to bottom, #e60000, #990000);
+            border: none; color: white; font-size: 9px; font-weight: bold;
+            cursor: pointer; border-radius: 50px; z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay-inicio">
+        <h1>Interruptor Simples</h1>
+        <span>MONTAGEM 127V (FASE + NEUTRO)</span>
+        <p>© 2026 - Desenvolvido por Ivan Santos - ConectaeadPLUs</p>
+    </div>
+
+    <h2>Laboratório SMT Pro</h2>
+    
+    <div class="status-box">
+        <span id="status-texto">CONECTE A FASE: DJ16 -> INTERRUPTOR</span>
+    </div>
+
+    <div id="quadro">
+        <img src="./ambiente.jpg" class="fundo">
+        <button id="btn-reiniciar" onclick="location.reload()">Reiniciar</button>
+
+        <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
+        <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
+        <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
+
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
+        <img id="img-lampada" src="./lamp_on.png" class="lampada">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
+
+        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
+        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
+        <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
+        <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
+        <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
+        <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
+    </div>
+
+    <script>
+        let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
+        let dgLigado = false, djLigado = false, interLigado = false;
+
+        function cliqueBorne(local) {
+            const txt = document.getElementById('status-texto');
+            if (local === 'dj16' && faseStatus === 'desconectado') {
+                faseStatus = 'iniciado';
+                txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
+            } else if (local === 'inter_in' && faseStatus === 'iniciado') {
+                faseStatus = 'concluido';
+                document.getElementById('fio-fase').style.display = 'block';
+                txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+            } else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
+                retornoStatus = 'iniciado';
+                txt.innerText = "RETORNO: SAÍDA CONECTADA. VÁ ATÉ A LÂMPADA.";
+            } else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
+                retornoStatus = 'concluido';
+                document.getElementById('fio-retorno').style.display = 'block';
+                txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
+            } else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
+                neutroStatus = 'iniciado';
+                txt.innerText = "NEUTRO: BARRAMENTO CONECTADO. VÁ ATÉ A LÂMPADA.";
+            } else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
+                neutroStatus = 'concluido';
+                document.getElementById('fio-neutro').style.display = 'block';
+                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
+                txt.style.color = "#00ff00";
+            }
+        }
+
+        function alternarDG() {
+            if (neutroStatus !== 'concluido') return;
+            dgLigado = !dgLigado;
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            atualizarLampada();
+        }
+
+        function alternarDJ16() {
+            if (!dgLigado) return;
+            djLigado = !djLigado;
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            atualizarLampada();
+        }
+
+        function alternarInterruptor() {
+            interLigado = !interLigado;
+            document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
+            atualizarLampada();
+        }
+
+        function atualizarLampada() {
+            const lamp = document.getElementById('img-lampada');
+            lamp.style.display = (dgLigado && djLigado && interLigado) ? "block" : "none";
+        }
+    </script>
+</body>
+</html>
