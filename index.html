@@ -11,7 +11,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas do CSS */
+        /* COORDENADAS ORIGINAIS RESTAURADAS */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -37,7 +37,7 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Botão Reiniciar - ARREDONDADO E 3D */
+        /* BOTÃO ARREDONDADO 3D */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
@@ -51,17 +51,15 @@
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 20px; /* Estilo arredondado pílula */
+            border-radius: 20px;
             z-index: 200;
             text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             transition: all 0.1s;
         }
         
         #btn-reiniciar:active {
             border-bottom: 1px solid #b30000;
             transform: translate(-50%, -48%);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
     </style>
 </head>
@@ -75,7 +73,6 @@
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
-        
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
@@ -103,7 +100,6 @@
     <audio id="som-erro" src="./erro.mp3" preload="auto"></audio>
 
     <script>
-        // Mantida toda a sua lógica funcional intacta
         let faseStatus = 'desconectado';
         let retornoStatus = 'desconectado';
         let neutroStatus = 'desconectado';
@@ -121,18 +117,28 @@
             retornoStatus = 'desconectado';
             neutroStatus = 'desconectado';
             dgLigado = false; drLigado = false; djLigado = false; interLigado = false;
+            
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
+
             document.getElementById('fio-fase').style.display = 'none';
             document.getElementById('fio-retorno').style.display = 'none';
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
-            document.getElementById('img-dg').src = "./al_dg_off.png";
-            document.getElementById('img-dr').src = "./al_dr_off.png";
-            document.getElementById('img-dj16').src = "./al_dj16_off.png";
+
+            // Reset de Posições Manuais
+            const dg = document.getElementById('img-dg');
+            dg.src = "./al_dg_off.png"; dg.style.top = "25%"; dg.style.left = "11.2%";
+
+            const dr = document.getElementById('img-dr');
+            dr.src = "./al_dr_off.png"; dr.style.top = "27.8%"; dr.style.left = "23%";
+
+            const dj16 = document.getElementById('img-dj16');
+            dj16.src = "./al_dj16_off.png"; dj16.style.top = "26%"; dj16.style.left = "32.2%";
+
             const inter = document.getElementById('img-interruptor');
-            inter.src = "./tec_int_off.png"; inter.style.width = "29px";
+            inter.src = "./tec_int_off.png"; inter.style.width = "29px"; inter.style.top = "72.4%"; inter.style.left = "72%";
         }
 
         function dispararErro(mensagem) {
@@ -220,21 +226,36 @@
             if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
             document.getElementById('som-disjuntor').play();
             dgLigado = !dgLigado;
-            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            const img = document.getElementById('img-dg');
+            if (dgLigado) {
+                img.src = "./al_dg_on.png"; img.style.top = "25%"; img.style.left = "10.9%";
+            } else {
+                img.src = "./al_dg_off.png"; img.style.top = "25%"; img.style.left = "11.2%";
+            }
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
             document.getElementById('som-disjuntor').play();
             drLigado = !drLigado;
-            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
+            const img = document.getElementById('img-dr');
+            if (drLigado) {
+                img.src = "./al_dr_on.png"; img.style.top = "24.8%"; img.style.left = "23%";
+            } else {
+                img.src = "./al_dr_off.png"; img.style.top = "27.8%"; img.style.left = "23%";
+            }
         }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
             document.getElementById('som-disjuntor').play();
             djLigado = !djLigado;
-            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            const img = document.getElementById('img-dj16');
+            if (djLigado) {
+                img.src = "./al_dj16_on.png"; img.style.top = "25%"; img.style.left = "31.8%";
+            } else {
+                img.src = "./al_dj16_off.png"; img.style.top = "26%"; img.style.left = "32.2%";
+            }
             atualizarEstadoLampada();
         }
 
@@ -242,8 +263,11 @@
             document.getElementById('som-interruptor').play();
             interLigado = !interLigado;
             const img = document.getElementById('img-interruptor');
-            img.src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
-            img.style.width = interLigado ? "35px" : "29px";
+            if (interLigado) {
+                img.src = "./tec_int_on.png"; img.style.width = "35px"; img.style.top = "72.4%"; img.style.left = "70.3%";
+            } else {
+                img.src = "./tec_int_off.png"; img.style.width = "29px"; img.style.top = "72.4%"; img.style.left = "72%";
+            }
             atualizarEstadoLampada();
         }
     </script>
