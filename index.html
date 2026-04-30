@@ -7,11 +7,52 @@
     <style>
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
+        
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
+        
+        /* Sistema de Flash Card (Estilo Recorte) */
+        #flash-card {
+            position: absolute;
+            top: -150px; /* Escondido */
+            left: 5%;
+            width: 84%;
+            background: #fffbe6;
+            color: #333;
+            padding: 12px;
+            border-left: 5px solid #ffcc00;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            z-index: 300;
+            transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 11px;
+            line-height: 1.4;
+            pointer-events: none;
+        }
+
+        #flash-card.show { top: 15px; }
+
+        #card-titulo {
+            display: block;
+            color: #b35900;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .norma-ref {
+            display: block;
+            margin-top: 6px;
+            font-weight: bold;
+            color: #555;
+            font-style: italic;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 4px;
+        }
+
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas Iniciais do CSS */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -28,16 +69,9 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; transition: background-color 0.3s; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 
-        .erro-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red {
-            0% { background-color: rgba(255, 0, 0, 0.4); }
-            100% { background-color: rgba(0, 0, 0, 0.8); }
-        }
-
-        /* Estilo do Botão Reiniciar - MODELO PÍLULA ALTERADO */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
@@ -51,15 +85,20 @@
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 50px; /* Formato pílula */
+            border-radius: 50px;
             z-index: 200;
             text-transform: uppercase;
-            transition: all 0.1s;
         }
         
         #btn-reiniciar:active {
             border-bottom: 1px solid #660000;
             transform: translate(-50%, -48%);
+        }
+
+        .erro-flash { animation: flash-red 0.5s; }
+        @keyframes flash-red {
+            0% { background-color: rgba(255, 0, 0, 0.4); }
+            100% { background-color: rgba(0, 0, 0, 0.8); }
         }
     </style>
 </head>
@@ -72,9 +111,14 @@
     </div>
 
     <div id="quadro">
+        <!-- Elemento Flash Card -->
+        <div id="flash-card">
+            <span id="card-titulo">Dica Técnica</span>
+            <span id="card-texto"></span>
+            <span class="norma-ref" id="card-norma"></span>
+        </div>
+
         <img src="./ambiente.jpg" class="fundo">
-        
-        <!-- Botão Reiniciar 3D -->
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
@@ -114,104 +158,38 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
+        function exibirCard(titulo, texto, norma) {
+            const card = document.getElementById('flash-card');
+            document.getElementById('card-titulo').innerText = titulo;
+            document.getElementById('card-texto').innerText = texto;
+            document.getElementById('card-norma').innerText = norma;
+            card.classList.add('show');
+            setTimeout(() => card.classList.remove('show'), 6500);
+        }
+
         function reiniciarSimulador() {
             faseStatus = 'desconectado';
             retornoStatus = 'desconectado';
             neutroStatus = 'desconectado';
-            dgLigado = false;
-            drLigado = false;
-            djLigado = false;
-            interLigado = false;
-
+            dgLigado = false; drLigado = false; djLigado = false; interLigado = false;
+            document.getElementById('flash-card').classList.remove('show');
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
-
             document.getElementById('fio-fase').style.display = 'none';
             document.getElementById('fio-retorno').style.display = 'none';
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
-
-            const dg = document.getElementById('img-dg');
-            dg.src = "./al_dg_off.png";
-            dg.style.top = "25%"; dg.style.left = "11.2%";
-
-            const dr = document.getElementById('img-dr');
-            dr.src = "./al_dr_off.png";
-            dr.style.top = "27.8%"; dr.style.left = "23%";
-
-            const dj16 = document.getElementById('img-dj16');
-            dj16.src = "./al_dj16_off.png";
-            dj16.style.top = "26%"; dj16.style.left = "32.2%";
-
-            const inter = document.getElementById('img-interruptor');
-            inter.src = "./tec_int_off.png";
-            inter.style.width = "29px"; inter.style.top = "72.4%"; inter.style.left = "72%";
-        }
-
-        function dispararErro(mensagem) {
-            const box = document.getElementById('caixa-status');
-            const txt = document.getElementById('status-texto');
-            const somErro = document.getElementById('som-erro');
-            somErro.currentTime = 0; somErro.play();
-            txt.innerText = message; // Nota: Mantive exatamente como no seu código original
-            txt.style.color = "#ff4444";
-            box.classList.add('erro-flash');
-            setTimeout(() => {
-                box.classList.remove('erro-flash');
-                restaurarTextoStatus();
-            }, 800);
-        }
-
-        function restaurarTextoStatus() {
-            const txt = document.getElementById('status-texto');
-            if (neutroStatus === 'concluido') {
-                txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
-                txt.style.color = "#00ff00";
-            } else {
-                txt.style.color = "#ffcc00";
-            }
-        }
-
-        function playSomDisj() {
-            const som = document.getElementById('som-disjuntor');
-            som.currentTime = 0; som.play();
-        }
-
-        function playSomInter() {
-            const som = document.getElementById('som-interruptor');
-            som.currentTime = 0; som.play();
-        }
-
-        function atualizarEstadoLampada() {
-            const imgLampada = document.getElementById('img-lampada');
-            const txt = document.getElementById('status-texto');
-            if (dgLigado && djLigado && interLigado) {
-                imgLampada.style.display = "block";
-                txt.innerText = "LUZ ACESA!";
-                txt.style.color = "#00ff00";
-            } else {
-                imgLampada.style.display = "none";
-                if (neutroStatus === 'concluido') {
-                    txt.innerText = "LUZ APAGADA.";
-                    txt.style.color = "#ffffff";
-                }
-            }
-        }
-
-        function animarFio(id, lista, index) {
-            const el = document.getElementById(id);
-            if (index === 0) el.style.display = 'block';
-            if (index < lista.length) {
-                const pasta = id.replace('fio-', '').toUpperCase();
-                el.src = `./${pasta}/${lista[index]}`;
-                setTimeout(() => animarFio(id, lista, index + 1), 80);
-            }
+            document.getElementById('img-dg').src = "./al_dg_off.png";
+            document.getElementById('img-dr').src = "./al_dr_off.png";
+            document.getElementById('img-dj16').src = "./al_dj16_off.png";
+            document.getElementById('img-interruptor').src = "./tec_int_off.png";
         }
 
         function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
+            
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; som.play();
                 txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
@@ -220,6 +198,7 @@
                 faseStatus = 'concluido'; som.play();
                 animarFio('fio-fase', arquivosFase, 0);
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+                exibirCard("Seccionamento da Fase", "O interruptor deve sempre interromper a FASE. Isso garante que não haja tensão no bocal da lâmpada com a luz apagada.", "NBR 5410 - Item 6.2.11.1.1");
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
@@ -229,6 +208,7 @@
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0);
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
+                exibirCard("Condutor de Retorno", "O retorno é uma fase seccionada. Utilizar cores diferentes da fase principal facilita a identificação em manutenções.", "Prática Recomendada NBR 5410");
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
@@ -239,75 +219,79 @@
                 animarFio('fio-neutro', arquivosNeutro, 0);
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
+                exibirCard("Padrão do Neutro", "O condutor azul-claro é de uso exclusivo para o Neutro. Jamais utilize esta cor para fase ou retorno.", "NBR 5410 - Item 6.1.5.2.1");
             }
-            else {
-                dispararErro("SEQUÊNCIA INCORRETA!");
-            }
+            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
+        }
+
+        function dispararErro(msg) {
+            const box = document.getElementById('caixa-status');
+            const txt = document.getElementById('status-texto');
+            const somErro = document.getElementById('som-erro');
+            somErro.currentTime = 0; somErro.play();
+            const original = txt.innerText;
+            txt.innerText = msg;
+            txt.style.color = "#ff4444";
+            box.classList.add('erro-flash');
+            setTimeout(() => {
+                box.classList.remove('erro-flash');
+                txt.innerText = original;
+                txt.style.color = (neutroStatus === 'concluido') ? "#00ff00" : "#ffcc00";
+            }, 800);
         }
 
         function alternarDG() {
-            if (neutroStatus !== 'concluido') { 
-                dispararErro("TERMINE A FIAÇÃO!"); 
-                return; 
-            }
-            playSomDisj();
-            dgLigado = !dgLigado;
+            if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
+            playSomDisj(); dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
-            if (dgLigado) {
-                img.src = "./al_dg_on.png";
-                img.style.top = "25%";  
-                img.style.left = "10.9%";
-            } else {
-                img.src = "./al_dg_off.png";
-                img.style.top = "25%"; 
-                img.style.left = "11.2%";
-            }
+            img.src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            img.style.left = dgLigado ? "10.9%" : "11.2%";
             atualizarEstadoLampada();
         }
 
-        function alternarDR() {
-            playSomDisj();
-            drLigado = !drLigado;
-            const img = document.getElementById('img-dr');
-            if (drLigado) {
-                img.src = "./al_dr_on.png";
-                img.style.top = "24.8%";  
-                img.style.left = "23%";
-            } else {
-                img.src = "./al_dr_off.png";
-                img.style.top = "27.8%"; 
-                img.style.left = "23%";
-            }
-        }
+        function alternarDR() { playSomDisj(); drLigado = !drLigado; document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
-            playSomDisj();
-            djLigado = !djLigado;
+            playSomDisj(); djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
-            if (djLigado) {
-                img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "31.8%"; 
-            } else {
-                img.src = "./al_dj16_off.png";
-                img.style.top = "26%"; img.style.left = "32.2%";
-            }
+            img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            img.style.left = djLigado ? "31.8%" : "32.2%";
             atualizarEstadoLampada();
         }
 
         function alternarInterruptor() {
-            playSomInter();
-            interLigado = !interLigado;
-            const imgTecla = document.getElementById('img-interruptor');
-            if (interLigado) {
-                imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "35px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "70.3%"; 
-            } else {
-                imgTecla.src = "./tec_int_off.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
-            }
+            playSomInter(); interLigado = !interLigado;
+            const img = document.getElementById('img-interruptor');
+            img.src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
+            img.style.width = interLigado ? "35px" : "29px";
+            img.style.left = interLigado ? "70.3%" : "72%";
             atualizarEstadoLampada();
         }
+
+        function atualizarEstadoLampada() {
+            const lamp = document.getElementById('img-lampada');
+            const txt = document.getElementById('status-texto');
+            if (dgLigado && djLigado && interLigado) {
+                lamp.style.display = "block";
+                txt.innerText = "LUZ ACESA!"; txt.style.color = "#00ff00";
+            } else {
+                lamp.style.display = "none";
+                if (neutroStatus === 'concluido') { txt.innerText = "LUZ APAGADA."; txt.style.color = "#ffffff"; }
+            }
+        }
+
+        function animarFio(id, lista, index) {
+            const el = document.getElementById(id);
+            if (index === 0) el.style.display = 'block';
+            if (index < lista.length) {
+                el.src = `./${id.replace('fio-', '').toUpperCase()}/${lista[index]}`;
+                setTimeout(() => animarFio(id, lista, index + 1), 80);
+            }
+        }
+
+        function playSomDisj() { const s = document.getElementById('som-disjuntor'); s.currentTime = 0; s.play(); }
+        function playSomInter() { const s = document.getElementById('som-interruptor'); s.currentTime = 0; s.play(); }
     </script>
 </body>
 </html>
