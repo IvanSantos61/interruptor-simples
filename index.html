@@ -11,7 +11,6 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas Mantidas */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -47,7 +46,6 @@
             transition: all 0.1s;
         }
 
-        /* BALÕES EXTRA PEQUENOS */
         .tooltip-balao {
             position: absolute;
             background: #fff;
@@ -81,7 +79,7 @@
         .tooltip-balao small { display: block; margin-top: 2px; color: #d32f2f; font-size: 7px; }
         .show-balao { opacity: 1 !important; transform: scale(1) !important; }
 
-        /* Ajustes finos de posição para as setas apontarem corretamente */
+        /* Suas coordenadas manuais preservadas */
         #fase-b1 { top: 62%; left: 39%; transform: translateX(-50%); } 
         #fase-b2 { top: 41%; left: 61%; } 
         #retorno-b1 { top: 23%; left: 63%; } 
@@ -137,15 +135,14 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        function exibirSequenciaBaloes(ids, index = 0) {
-            if (index >= ids.length) return;
-            const balao = document.getElementById(ids[index]);
-            if (!balao) return;
-            balao.classList.add('show-balao');
-            setTimeout(() => {
-                balao.classList.remove('show-balao');
-                setTimeout(() => exibirSequenciaBaloes(ids, index + 1), 500);
-            }, 3000);
+        function exibirBaloes(ids) {
+            ids.forEach(id => {
+                const balao = document.getElementById(id);
+                if (balao) {
+                    balao.classList.add('show-balao');
+                    setTimeout(() => balao.classList.remove('show-balao'), 4000);
+                }
+            });
         }
 
         function reiniciarSimulador() { location.reload(); }
@@ -193,28 +190,32 @@
             }
         }
 
-        function animarFio(id, lista, index) {
+        function animarFio(id, lista, index, callback) {
             const el = document.getElementById(id);
             if (index === 0) el.style.display = 'block';
             if (index < lista.length) {
                 const pasta = id.replace('fio-', '').toUpperCase();
                 el.src = `./${pasta}/${lista[index]}`;
-                setTimeout(() => animarFio(id, lista, index + 1), 80);
+                setTimeout(() => animarFio(id, lista, index + 1, callback), 80);
+            } else if (callback) {
+                callback();
             }
         }
 
         function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
+            
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; som.play();
                 txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
-                animarFio('fio-fase', arquivosFase, 0);
+                animarFio('fio-fase', arquivosFase, 0, () => {
+                    exibirBaloes(['fase-b1', 'fase-b2']);
+                });
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
-                exibirSequenciaBaloes(['fase-b1', 'fase-b2']);
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
@@ -222,9 +223,10 @@
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
-                animarFio('fio-retorno', arquivosRetorno, 0);
+                animarFio('fio-retorno', arquivosRetorno, 0, () => {
+                    exibirBaloes(['retorno-b1']);
+                });
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
-                exibirSequenciaBaloes(['retorno-b1']);
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
@@ -232,10 +234,11 @@
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
-                animarFio('fio-neutro', arquivosNeutro, 0);
+                animarFio('fio-neutro', arquivosNeutro, 0, () => {
+                    exibirBaloes(['neutro-b1']);
+                });
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-                exibirSequenciaBaloes(['neutro-b1']);
             }
             else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
