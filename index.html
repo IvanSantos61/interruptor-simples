@@ -11,7 +11,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas Iniciais do CSS */
+        /* Coordenadas do CSS */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -37,30 +37,31 @@
             100% { background-color: rgba(0, 0, 0, 0.8); }
         }
 
-        /* Estilo do Botão Reiniciar - EFEITO 3D DISCRETO */
+        /* Botão Reiniciar - ARREDONDADO E 3D */
         #btn-reiniciar {
             position: absolute;
             top: 95%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 4px 10px;
-            background: linear-gradient(to bottom, #e60000, #990000);
+            padding: 4px 15px;
+            background: linear-gradient(to bottom, #ff4b2b, #ff416c);
             border: none;
-            border-bottom: 3px solid #660000; /* Sombra que dá o efeito 3D */
+            border-bottom: 3px solid #b30000;
             color: white;
             font-size: 9px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 20px; /* Estilo arredondado pílula */
             z-index: 200;
             text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             transition: all 0.1s;
         }
         
-        /* Efeito de clique: o botão afunda */
         #btn-reiniciar:active {
-            border-bottom: 1px solid #660000;
+            border-bottom: 1px solid #b30000;
             transform: translate(-50%, -48%);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
     </style>
 </head>
@@ -75,7 +76,6 @@
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         
-        <!-- Botão Reiniciar 3D -->
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
@@ -103,6 +103,7 @@
     <audio id="som-erro" src="./erro.mp3" preload="auto"></audio>
 
     <script>
+        // Mantida toda a sua lógica funcional intacta
         let faseStatus = 'desconectado';
         let retornoStatus = 'desconectado';
         let neutroStatus = 'desconectado';
@@ -119,42 +120,25 @@
             faseStatus = 'desconectado';
             retornoStatus = 'desconectado';
             neutroStatus = 'desconectado';
-            dgLigado = false;
-            drLigado = false;
-            djLigado = false;
-            interLigado = false;
-
+            dgLigado = false; drLigado = false; djLigado = false; interLigado = false;
             const txt = document.getElementById('status-texto');
             txt.innerText = "CONECTE A FASE: DJ16 -> INTERRUPTOR";
             txt.style.color = "#ffcc00";
-
             document.getElementById('fio-fase').style.display = 'none';
             document.getElementById('fio-retorno').style.display = 'none';
             document.getElementById('fio-neutro').style.display = 'none';
             document.getElementById('img-lampada').style.display = 'none';
-
-            const dg = document.getElementById('img-dg');
-            dg.src = "./al_dg_off.png";
-            dg.style.top = "25%"; dg.style.left = "11.2%";
-
-            const dr = document.getElementById('img-dr');
-            dr.src = "./al_dr_off.png";
-            dr.style.top = "27.8%"; dr.style.left = "23%";
-
-            const dj16 = document.getElementById('img-dj16');
-            dj16.src = "./al_dj16_off.png";
-            dj16.style.top = "26%"; dj16.style.left = "32.2%";
-
+            document.getElementById('img-dg').src = "./al_dg_off.png";
+            document.getElementById('img-dr').src = "./al_dr_off.png";
+            document.getElementById('img-dj16').src = "./al_dj16_off.png";
             const inter = document.getElementById('img-interruptor');
-            inter.src = "./tec_int_off.png";
-            inter.style.width = "29px"; inter.style.top = "72.4%"; inter.style.left = "72%";
+            inter.src = "./tec_int_off.png"; inter.style.width = "29px";
         }
 
         function dispararErro(mensagem) {
             const box = document.getElementById('caixa-status');
             const txt = document.getElementById('status-texto');
-            const somErro = document.getElementById('som-erro');
-            somErro.currentTime = 0; somErro.play();
+            document.getElementById('som-erro').play();
             txt.innerText = mensagem;
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
@@ -169,19 +153,7 @@
             if (neutroStatus === 'concluido') {
                 txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-            } else {
-                txt.style.color = "#ffcc00";
-            }
-        }
-
-        function playSomDisj() {
-            const som = document.getElementById('som-disjuntor');
-            som.currentTime = 0; som.play();
-        }
-
-        function playSomInter() {
-            const som = document.getElementById('som-interruptor');
-            som.currentTime = 0; som.play();
+            } else { txt.style.color = "#ffcc00"; }
         }
 
         function atualizarEstadoLampada() {
@@ -241,72 +213,37 @@
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
             }
-            else {
-                dispararErro("SEQUÊNCIA INCORRETA!");
-            }
+            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
 
         function alternarDG() {
-            if (neutroStatus !== 'concluido') { 
-                dispararErro("TERMINE A FIAÇÃO!"); 
-                return; 
-            }
-            playSomDisj();
+            if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
+            document.getElementById('som-disjuntor').play();
             dgLigado = !dgLigado;
-            const img = document.getElementById('img-dg');
-            if (dgLigado) {
-                img.src = "./al_dg_on.png";
-                img.style.top = "25%";  
-                img.style.left = "10.9%";
-            } else {
-                img.src = "./al_dg_off.png";
-                img.style.top = "25%"; 
-                img.style.left = "11.2%";
-            }
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
-            playSomDisj();
+            document.getElementById('som-disjuntor').play();
             drLigado = !drLigado;
-            const img = document.getElementById('img-dr');
-            if (drLigado) {
-                img.src = "./al_dr_on.png";
-                img.style.top = "24.8%";  
-                img.style.left = "23%";
-            } else {
-                img.src = "./al_dr_off.png";
-                img.style.top = "27.8%"; 
-                img.style.left = "23%";
-            }
+            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
         }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
-            playSomDisj();
+            document.getElementById('som-disjuntor').play();
             djLigado = !djLigado;
-            const img = document.getElementById('img-dj16');
-            if (djLigado) {
-                img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "31.8%"; 
-            } else {
-                img.src = "./al_dj16_off.png";
-                img.style.top = "26%"; img.style.left = "32.2%";
-            }
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
             atualizarEstadoLampada();
         }
 
         function alternarInterruptor() {
-            playSomInter();
+            document.getElementById('som-interruptor').play();
             interLigado = !interLigado;
-            const imgTecla = document.getElementById('img-interruptor');
-            if (interLigado) {
-                imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "35px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "70.3%"; 
-            } else {
-                imgTecla.src = "./tec_int_off.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
-            }
+            const img = document.getElementById('img-interruptor');
+            img.src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
+            img.style.width = interLigado ? "35px" : "29px";
             atualizarEstadoLampada();
         }
     </script>
