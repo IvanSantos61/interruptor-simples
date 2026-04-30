@@ -67,6 +67,7 @@
 
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
+    <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
 
     <script>
         let faseStatus = 'desconectado';
@@ -81,10 +82,15 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        // Função para tocar o som do disjuntor
         function playSomDisj() {
             const som = document.getElementById('som-disjuntor');
-            som.currentTime = 0; // Reinicia para permitir cliques rápidos
+            som.currentTime = 0;
+            som.play();
+        }
+
+        function playSomInter() {
+            const som = document.getElementById('som-interruptor');
+            som.currentTime = 0;
             som.play();
         }
 
@@ -133,14 +139,14 @@
 
         function alternarDG() {
             if (neutroStatus !== 'concluido') { bloqueio(); return; }
-            playSomDisj(); // SOM AQUI
+            playSomDisj();
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
             img.src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
         }
 
         function alternarDR() {
-            playSomDisj(); // SOM AQUI
+            playSomDisj();
             drLigado = !drLigado;
             const img = document.getElementById('img-dr');
             img.src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
@@ -148,7 +154,7 @@
 
         function alternarDJ16() {
             if (!dgLigado) return;
-            playSomDisj(); // SOM AQUI
+            playSomDisj();
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
             img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
@@ -157,6 +163,7 @@
         function alternarInterruptor() {
             if (!djLigado) return;
             
+            playSomInter(); // SOM DO INTERRUPTOR ADICIONADO AQUI
             interLigado = !interLigado;
             const imgTecla = document.getElementById('img-interruptor');
             const imgLampada = document.getElementById('img-lampada');
