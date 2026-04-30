@@ -8,54 +8,56 @@
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- BANNER LATERAL AMPLIADO COM CRÉDITOS --- */
+        /* --- RESTAURAÇÃO DO BANNER CENTRALIZADO COM CRÉDITOS --- */
         #overlay-inicio {
             position: absolute;
-            top: 80px; 
-            left: 0;
-            background: linear-gradient(90deg, rgba(0, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-left: 6px solid #00ffff;
-            padding: 25px 60px 25px 25px;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
             z-index: 1000;
+            width: 80%;
+            max-width: 400px;
             pointer-events: none;
-            /* Tempo aumentado para 4.5s para permitir a leitura dos créditos */
-            animation: slideLateral 4.5s ease-in-out forwards;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            /* Animação original de subir */
+            animation: entradaSaida 4.5s ease-in-out forwards;
         }
 
         #overlay-inicio h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 24px;
             color: #00ffff;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
         }
 
         #overlay-inicio span {
-            font-size: 13px;
+            font-size: 14px;
             color: #ffffff;
             display: block;
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: bold;
-            letter-spacing: 1px;
-            opacity: 0.9;
         }
 
+        /* Texto dos créditos */
         #overlay-inicio p {
-            margin: 12px 0 0 0;
-            font-size: 10px;
-            color: rgba(255,255,255,0.7);
+            margin: 15px 0 0 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
             font-family: monospace;
-            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            padding-top: 10px;
         }
 
-        @keyframes slideLateral {
-            0% { transform: translateX(-100%); opacity: 0; }
-            12% { transform: translateX(0); opacity: 1; }
-            88% { transform: translateX(0); opacity: 1; }
-            100% { transform: translateX(-100%); opacity: 0; visibility: hidden; }
+        @keyframes entradaSaida {
+            0% { transform: translate(-50%, -30%); opacity: 0; }
+            15% { transform: translate(-50%, -50%); opacity: 1; }
+            85% { transform: translate(-50%, -50%); opacity: 1; }
+            100% { transform: translate(-50%, -150%); opacity: 0; visibility: hidden; }
         }
         /* -------------------------------------------------- */
 
@@ -139,7 +141,7 @@
 </head>
 <body>
 
-    <!-- BANNER COM ASSINATURA -->
+    <!-- BANNER CENTRALIZADO COM CRÉDITOS -->
     <div id="overlay-inicio">
         <h1>Interruptor Simples</h1>
         <span>MONTAGEM 127V (FASE + NEUTRO)</span>
