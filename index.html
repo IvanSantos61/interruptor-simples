@@ -17,7 +17,7 @@
             background: #fff;
             color: #222;
             padding: 12px;
-            border-radius: 15px; /* Bordas arredondadas de balão */
+            border-radius: 15px;
             font-size: 11px;
             font-weight: bold;
             line-height: 1.4;
@@ -31,7 +31,7 @@
             text-align: center;
         }
 
-        /* A pontinha do balão */
+        /* Pontinha do balão */
         .tooltip-balao::after {
             content: '';
             position: absolute;
@@ -47,16 +47,16 @@
         .tooltip-balao small {
             display: block;
             margin-top: 5px;
-            color: #d32f2f; /* Vermelho para destacar a norma */
+            color: #d32f2f;
             font-size: 9px;
         }
 
         .show-balao { opacity: 1 !important; transform: scale(1) !important; }
 
-        /* Posicionamento estratégico dos balões */
-        #fase-b1, #fase-b2 { bottom: 40%; left: 10%; } /* Próximo ao conduíte da fase */
-        #retorno-b1 { bottom: 30%; left: 55%; } /* Próximo ao retorno */
-        #neutro-b1 { top: 15%; left: 45%; } /* Próximo ao barramento de neutro */
+        /* Posicionamento dos balões */
+        #fase-b1, #fase-b2 { bottom: 40%; left: 10%; }
+        #retorno-b1 { bottom: 30%; left: 55%; }
+        #neutro-b1 { top: 15%; left: 45%; }
 
         /* Elementos do Simulador */
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -76,28 +76,48 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: #000; border: 1px solid #00ffff; border-radius: 8px; }
-        #status-texto { color: #00ffff; font-weight: bold; font-size: 13px; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; }
+        #status-texto { color: #ffcc00; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 
-        #btn-reiniciar { position: absolute; top: 92%; left: 50%; transform: translateX(-50%); padding: 5px 15px; background: #ff0000; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; z-index: 500; }
+        /* BOTÃO REINICIAR ORIGINAL */
+        #btn-reiniciar {
+            position: absolute;
+            top: 95%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 4px 18px;
+            background: linear-gradient(to bottom, #e60000, #990000);
+            border: none;
+            border-bottom: 3px solid #660000;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50px;
+            z-index: 200;
+            text-transform: uppercase;
+        }
+
+        .erro-flash { animation: flash-red 0.5s; }
+        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(0, 0, 0, 0.8); } }
     </style>
 </head>
 <body>
 
     <h2>Laboratório SMT Pro</h2>
     
-    <div class="status-box">
+    <div class="status-box" id="caixa-status">
         <span id="status-texto">CONECTE A FASE: DJ16 -> INTERRUPTOR</span>
     </div>
 
     <div id="quadro">
-        <!-- OS BALÕES DE FALA -->
+        <!-- BALÕES PEDAGÓGICOS -->
         <div id="fase-b1" class="tooltip-balao">
-            A Fase pode ser de qualquer cor.
+            A Fase pode ser de qualquer cor.<br>
             <small>Item 6.1.5.3.4</small>
         </div>
         <div id="fase-b2" class="tooltip-balao">
-            O interruptor deve seccionar o condutor vivo.
+            O interruptor deve seccionar o condutor vivo.<br>
             <small>Item 6.3.7.2.1 da NBR-5410</small>
         </div>
 
@@ -106,7 +126,7 @@
         </div>
 
         <div id="neutro-b1" class="tooltip-balao">
-            O neutro deve ser de cor azul claro.
+            O neutro deve ser de cor azul claro.<br>
             <small>Item 6.1.5.3.1 da NBR-5410</small>
         </div>
 
@@ -117,14 +137,12 @@
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <!-- Componentes -->
         <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
-        <!-- Bornes Invisíveis de Clique -->
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
@@ -150,15 +168,11 @@
             if (index >= ids.length) return;
             const balao = document.getElementById(ids[index]);
             if (!balao) return;
-            
             balao.classList.add('show-balao');
-            
             setTimeout(() => {
                 balao.classList.remove('show-balao');
-                setTimeout(() => {
-                    exibirSequenciaBaloes(ids, index + 1);
-                }, 500); // Meio segundo de pausa entre um balão e outro
-            }, 3000); // 3 segundos de exibição como combinado
+                setTimeout(() => exibirSequenciaBaloes(ids, index + 1), 500);
+            }, 3000); // 3 segundos conforme solicitado
         }
 
         function cliqueBorne(local) {
@@ -195,15 +209,29 @@
                 txt.innerText = "FIAÇÃO PRONTA! LIGUE OS DISJUNTORES.";
                 exibirSequenciaBaloes(['neutro-b1']);
             }
+            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
         }
 
         function reiniciarSimulador() { location.reload(); }
-        function alternarDG() { dgLigado = !dgLigado; document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; atualizarLampada(); }
-        function alternarDR() { drLigado = !drLigado; document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; }
-        function alternarDJ16() { djLigado = !djLigado; document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; atualizarLampada(); }
-        function alternarInterruptor() { interLigado = !interLigado; document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; atualizarLampada(); }
+
+        function dispararErro(msg) {
+            const box = document.getElementById('caixa-status');
+            const txt = document.getElementById('status-texto');
+            document.getElementById('som-erro').play();
+            const original = txt.innerText;
+            txt.innerText = msg; txt.style.color = "#ff4444";
+            box.classList.add('erro-flash');
+            setTimeout(() => { box.classList.remove('erro-flash'); txt.innerText = original; txt.style.color = "#ffcc00"; }, 800);
+        }
+
+        function alternarDG() { playSomDisj(); dgLigado = !dgLigado; document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; atualizarLampada(); }
+        function alternarDR() { playSomDisj(); drLigado = !drLigado; document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; }
+        function alternarDJ16() { playSomDisj(); djLigado = !djLigado; document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; atualizarLampada(); }
+        function alternarInterruptor() { playSomInter(); interLigado = !interLigado; document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; atualizarLampada(); }
         function atualizarLampada() { document.getElementById('img-lampada').style.display = (dgLigado && djLigado && interLigado) ? "block" : "none"; }
         function animarFio(id, lista, index) { const el = document.getElementById(id); el.style.display = 'block'; if (index < lista.length) { el.src = `./${id.replace('fio-', '').toUpperCase()}/${lista[index]}`; setTimeout(() => animarFio(id, lista, index + 1), 80); } }
+        function playSomDisj() { document.getElementById('som-disjuntor').currentTime = 0; document.getElementById('som-disjuntor').play(); }
+        function playSomInter() { document.getElementById('som-interruptor').currentTime = 0; document.getElementById('som-interruptor').play(); }
     </script>
 </body>
 </html>
