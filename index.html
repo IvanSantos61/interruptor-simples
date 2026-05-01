@@ -48,16 +48,34 @@
             opacity: 0.9;
         }
 
-        /* AJUSTE: REMOÇÃO DO NEGRITO NOS CRÉDITOS */
         .creditos-inicio {
             font-size: 7px !important; 
             margin-top: 20px !important; 
             opacity: 0.7 !important;
             letter-spacing: 1px;
-            font-weight: normal !important; /* Remove o negrito */
+            font-weight: normal !important;
         }
 
-        /* ANIMAÇÃO */
+        /* --- TELA DE CONCLUÍDO (NOVO) --- */
+        #tela-concluido {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 255, 0, 0.9);
+            color: black;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 10px 10px 0 0;
+            z-index: 500;
+            transition: bottom 0.5s ease-out;
+            box-shadow: 0 -5px 20px rgba(0, 255, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid #000;
+        }
+        .mostrar-concluido { bottom: 0 !important; }
+
         @keyframes entradaSaidaZoom {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); filter: blur(15px); }
             12% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
@@ -134,6 +152,9 @@
             <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
         </div>
 
+        <!-- Tela de Concluído -->
+        <div id="tela-concluido">CONCLUÍDO !!!!!</div>
+
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
@@ -192,7 +213,7 @@
             const somErro = document.getElementById('som-erro');
             
             somErro.currentTime = 0; somErro.play();
-            const textoOriginal = txt.innerText; // SALVA O TEXTO ATUAL
+            const textoOriginal = txt.innerText; 
             
             txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
@@ -200,15 +221,15 @@
             
             setTimeout(() => {
                 box.classList.remove('erro-flash');
-                txt.innerText = textoOriginal; // RETORNA PARA O TEXTO SALVO
-                restaurarTextoStatus(); // CHAMA A RESTAURAÇÃO DE COR ORIGINAL
-            }, 2000); // ALTERADO PARA 2 SEGUNDOS
+                txt.innerText = textoOriginal; 
+                restaurarTextoStatus(); 
+            }, 2000); 
         }
 
         function restaurarTextoStatus() {
             const txt = document.getElementById('status-texto');
             if (neutroStatus === 'concluido') {
-                txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
+                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
             } else {
                 txt.style.color = "#ffcc00";
@@ -221,14 +242,19 @@
         function atualizarEstadoLampada() {
             const imgLampada = document.getElementById('img-lampada');
             const txt = document.getElementById('status-texto');
-            if (dgLigado && djLigado && interLigado) {
+            const telaConcluido = document.getElementById('tela-concluido');
+
+            // NOVA LÓGICA: DG -> DR -> INTERRUPTOR
+            if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
+                telaConcluido.classList.add('mostrar-concluido'); // MOSTRA TELA CONCLUÍDO
             } else {
                 imgLampada.style.display = "none";
+                telaConcluido.classList.remove('mostrar-concluido');
                 if (neutroStatus === 'concluido') {
-                    txt.innerText = "LUZ APAGADA. APÓS LIGAR O DISJUNTOR DO CIRCUITO, ACIONE O INTERRUPTOR.";
+                    txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
                     txt.style.color = "RED";
                 }
             }
@@ -281,7 +307,7 @@
                 animarFio('fio-neutro', arquivosNeutro, 0, () => {
                     exibirBaloes(['neutro-b1']);
                 });
-                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL E O DISJUNTOR DO CIRCUITO.";
+                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E O INTERRUPTOR.";
                 txt.style.color = "#00ff00";
             }
             else { dispararErro("SEQUÊNCIA INCORRETA!"); }
@@ -292,17 +318,12 @@
             playSomDisj();
             dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
-            if (dgLigado) {
-                img.src = "./al_dg_on.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
-            } else {
-                img.src = "./al_dg_off.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
-            }
+            img.src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
+            if (!dgLigado && !drLigado) { dispararErro("LIGUE O GERAL (DG) PRIMEIRO!"); return; }
             playSomDisj();
             drLigado = !drLigado;
             const img = document.getElementById('img-dr');
@@ -313,34 +334,22 @@
                 img.src = "./al_dr_off.png";
                 img.style.top = "27.8%"; img.style.left = "23%";
             }
+            atualizarEstadoLampada();
         }
 
         function alternarDJ16() {
-            if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
             playSomDisj();
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
-            if (djLigado) {
-                img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "32%"; 
-            } else {
-                img.src = "./al_dj16_off.png";
-                img.style.top = "25%"; img.style.left = "32%";
-            }
-            atualizarEstadoLampada();
+            img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            // O DJ16 não bloqueia mais a lâmpada conforme pedido.
         }
 
         function alternarInterruptor() {
             playSomInter();
             interLigado = !interLigado;
             const imgTecla = document.getElementById('img-interruptor');
-            if (interLigado) {
-                imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
-            } else {
-                imgTecla.src = "./tec_int_off.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
-            }
+            imgTecla.src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
             atualizarEstadoLampada();
         }
     </script>
