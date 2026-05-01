@@ -13,7 +13,7 @@
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; position: relative; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* --- TELA DE CONCLUÍDO (ESTILO INDUSTRIAL ALINHADO) --- */
+        /* --- TELA DE CONCLUÍDO (POSICIONAMENTO MANTIDO) --- */
         #tela-concluido {
             position: absolute;
             top: 55px; 
@@ -39,30 +39,44 @@
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* --- NOTIFICAÇÃO DE ENTRADA (ORIGINAL) --- */
+        /* --- OVERLAY DE ENTRADA ORIGINAL --- */
         #overlay-inicio {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.8); 
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 3px solid #00ffff; 
             padding: 25px 45px;
             border-radius: 15px;
             z-index: 1000;
             text-align: center;
             pointer-events: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
             animation: entradaSaidaZoom 3s ease-in-out forwards;
+            line-height: 1.8;
             width: 280px;
         }
-        #overlay-inicio h1 { margin: 0; font-size: 18px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; }
+        #overlay-inicio h1 { margin: 0; font-size: 18px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); }
+        #overlay-inicio span { font-size: 11px; color: #ffffff; display: block; margin-top: 5px; font-weight: 300; opacity: 0.9; }
+        .creditos-inicio { font-size: 7px !important; margin-top: 20px !important; opacity: 0.7 !important; letter-spacing: 1px; font-weight: normal !important; }
 
         @keyframes entradaSaidaZoom {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
-            12% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            88% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); visibility: hidden; }
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); filter: blur(15px); }
+            12% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
+            88% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
         }
+
+        /* --- BALÕES COM SETAS ORIGINAIS --- */
+        .tooltip-balao {
+            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
+        }
+        .tooltip-balao::after { content: ''; position: absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; bottom: -7px; left: 50%; transform: translateX(-50%); }
+        .tooltip-balao small { display: block; margin-top: 2px; color: #d32f2f; font-size: 7px; }
+        .show-balao { opacity: 1 !important; transform: scale(1) !important; }
 
         /* QUADRO PRINCIPAL */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
@@ -97,11 +111,6 @@
             z-index: 200; text-transform: uppercase;
         }
 
-        .tooltip-balao {
-            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
-        }
-        .show-balao { opacity: 1 !important; transform: scale(1) !important; }
-
         #fase-b1 { top: 62%; left: 39%; transform: translateX(-50%); } 
         #fase-b2 { top: 41%; left: 61%; } 
         #retorno-b1 { top: 23%; left: 63%; } 
@@ -121,11 +130,10 @@
     <div id="quadro">
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
-            <span style="font-size: 11px; color: #fff; display: block;">CIRCUITO MONOFÁSICO - 127V</span>
-            <span style="font-size: 7px; margin-top: 20px; opacity: 0.7; letter-spacing: 1px;">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
+            <span>CIRCUITO MONOFÁSICO - 127V</span>
+            <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
         </div>
 
-        <!-- BALÕES ORIGINAIS RESTAURADOS -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
