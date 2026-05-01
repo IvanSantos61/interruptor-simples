@@ -117,7 +117,7 @@
         #neutro-b1 { top: 16%; left: 61%; } 
     </style>
 </head>
-<body>
+<body onclick="fecharBaloes()">
 
     <h2>Laboratório SMT Pro</h2>
     
@@ -127,7 +127,7 @@
 
     <div id="tela-concluido">CONCLUÍDO !!!!!</div>
 
-    <div id="quadro">
+    <div id="quadro" onclick="fecharBaloes();">
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
             <span>CIRCUITO MONOFÁSICO - 127V</span>
@@ -174,12 +174,19 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
+        // NOVA FUNÇÃO: Fecha os balões ao clicar
+        function fecharBaloes() {
+            document.querySelectorAll('.tooltip-balao').forEach(balao => {
+                balao.classList.remove('show-balao');
+            });
+        }
+
         function exibirBaloes(ids) {
             ids.forEach(id => {
                 const balao = document.getElementById(id);
                 if (balao) {
                     balao.classList.add('show-balao');
-                    setTimeout(() => balao.classList.remove('show-balao'), 4000);
+                    // setTimeout REMOVIDO para os balões não sumirem por tempo
                 }
             });
         }
