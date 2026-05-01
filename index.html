@@ -70,7 +70,7 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        #img-dg { width: 25.5px; top: 25%; left: 11.2%; }
+        #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
         #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
@@ -146,7 +146,7 @@
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="()">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
         <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
         <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
         
@@ -289,10 +289,10 @@
             const img = document.getElementById('img-dg');
             if (dgLigado) {
                 img.src = "./al_dg_on.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
+                img.style.top = "25%"; img.style.left = "10.9%";
             } else {
                 img.src = "./al_dg_off.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
+                img.style.top = "25%"; img.style.left = "11.2%";
             }
             atualizarEstadoLampada();
         }
