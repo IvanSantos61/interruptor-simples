@@ -5,74 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        /* Estilos Globais */
-        body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA (OPACIDADE 80%) --- */
         #overlay-inicio {
             position: absolute;
-            top: 50%;
+            top: 25%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 3px solid #00ffff; 
-            padding: 25px 45px;
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            padding: 20px 40px;
             border-radius: 15px;
             z-index: 1000;
             text-align: center;
             pointer-events: none;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
-            animation: entradaSaidaZoom 3s ease-in-out forwards;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            animation: entradaSaida 3.5s ease-in-out forwards;
             line-height: 1.8;
-            width: 280px;
         }
 
-        #overlay-inicio h1 {
-            margin: 0;
-            font-size: 18px;
-            color: #00ffff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-        }
+        #overlay-inicio h1 { margin: 0; font-size: 18px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); }
+        #overlay-inicio span { font-size: 11px; color: #ffffff; display: block; margin-top: 5px; font-weight: 300; opacity: 0.9; }
 
-        #overlay-inicio span {
-            font-size: 11px;
-            color: #ffffff;
-            display: block;
-            margin-top: 5px;
-            font-weight: 300;
-            opacity: 0.9;
-        }
-
-        /* AJUSTE: REMOÇÃO DO NEGRITO NOS CRÉDITOS */
         .creditos-inicio {
-            font-size: 7px !important; 
-            margin-top: 20px !important; 
-            opacity: 0.7 !important;
+            font-size: 8px !important; 
+            margin-top: 10px !important;
+            opacity: 0.7 !important; 
             letter-spacing: 1px;
-            font-weight: normal !important; /* Remove o negrito */
         }
 
-        /* ANIMAÇÃO */
-        @keyframes entradaSaidaZoom {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); filter: blur(15px); }
-            12% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
-            88% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
+        @keyframes entradaSaida {
+            0% { opacity: 0; transform: translate(-50%, -20%); }
+            15% { opacity: 1; transform: translate(-50%, -50%); }
+            85% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -80%); visibility: hidden; }
         }
 
-        /* QUADRO PRINCIPAL */
-        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        #img-dg { width: 25.5px; top: 25%; left: 11.2%; }
+        /* Coordenadas fixas no CSS conforme seu ajuste final */
+        #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
-        #img-dj16 { width: 20px; top: 25%; left: 32%; }
+        #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
         #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
@@ -86,11 +65,11 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; transition: background-color 0.3s; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
         .erro-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(5, 15, 30, 0.9); } }
+        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(0, 0, 0, 0.8); } }
 
         #btn-reiniciar {
             position: absolute;
@@ -108,7 +87,6 @@
         .tooltip-balao {
             position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
-
         .tooltip-balao::after { content: ''; position: absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; bottom: -7px; left: 50%; transform: translateX(-50%); }
         .tooltip-balao small { display: block; margin-top: 2px; color: #d32f2f; font-size: 7px; }
         .show-balao { opacity: 1 !important; transform: scale(1) !important; }
@@ -121,6 +99,12 @@
 </head>
 <body>
 
+    <div id="overlay-inicio">
+        <h1>Interruptor Simples</h1>
+        <span>CIRCUITO MONOFÁSICO - 127V</span>
+        <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
+    </div>
+
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box" id="caixa-status">
@@ -128,12 +112,6 @@
     </div>
 
     <div id="quadro">
-        <div id="overlay-inicio">
-            <h1>Interruptor Simples</h1>
-            <span>CIRCUITO MONOFÁSICO - 127V</span>
-            <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
-        </div>
-
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
@@ -169,6 +147,7 @@
     <script>
         let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
         let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
+        let erroAtivo = false; // Bloqueia atualizações enquanto o erro é exibido
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
@@ -186,27 +165,35 @@
 
         function reiniciarSimulador() { location.reload(); }
 
+        // NOVA FUNÇÃO DE ERRO COM RETORNO APÓS 3 SEGUNDOS
         function dispararErro(mensagem) {
+            if (erroAtivo) return;
+            erroAtivo = true;
             const box = document.getElementById('caixa-status');
             const txt = document.getElementById('status-texto');
             const somErro = document.getElementById('som-erro');
+            
             somErro.currentTime = 0; somErro.play();
+            const textoOriginal = txt.innerText; // Guarda a orientação atual
+            
             txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
+            
             setTimeout(() => {
                 box.classList.remove('erro-flash');
-                restaurarTextoStatus();
-            }, 800);
+                txt.innerText = textoOriginal; // Retorna à orientação anterior
+                txt.style.color = (neutroStatus === 'concluido') ? "#00ff00" : "#ffcc00";
+                erroAtivo = false;
+            }, 3000); // 3 segundos conforme solicitado
         }
 
         function restaurarTextoStatus() {
+            if (erroAtivo) return;
             const txt = document.getElementById('status-texto');
             if (neutroStatus === 'concluido') {
                 txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-            } else {
-                txt.style.color = "#ffcc00";
             }
         }
 
@@ -218,13 +205,12 @@
             const txt = document.getElementById('status-texto');
             if (dgLigado && djLigado && interLigado) {
                 imgLampada.style.display = "block";
-                txt.innerText = "LUZ ACESA!";
-                txt.style.color = "#00ff00";
+                if (!erroAtivo) { txt.innerText = "LUZ ACESA!"; txt.style.color = "#00ff00"; }
             } else {
                 imgLampada.style.display = "none";
-                if (neutroStatus === 'concluido') {
-                    txt.innerText = "LUZ APAGADA. APÓS LIGAR O DISJUNTOR DO CIRCUITO, ACIONE O INTERRUPTOR.";
-                    txt.style.color = "RED";
+                if (neutroStatus === 'concluido' && !erroAtivo) {
+                    txt.innerText = "LUZ APAGADA.";
+                    txt.style.color = "#ffffff";
                 }
             }
         }
@@ -251,9 +237,7 @@
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
-                animarFio('fio-fase', arquivosFase, 0, () => {
-                    exibirBaloes(['fase-b1', 'fase-b2']);
-                });
+                animarFio('fio-fase', arquivosFase, 0, () => exibirBaloes(['fase-b1', 'fase-b2']));
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
@@ -262,9 +246,7 @@
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
-                animarFio('fio-retorno', arquivosRetorno, 0, () => {
-                    exibirBaloes(['retorno-b1']);
-                });
+                animarFio('fio-retorno', arquivosRetorno, 0, () => exibirBaloes(['retorno-b1']));
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
@@ -273,10 +255,8 @@
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
-                animarFio('fio-neutro', arquivosNeutro, 0, () => {
-                    exibirBaloes(['neutro-b1']);
-                });
-                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL E O DISJUNTOR DO CIRCUITO.";
+                animarFio('fio-neutro', arquivosNeutro, 0, () => exibirBaloes(['neutro-b1']));
+                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
             }
             else { dispararErro("SEQUÊNCIA INCORRETA!"); }
@@ -286,42 +266,21 @@
             if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
             playSomDisj();
             dgLigado = !dgLigado;
-            const img = document.getElementById('img-dg');
-            if (dgLigado) {
-                img.src = "./al_dg_on.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
-            } else {
-                img.src = "./al_dg_off.png";
-                img.style.top = "25.5%"; img.style.left = "11.2%";
-            }
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
             playSomDisj();
             drLigado = !drLigado;
-            const img = document.getElementById('img-dr');
-            if (drLigado) {
-                img.src = "./al_dr_on.png";
-                img.style.top = "24.8%"; img.style.left = "23%";
-            } else {
-                img.src = "./al_dr_off.png";
-                img.style.top = "27.8%"; img.style.left = "23%";
-            }
+            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
         }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
             playSomDisj();
             djLigado = !djLigado;
-            const img = document.getElementById('img-dj16');
-            if (djLigado) {
-                img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "32%"; 
-            } else {
-                img.src = "./al_dj16_off.png";
-                img.style.top = "25%"; img.style.left = "32%";
-            }
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
             atualizarEstadoLampada();
         }
 
@@ -331,7 +290,7 @@
             const imgTecla = document.getElementById('img-interruptor');
             if (interLigado) {
                 imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
+                imgTecla.style.width = "35px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "70.3%"; 
             } else {
                 imgTecla.src = "./tec_int_off.png";
                 imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
