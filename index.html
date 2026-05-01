@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        /* Estilos Globais Originais */
+        /* Estilos Originais Preservados */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; position: relative; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* TELA DE CONCLUÍDO - POSICIONAMENTO ÚLTIMA TELA */
+        /* Tela de Concluído - Conforme Posicionamento Anterior */
         #tela-concluido {
             position: absolute; top: 55px; left: 50%; transform: translateX(-50%) scale(0.7);
             background: #28a745; color: #ffffff; font-weight: 900; padding: 12px 40px; border-radius: 4px;
@@ -21,7 +21,7 @@
         }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* OVERLAY DE ENTRADA ORIGINAL */
+        /* Tela Inicial Original */
         #overlay-inicio {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); border: 3px solid #00ffff; 
@@ -38,14 +38,13 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); visibility: hidden; }
         }
 
-        /* BALÕES ORIGINAIS COM SETAS */
+        /* Balões Originais */
         .tooltip-balao {
-            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s; pointer-events: none; text-align: center;
+            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; visibility: hidden; transition: opacity 0.3s; pointer-events: none; text-align: center;
         }
         .tooltip-balao::after { content: ''; position: absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; bottom: -7px; left: 50%; transform: translateX(-50%); }
-        .show-balao { opacity: 1 !important; }
+        .show-balao { opacity: 1 !important; visibility: visible !important; }
 
-        /* QUADRO E IMAGENS */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; cursor: pointer; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; }
@@ -59,7 +58,7 @@
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
         .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
 
-        /* POSIÇÕES DOS BALÕES */
+        /* Balões Coordenadas */
         #fase-b1 { top: 62%; left: 39%; transform: translateX(-50%); } 
         #fase-b2 { top: 41%; left: 61%; } 
         #retorno-b1 { top: 23%; left: 63%; } 
@@ -78,14 +77,14 @@
 
     <div id="tela-concluido">CONCLUÍDO !!!!!</div>
 
-    <div id="quadro" onclick="event.stopPropagation(); fecharBaloes();">
+    <!-- O segredo do destravamento: stopPropagation no quadro para não conflitar com o body -->
+    <div id="quadro" onclick="fecharBaloes(); event.stopPropagation();">
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
             <span style="margin-top: 5px;">CIRCUITO MONOFÁSICO - 127V</span>
             <span style="font-size: 7px; margin-top: 20px; opacity: 0.7; letter-spacing: 1px;">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
         </div>
 
-        <!-- BALÕES ORIGINAIS REATIVADOS -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
@@ -94,24 +93,23 @@
         <img src="./ambiente.jpg" class="fundo">
         <button id="btn-reiniciar" onclick="location.reload()">Reiniciar</button>
 
-        <!-- SISTEMA DE FIOS ORIGINAL -->
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
-        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
-        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG(); event.stopPropagation();">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR(); event.stopPropagation();">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16(); event.stopPropagation();">
         
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
-        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor(); event.stopPropagation();">
 
-        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
-        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
-        <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
-        <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
-        <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
-        <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
+        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16'); event.stopPropagation();"></div>
+        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in'); event.stopPropagation();"></div>
+        <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out'); event.stopPropagation();"></div>
+        <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret'); event.stopPropagation();"></div>
+        <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar'); event.stopPropagation();"></div>
+        <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu'); event.stopPropagation();"></div>
     </div>
 
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
@@ -126,14 +124,16 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        // Função para fechar os balões ao clicar
         function fecharBaloes() {
             document.querySelectorAll('.tooltip-balao').forEach(b => b.classList.remove('show-balao'));
         }
 
         function exibirBaloes(ids) {
             fecharBaloes();
-            ids.forEach(id => document.getElementById(id).classList.add('show-balao'));
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('show-balao');
+            });
         }
 
         function animarFio(id, lista, index, callback) {
