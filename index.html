@@ -7,25 +7,24 @@
     <style>
         /* Fundo azul marinho visível */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
-        h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
+        h2 { color: #ff9800; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px rgba(255, 152, 0, 0.5); text-transform: uppercase; }
         
-        /* --- TELA DE ENTRADA COM TRANSPARÊNCIA AUMENTADA (0.4) --- */
+        /* --- TELA DE ENTRADA: PALETA ENERGIA SEGURA (LARANJA) --- */
         #overlay-inicio {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(10, 30, 60, 0.4); 
+            background: rgba(30, 30, 30, 0.4); /* Fundo Grafite Translúcido */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.4); /* Borda Laranja */
             padding: 25px 45px;
             border-radius: 15px;
             z-index: 1000;
             text-align: center;
             pointer-events: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            /* Animação rápida de 3 segundos */
             animation: entradaSaidaZoom 3s ease-in-out forwards;
             line-height: 1.8;
             width: 280px;
@@ -34,10 +33,10 @@
         #overlay-inicio h1 {
             margin: 0;
             font-size: 18px;
-            color: #00ffff;
+            color: #ff9800; /* Texto Laranja Vibrante */
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            text-shadow: 0 0 12px rgba(255, 152, 0, 0.8);
         }
 
         #overlay-inicio span {
