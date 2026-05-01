@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        /* Fundo azul marinho visível */
+        /* Ajuste de fundo para azul marinho profundo */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        
+        /* Título superior em laranja para combinar com a paleta */
         h2 { color: #ff9800; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px rgba(255, 152, 0, 0.5); text-transform: uppercase; }
         
-        /* --- TELA DE ENTRADA: PALETA ENERGIA SEGURA (LARANJA) --- */
+        /* --- TELA DE ENTRADA: ENERGIA SEGURA (LARANJA E CARBONO) --- */
         #overlay-inicio {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(30, 30, 30, 0.4); /* Fundo Grafite Translúcido */
+            background: rgba(30, 30, 30, 0.4); /* Fundo Carbono/Grafite */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 152, 0, 0.4); /* Borda Laranja */
@@ -24,7 +26,7 @@
             z-index: 1000;
             text-align: center;
             pointer-events: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             animation: entradaSaidaZoom 3s ease-in-out forwards;
             line-height: 1.8;
             width: 280px;
@@ -33,7 +35,7 @@
         #overlay-inicio h1 {
             margin: 0;
             font-size: 18px;
-            color: #ff9800; /* Texto Laranja Vibrante */
+            color: #ff9800; /* Laranja Vibrante */
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 0 0 12px rgba(255, 152, 0, 0.8);
@@ -62,7 +64,7 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
         }
 
-        /* QUADRO E COMPONENTES */
+        /* QUADRO PRINCIPAL */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -74,7 +76,7 @@
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
-        .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
+        .borne { position: absolute; width: 12px; height: 12px; background: rgba(255, 152, 0, 0.2); border: 1px solid rgba(255, 152, 0, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
 
         #borne-dj16-saida { top: 37%; left: 34%; } 
         #borne-inter-entrada { top: 81%; left: 68%; } 
@@ -83,11 +85,11 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; }
-        #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(10, 10, 10, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; }
+        #status-texto { color: #ff9800; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
         .erro-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(5, 15, 30, 0.9); } }
+        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(10, 10, 10, 0.9); } }
 
         #btn-reiniciar {
             position: absolute;
@@ -101,6 +103,7 @@
             z-index: 200; text-transform: uppercase;
         }
 
+        /* Tooltips e Balões */
         .tooltip-balao {
             position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: all 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
@@ -117,15 +120,17 @@
     </div>
 
     <div id="quadro">
+        <!-- Tela de entrada com a nova paleta -->
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
             <span>CIRCUITO MONOFÁSICO - 127V</span>
             <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
         </div>
 
+        <!-- Baloes de info NBR 5410 -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
-        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
+        <div id="retorno-b1" class="tooltip-balao">O retorno também pode ser de qualquer cor (continuidade da fase)</div>
         <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro (Item 6.1.5.3.1 da NBR-5410)</div>
 
         <img src="./ambiente.jpg" class="fundo">
@@ -142,6 +147,7 @@
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
+        <!-- Bornes de Conexão -->
         <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
@@ -150,6 +156,7 @@
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
+    <!-- Audios -->
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
@@ -191,7 +198,7 @@
             if (neutroStatus === 'concluido') {
                 txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-            } else { txt.style.color = "#ffcc00"; }
+            } else { txt.style.color = "#ff9800"; }
         }
 
         function playSomDisj() { const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play(); }
