@@ -48,7 +48,6 @@
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
-        /* Coordenadas fixas no CSS conforme seu ajuste final */
         #img-dg { width: 28.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
         #img-dj16 { width: 20px; top: 26%; left: 32.2%; }
@@ -147,7 +146,7 @@
     <script>
         let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
         let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
-        let erroAtivo = false; // Bloqueia atualizações enquanto o erro é exibido
+        let erroAtivo = false; 
         
         const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
@@ -165,7 +164,6 @@
 
         function reiniciarSimulador() { location.reload(); }
 
-        // NOVA FUNÇÃO DE ERRO COM RETORNO APÓS 3 SEGUNDOS
         function dispararErro(mensagem) {
             if (erroAtivo) return;
             erroAtivo = true;
@@ -174,7 +172,7 @@
             const somErro = document.getElementById('som-erro');
             
             somErro.currentTime = 0; somErro.play();
-            const textoOriginal = txt.innerText; // Guarda a orientação atual
+            const textoOriginal = txt.innerText; 
             
             txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
@@ -182,10 +180,10 @@
             
             setTimeout(() => {
                 box.classList.remove('erro-flash');
-                txt.innerText = textoOriginal; // Retorna à orientação anterior
+                txt.innerText = textoOriginal; 
                 txt.style.color = (neutroStatus === 'concluido') ? "#00ff00" : "#ffcc00";
                 erroAtivo = false;
-            }, 3000); // 3 segundos conforme solicitado
+            }, 2000); 
         }
 
         function restaurarTextoStatus() {
@@ -266,21 +264,42 @@
             if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
             playSomDisj();
             dgLigado = !dgLigado;
-            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            const img = document.getElementById('img-dg');
+            if (dgLigado) {
+                img.src = "./al_dg_on.png";
+                img.style.top = "25%"; img.style.left = "10.9%";
+            } else {
+                img.src = "./al_dg_off.png";
+                img.style.top = "25%"; img.style.left = "11.2%";
+            }
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
             playSomDisj();
             drLigado = !drLigado;
-            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png";
+            const img = document.getElementById('img-dr');
+            if (drLigado) {
+                img.src = "./al_dr_on.png";
+                img.style.top = "24.8%"; img.style.left = "23%";
+            } else {
+                img.src = "./al_dr_off.png";
+                img.style.top = "27.8%"; img.style.left = "23%";
+            }
         }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
             playSomDisj();
             djLigado = !djLigado;
-            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
+            const img = document.getElementById('img-dj16');
+            if (djLigado) {
+                img.src = "./al_dj16_on.png";
+                img.style.top = "25%"; img.style.left = "31.8%"; 
+            } else {
+                img.src = "./al_dj16_off.png";
+                img.style.top = "26%"; img.style.left = "32.2%";
+            }
             atualizarEstadoLampada();
         }
 
