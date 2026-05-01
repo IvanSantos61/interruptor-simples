@@ -275,7 +275,7 @@
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { exibirBaloes(['retorno-b1']); });
-                txt.innerText = "RETORNO OK! AGORA O NEUTRO: CLIQUE BA REFERENCIA DO BARRAMENTO.";
+                txt.innerText = "RETORNO OK! AGORA O NEUTRO: CLIQUE NA REFERENCIA DO BARRAMENTO.";
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
