@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        /* Ajuste na cor de fundo para um azul mais visível */
+        body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA (CENTRALIZADA NO QUADRO) --- */
+        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA --- */
         #overlay-inicio {
             position: absolute;
-            /* Centralizado verticalmente em relação ao quadro principal */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(10, 20, 35, 0.6); 
+            background: rgba(10, 30, 60, 0.6); /* Azul levemente mais saturado */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 255, 255, 0.3);
@@ -25,9 +25,10 @@
             text-align: center;
             pointer-events: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: entradaSaidaZoom 4s ease-in-out forwards;
+            /* Tempo reduzido para 3 segundos */
+            animation: entradaSaidaZoom 3s ease-in-out forwards;
             line-height: 1.8;
-            width: 280px; /* Largura fixa para garantir centralização visual */
+            width: 280px;
         }
 
         #overlay-inicio h1 {
@@ -55,33 +56,33 @@
             letter-spacing: 1px;
         }
 
-        /* ANIMAÇÃO ZOOM + FADE + BLUR */
+        /* ANIMAÇÃO ACELERADA */
         @keyframes entradaSaidaZoom {
             0% { 
                 opacity: 0; 
                 transform: translate(-50%, -50%) scale(0.7); 
                 filter: blur(15px);
             }
-            15% { 
+            12% { 
                 opacity: 1; 
                 transform: translate(-50%, -50%) scale(1); 
                 filter: blur(0px);
             }
-            85% { 
+            88% { 
                 opacity: 1; 
                 transform: translate(-50%, -50%) scale(1); 
                 filter: blur(0px);
             }
             100% { 
                 opacity: 0; 
-                transform: translate(-50%, -50%) scale(1.2); 
-                filter: blur(10px); 
+                transform: translate(-50%, -50%) scale(1.1); 
+                filter: blur(8px); 
                 visibility: hidden; 
             }
         }
 
-        /* QUADRO PRINCIPAL */
-        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #2c3e50; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
+        /* QUADRO PRINCIPAL COM FUNDO AZULADO */
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
@@ -101,11 +102,11 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid #2c3e50; min-height: 35px; transition: background-color 0.3s; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
         .erro-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(0, 0, 0, 0.8); } }
+        @keyframes flash-red { 0% { background-color: rgba(255, 0, 0, 0.4); } 100% { background-color: rgba(5, 15, 30, 0.9); } }
 
         #btn-reiniciar {
             position: absolute;
@@ -168,7 +169,6 @@
     </div>
 
     <div id="quadro">
-        <!-- TELA DE ENTRADA CENTRALIZADA AQUI DENTRO -->
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
             <span>CIRCUITO MONOFÁSICO - 127V</span>
