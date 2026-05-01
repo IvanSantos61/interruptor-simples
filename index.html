@@ -6,17 +6,17 @@
     <title>SMT Pro - Laboratório</title>
     <style>
         /* Estilos Globais */
-        body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; touch-action: none; }
+        body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- STATUS BOX (REFERÊNCIA DE ALTURA) --- */
+        /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; position: relative; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* --- TELA DE CONCLUÍDO (ALINHADA COM A STATUS BOX) --- */
+        /* --- TELA DE CONCLUÍDO (ESTILO INDUSTRIAL ALINHADO) --- */
         #tela-concluido {
             position: absolute;
-            top: 55px; /* Alinhado exatamente na altura da status-box superior */
+            top: 55px; 
             left: 50%;
             transform: translateX(-50%) scale(0.7);
             background: #28a745; 
@@ -36,16 +36,10 @@
             pointer-events: none;
             white-space: nowrap;
         }
-        
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
+        .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        .mostrar-concluido {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translateX(-50%) scale(1) !important;
-        }
-
-        /* --- NOTIFICAÇÃO DE ENTRADA --- */
+        /* --- NOTIFICAÇÃO DE ENTRADA (ORIGINAL) --- */
         #overlay-inicio {
             position: absolute;
             top: 50%; left: 50%;
@@ -61,6 +55,7 @@
             animation: entradaSaidaZoom 3s ease-in-out forwards;
             width: 280px;
         }
+        #overlay-inicio h1 { margin: 0; font-size: 18px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; }
 
         @keyframes entradaSaidaZoom {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
@@ -121,8 +116,7 @@
         <span id="status-texto">CONECTE A FASE: DJ16 -> INTERRUPTOR</span>
     </div>
 
-    <!-- Tela de Concluído - Agora alinhada com a Status Box -->
-    <div id="tela-concluido">Instalação Concluída</div>
+    <div id="tela-concluido">CONCLUÍDO !!!!!</div>
 
     <div id="quadro">
         <div id="overlay-inicio">
@@ -131,6 +125,7 @@
             <span style="font-size: 7px; margin-top: 20px; opacity: 0.7; letter-spacing: 1px;">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2016</span>
         </div>
 
+        <!-- BALÕES ORIGINAIS RESTAURADOS -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(6.1.5.3.4)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
@@ -202,7 +197,7 @@
         function restaurarTextoStatus() {
             const txt = document.getElementById('status-texto');
             if (neutroStatus === 'concluido') {
-                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DG, O DR E O INTERRUPTOR.";
+                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O GERAL, O DR E O INTERRUPTOR.";
                 txt.style.color = "#00ff00";
             } else { txt.style.color = "#ffcc00"; }
         }
@@ -229,7 +224,7 @@
                 imgLampada.style.display = "none";
                 telaConcluido.classList.remove('mostrar-concluido');
                 if (neutroStatus === 'concluido') {
-                    txt.innerText = "LIGUE O DG, O DR E O INTERRUPTOR.";
+                    txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
                     txt.style.color = "RED";
                 }
             }
@@ -274,7 +269,7 @@
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { exibirBaloes(['neutro-b1']); });
-                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DG, O DR E O INTERRUPTOR.";
+                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR.";
                 txt.style.color = "#00ff00";
             }
             else { dispararErro("SEQUÊNCIA INCORRETA!"); }
