@@ -13,7 +13,7 @@
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; position: relative; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* --- TELA DE CONCLUÍDO (POSICIONAMENTO MANTIDO) --- */
+        /* --- TELA DE CONCLUÍDO --- */
         #tela-concluido {
             position: absolute;
             top: 55px; 
@@ -39,7 +39,7 @@
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* --- OVERLAY DE ENTRADA ORIGINAL --- */
+        /* --- OVERLAY DE ENTRADA --- */
         #overlay-inicio {
             position: absolute;
             top: 50%;
@@ -70,7 +70,7 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
         }
 
-        /* --- BALÕES COM SETAS ORIGINAIS --- */
+        /* --- BALÕES COM SETAS --- */
         .tooltip-balao {
             position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
@@ -134,10 +134,11 @@
             <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</span>
         </div>
 
+        <!-- REFERÊNCIAS PADRONIZADAS COM <SMALL> -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(Item 6.1.5.3.4 da NBR-5410)</small></div>
-        <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo (item 6.3.7.2.1 da NBR-5410)</div>
-        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor (continuidade da fase)</div>
-        <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro (Item 6.1.5.3.1 da NBR-5410)</div>
+        <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo<br><small>(Item 6.3.7.2.1 da NBR-5410)</small></div>
+        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor<br><small>(Continuidade da Fase - NBR-5410)</small></div>
+        <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro<br><small>(Item 6.1.5.3.1 da NBR-5410)</small></div>
 
         <img src="./ambiente.jpg" class="fundo">
         <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
@@ -174,7 +175,6 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        // NOVA FUNÇÃO: Fecha os balões ao clicar
         function fecharBaloes() {
             document.querySelectorAll('.tooltip-balao').forEach(balao => {
                 balao.classList.remove('show-balao');
@@ -186,7 +186,6 @@
                 const balao = document.getElementById(id);
                 if (balao) {
                     balao.classList.add('show-balao');
-                    // setTimeout REMOVIDO para os balões não sumirem por tempo
                 }
             });
         }
@@ -229,12 +228,10 @@
                 imgLampada.style.display = "block";
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
-                
                 telaConcluido.classList.add('mostrar-concluido');
                 setTimeout(() => {
                     telaConcluido.classList.remove('mostrar-concluido');
                 }, 3000);
-
             } else {
                 imgLampada.style.display = "none";
                 telaConcluido.classList.remove('mostrar-concluido');
