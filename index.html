@@ -8,23 +8,25 @@
         body { margin: 0; background-color: #0b0e14; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA --- */
+        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA (OVERLAY) --- */
         #overlay-inicio {
             position: absolute;
             top: 25%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(0, 255, 255, 0.5);
-            padding: 20px 40px;
+            /* Fundo com 60% de transparência */
+            background: rgba(10, 20, 35, 0.6); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 25px 45px;
             border-radius: 15px;
             z-index: 1000;
             text-align: center;
             pointer-events: none;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            animation: entradaSaida 3.5s ease-in-out forwards;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            /* Chamada da nova animação de Zoom */
+            animation: entradaSaidaZoom 4s ease-in-out forwards;
             line-height: 1.8;
         }
 
@@ -47,17 +49,35 @@
         }
 
         .creditos-inicio {
-            font-size: 8px !important; /* Fonte reduzida */
-            margin-top: 10px !important;
-            opacity: 0.7 !important; /* Transparência em 70% */
+            font-size: 7px !important; 
+            margin-top: 20px !important; 
+            opacity: 0.7 !important;
             letter-spacing: 1px;
         }
 
-        @keyframes entradaSaida {
-            0% { opacity: 0; transform: translate(-50%, -20%); }
-            15% { opacity: 1; transform: translate(-50%, -50%); }
-            85% { opacity: 1; transform: translate(-50%, -50%); }
-            100% { opacity: 0; transform: translate(-50%, -80%); visibility: hidden; }
+        /* --- NOVA ANIMAÇÃO: ZOOM + FADE + BLUR --- */
+        @keyframes entradaSaidaZoom {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.7); 
+                filter: blur(15px);
+            }
+            15% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
+                filter: blur(0px);
+            }
+            85% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
+                filter: blur(0px);
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(1.2); 
+                filter: blur(10px); 
+                visibility: hidden; 
+            }
         }
         /* ---------------------------------------- */
 
@@ -182,6 +202,7 @@
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
+    <!-- Scripts de áudio -->
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
