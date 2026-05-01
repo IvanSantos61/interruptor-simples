@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        /* Ajuste na cor de fundo para um azul mais visível */
+        /* Fundo azul marinho visível */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA --- */
+        /* --- TELA DE ENTRADA COM TRANSPARÊNCIA AUMENTADA (0.4) --- */
         #overlay-inicio {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(10, 30, 60, 0.6); /* Azul levemente mais saturado */
+            background: rgba(10, 30, 60, 0.4); 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 255, 255, 0.3);
@@ -25,7 +25,7 @@
             text-align: center;
             pointer-events: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            /* Tempo reduzido para 3 segundos */
+            /* Animação rápida de 3 segundos */
             animation: entradaSaidaZoom 3s ease-in-out forwards;
             line-height: 1.8;
             width: 280px;
@@ -56,32 +56,14 @@
             letter-spacing: 1px;
         }
 
-        /* ANIMAÇÃO ACELERADA */
         @keyframes entradaSaidaZoom {
-            0% { 
-                opacity: 0; 
-                transform: translate(-50%, -50%) scale(0.7); 
-                filter: blur(15px);
-            }
-            12% { 
-                opacity: 1; 
-                transform: translate(-50%, -50%) scale(1); 
-                filter: blur(0px);
-            }
-            88% { 
-                opacity: 1; 
-                transform: translate(-50%, -50%) scale(1); 
-                filter: blur(0px);
-            }
-            100% { 
-                opacity: 0; 
-                transform: translate(-50%, -50%) scale(1.1); 
-                filter: blur(8px); 
-                visibility: hidden; 
-            }
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); filter: blur(15px); }
+            12% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
+            88% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
         }
 
-        /* QUADRO PRINCIPAL COM FUNDO AZULADO */
+        /* QUADRO E COMPONENTES */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -102,7 +84,7 @@
         #borne-barramento-neutro { top: 33%; left: 44%; }
         #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; }
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
         .erro-flash { animation: flash-red 0.5s; }
@@ -118,46 +100,13 @@
             color: white; font-size: 9px; font-weight: bold;
             cursor: pointer; border-radius: 50px;
             z-index: 200; text-transform: uppercase;
-            transition: all 0.1s;
         }
 
         .tooltip-balao {
-            position: absolute;
-            background: #fff;
-            color: #222;
-            padding: 6px;
-            border-radius: 8px;
-            font-size: 9px;
-            font-weight: bold;
-            line-height: 1.1;
-            width: 110px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
-            z-index: 400;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            transform: scale(0.7);
-            pointer-events: none;
-            text-align: center;
+            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: all 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
-
-        .tooltip-balao::after {
-            content: '';
-            position: absolute;
-            width: 0; height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 7px solid #fff;
-            bottom: -7px; left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .tooltip-balao small { display: block; margin-top: 2px; color: #d32f2f; font-size: 7px; }
+        .tooltip-balao::after { content: ''; position: absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; bottom: -7px; left: 50%; transform: translateX(-50%); }
         .show-balao { opacity: 1 !important; transform: scale(1) !important; }
-
-        #fase-b1 { top: 62%; left: 39%; transform: translateX(-50%); } 
-        #fase-b2 { top: 41%; left: 61%; } 
-        #retorno-b1 { top: 23%; left: 63%; } 
-        #neutro-b1 { top: 16%; left: 61%; } 
     </style>
 </head>
 <body>
@@ -202,7 +151,6 @@
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
-    <!-- Áudios -->
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
@@ -236,10 +184,7 @@
             txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
-            setTimeout(() => {
-                box.classList.remove('erro-flash');
-                restaurarTextoStatus();
-            }, 800);
+            setTimeout(() => { box.classList.remove('erro-flash'); restaurarTextoStatus(); }, 800);
         }
 
         function restaurarTextoStatus() {
@@ -247,9 +192,7 @@
             if (neutroStatus === 'concluido') {
                 txt.innerText = dgLigado && djLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
-            } else {
-                txt.style.color = "#ffcc00";
-            }
+            } else { txt.style.color = "#ffcc00"; }
         }
 
         function playSomDisj() { const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play(); }
@@ -264,10 +207,7 @@
                 txt.style.color = "#00ff00";
             } else {
                 imgLampada.style.display = "none";
-                if (neutroStatus === 'concluido') {
-                    txt.innerText = "LUZ APAGADA.";
-                    txt.style.color = "#ffffff";
-                }
+                if (neutroStatus === 'concluido') { txt.innerText = "LUZ APAGADA."; txt.style.color = "#ffffff"; }
             }
         }
 
@@ -278,24 +218,19 @@
                 const pasta = id.replace('fio-', '').toUpperCase();
                 el.src = `./${pasta}/${lista[index]}`;
                 setTimeout(() => animarFio(id, lista, index + 1, callback), 80);
-            } else if (callback) {
-                callback();
-            }
+            } else if (callback) { callback(); }
         }
 
         function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
-            
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; som.play();
                 txt.innerText = "FASE: SAÍDA CONECTADA. VÁ AO INTERRUPTOR.";
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
-                animarFio('fio-fase', arquivosFase, 0, () => {
-                    exibirBaloes(['fase-b1', 'fase-b2']);
-                });
+                animarFio('fio-fase', arquivosFase, 0, () => exibirBaloes(['fase-b1', 'fase-b2']));
                 txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
@@ -304,9 +239,7 @@
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
-                animarFio('fio-retorno', arquivosRetorno, 0, () => {
-                    exibirBaloes(['retorno-b1']);
-                });
+                animarFio('fio-retorno', arquivosRetorno, 0, () => exibirBaloes(['retorno-b1']));
                 txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
@@ -315,9 +248,7 @@
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
-                animarFio('fio-neutro', arquivosNeutro, 0, () => {
-                    exibirBaloes(['neutro-b1']);
-                });
+                animarFio('fio-neutro', arquivosNeutro, 0, () => exibirBaloes(['neutro-b1']));
                 txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O DISJUNTOR GERAL (DG).";
                 txt.style.color = "#00ff00";
             }
@@ -326,58 +257,34 @@
 
         function alternarDG() {
             if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
-            playSomDisj();
-            dgLigado = !dgLigado;
+            playSomDisj(); dgLigado = !dgLigado;
             const img = document.getElementById('img-dg');
-            if (dgLigado) {
-                img.src = "./al_dg_on.png";
-                img.style.top = "25%"; img.style.left = "10.9%";
-            } else {
-                img.src = "./al_dg_off.png";
-                img.style.top = "25%"; img.style.left = "11.2%";
-            }
+            if (dgLigado) { img.src = "./al_dg_on.png"; img.style.top = "25%"; img.style.left = "10.9%"; } 
+            else { img.src = "./al_dg_off.png"; img.style.top = "25%"; img.style.left = "11.2%"; }
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
-            playSomDisj();
-            drLigado = !drLigado;
+            playSomDisj(); drLigado = !drLigado;
             const img = document.getElementById('img-dr');
-            if (drLigado) {
-                img.src = "./al_dr_on.png";
-                img.style.top = "24.8%"; img.style.left = "23%";
-            } else {
-                img.src = "./al_dr_off.png";
-                img.style.top = "27.8%"; img.style.left = "23%";
-            }
+            if (drLigado) { img.src = "./al_dr_on.png"; img.style.top = "24.8%"; img.style.left = "23%"; } 
+            else { img.src = "./al_dr_off.png"; img.style.top = "27.8%"; img.style.left = "23%"; }
         }
 
         function alternarDJ16() {
             if (!dgLigado) { dispararErro("LIGUE O GERAL (DG)!"); return; }
-            playSomDisj();
-            djLigado = !djLigado;
+            playSomDisj(); djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
-            if (djLigado) {
-                img.src = "./al_dj16_on.png";
-                img.style.top = "25%"; img.style.left = "31.8%"; 
-            } else {
-                img.src = "./al_dj16_off.png";
-                img.style.top = "26%"; img.style.left = "32.2%";
-            }
+            if (djLigado) { img.src = "./al_dj16_on.png"; img.style.top = "25%"; img.style.left = "31.8%"; } 
+            else { img.src = "./al_dj16_off.png"; img.style.top = "26%"; img.style.left = "32.2%"; }
             atualizarEstadoLampada();
         }
 
         function alternarInterruptor() {
-            playSomInter();
-            interLigado = !interLigado;
+            playSomInter(); interLigado = !interLigado;
             const imgTecla = document.getElementById('img-interruptor');
-            if (interLigado) {
-                imgTecla.src = "./tec_int_on.png";
-                imgTecla.style.width = "35px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "70.3%"; 
-            } else {
-                imgTecla.src = "./tec_int_off.png";
-                imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; 
-            }
+            if (interLigado) { imgTecla.src = "./tec_int_on.png"; imgTecla.style.width = "35px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "70.3%"; } 
+            else { imgTecla.src = "./tec_int_off.png"; imgTecla.style.width = "29px"; imgTecla.style.top = "72.4%"; imgTecla.style.left = "72%"; }
             atualizarEstadoLampada();
         }
     </script>
