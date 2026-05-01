@@ -229,7 +229,7 @@
         function restaurarTextoStatus() {
             const txt = document.getElementById('status-texto');
             if (neutroStatus === 'concluido') {
-                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DISJUNTOR GERAL (DG).";
+                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O DG, O DR E O INTERRUPTOR.";
                 txt.style.color = "#00ff00";
             } else {
                 txt.style.color = "#ffcc00";
@@ -244,17 +244,23 @@
             const txt = document.getElementById('status-texto');
             const telaConcluido = document.getElementById('tela-concluido');
 
-            // NOVA LÓGICA: DG -> DR -> INTERRUPTOR
+            // NOVA LÓGICA: DG -> DR -> INTERRUPTOR (DJ16 não bloqueia mais)
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerText = "LUZ ACESA!";
                 txt.style.color = "#00ff00";
-                telaConcluido.classList.add('mostrar-concluido'); // MOSTRA TELA CONCLUÍDO
+                
+                // MOSTRA TELA E RETIRA APÓS 3 SEGUNDOS
+                telaConcluido.classList.add('mostrar-concluido');
+                setTimeout(() => {
+                    telaConcluido.classList.remove('mostrar-concluido');
+                }, 3000);
+
             } else {
                 imgLampada.style.display = "none";
                 telaConcluido.classList.remove('mostrar-concluido');
                 if (neutroStatus === 'concluido') {
-                    txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
+                    txt.innerText = "LIGUE O DG, O DR E O INTERRUPTOR.";
                     txt.style.color = "RED";
                 }
             }
@@ -342,7 +348,7 @@
             djLigado = !djLigado;
             const img = document.getElementById('img-dj16');
             img.src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
-            // O DJ16 não bloqueia mais a lâmpada conforme pedido.
+            // DJ16 removido do bloqueio da lâmpada conforme solicitado.
         }
 
         function alternarInterruptor() {
