@@ -266,7 +266,7 @@
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
                 animarFio('fio-fase', arquivosFase, 0, () => { exibirBaloes(['fase-b1', 'fase-b2']); });
-                txt.innerText = "FASE OK! CONECTE O RETORNO: INTERRUPTOR -> LÂMPADA.";
+                txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA REFERENCIA DO INTERRUPTOR.";
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
@@ -275,7 +275,7 @@
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { exibirBaloes(['retorno-b1']); });
-                txt.innerText = "RETORNO OK! AGORA O NEUTRO: BARRAMENTO -> LÂMPADA.";
+                txt.innerText = "RETORNO OK! AGORA O NEUTRO: CLIQUE BA REFERENCIA DO BARRAMENTO.";
             }
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; som.play();
