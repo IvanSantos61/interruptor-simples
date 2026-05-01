@@ -122,7 +122,7 @@
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box" id="caixa-status">
-        <span id="status-texto">CONECTE A FASE: DJ16 -> INTERRUPTOR</span>
+        <span id="status-texto">CONECTE A FASE: CLIQUE NO DR E NO INTERRUPTOR</span>
     </div>
 
     <div id="tela-concluido">CONCLUÍDO !!!!!</div>
@@ -270,7 +270,7 @@
             } 
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; som.play();
-                txt.innerText = "RETORNO: SAÍDA CONECTADA. VÁ ATÉ A LÂMPADA.";
+                txt.innerText = "RETORNO: SAÍDA CONECTADA. CLIQUE NO FIO ESQUERDO DA LÂMPADA.";
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
