@@ -190,14 +190,19 @@
             const box = document.getElementById('caixa-status');
             const txt = document.getElementById('status-texto');
             const somErro = document.getElementById('som-erro');
+            
             somErro.currentTime = 0; somErro.play();
+            const textoOriginal = txt.innerText; // SALVA O TEXTO ATUAL
+            
             txt.innerText = mensagem; 
             txt.style.color = "#ff4444";
             box.classList.add('erro-flash');
+            
             setTimeout(() => {
                 box.classList.remove('erro-flash');
-                restaurarTextoStatus();
-            }, 800);
+                txt.innerText = textoOriginal; // RETORNA PARA O TEXTO SALVO
+                restaurarTextoStatus(); // CHAMA A RESTAURAÇÃO DE COR ORIGINAL
+            }, 2000); // ALTERADO PARA 2 SEGUNDOS
         }
 
         function restaurarTextoStatus() {
