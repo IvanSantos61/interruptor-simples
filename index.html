@@ -9,16 +9,16 @@
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA (80% OPACIDADE) --- */
+        /* --- ESTILO DA NOTIFICAÇÃO DE ENTRADA (OPACIDADE 80%) --- */
         #overlay-inicio {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8); /* Fundo preto com 80% de transparência */
+            background: rgba(0, 0, 0, 0.8); 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 3px solid #00ffff; /* Contorno Cyan mais grosso */
+            border: 3px solid #00ffff; 
             padding: 25px 45px;
             border-radius: 15px;
             z-index: 1000;
@@ -48,11 +48,13 @@
             opacity: 0.9;
         }
 
+        /* AJUSTE: REMOÇÃO DO NEGRITO NOS CRÉDITOS */
         .creditos-inicio {
             font-size: 7px !important; 
             margin-top: 20px !important; 
             opacity: 0.7 !important;
             letter-spacing: 1px;
+            font-weight: normal !important; /* Remove o negrito */
         }
 
         /* ANIMAÇÃO */
@@ -126,7 +128,6 @@
     </div>
 
     <div id="quadro">
-        <!-- O PAINEL DE INÍCIO -->
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
             <span>CIRCUITO MONOFÁSICO - 127V</span>
@@ -160,7 +161,6 @@
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
-    <!-- Áudios -->
     <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
     <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
