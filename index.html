@@ -6,46 +6,32 @@
     <style>
         body { margin: 0; background-color: #050a18; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
         
-        #titulo-geral { color: #00ffff; text-shadow: 0 0 15px #00ffff; font-size: 26px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
-        
         #container-instrucao {
-            width: 95%; max-width: 800px; padding: 15px 20px; border: 1px solid #1a2a4a; 
-            border-radius: 10px; background: rgba(5, 10, 24, 0.8); 
-            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60px;
-            position: relative;
+            width: 95%; max-width: 800px; padding: 15px; border: 1px solid #1a2a4a; 
+            border-radius: 10px; background: rgba(5, 10, 24, 0.9); 
+            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80px;
         }
         
-        #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; min-height: 25px; }
+        #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; }
         
-        /* PÍLULA AMARELA - POSICIONAMENTO GARANTIDO */
+        /* ESTILO DA PÍLULA - CORRIGIDO */
         #pilula-concluido {
-            visibility: hidden; /* Usando visibility para não afetar o layout quando sumir */
+            display: none; /* Começa escondido */
             background-color: #ffcc00;
             color: #000;
-            padding: 5px 25px;
+            padding: 8px 30px;
             border-radius: 50px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 12px;
-            box-shadow: 0 0 15px #ffcc00;
+            margin-top: 10px;
+            box-shadow: 0 0 20px #ffcc00;
             border: 2px solid #fff;
-            z-index: 999;
+            z-index: 9999;
         }
 
-        .status-acesa { 
-            background-color: #008000; color: #90ee90; padding: 6px 25px; border-radius: 50px; 
-            box-shadow: 0 0 15px #008000; display: inline-block; border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .status-apagada { 
-            background-color: #b30000; color: #ffcccc; padding: 6px 25px; border-radius: 50px; 
-            box-shadow: 0 0 15px #b30000; display: inline-block; border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .txt-laranja { color: #ff8c00; }
-        .txt-verde { color: #90ee90; }
-        .msg-final { color: #ffcc00; }
+        .status-acesa { background-color: #008000; color: #90ee90; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #008000; border: 1px solid rgba(255,255,255,0.2); }
+        .status-apagada { background-color: #b30000; color: #ffcccc; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #b30000; border: 1px solid rgba(255,255,255,0.2); }
+        .msg-final { color: #ffcc00; font-weight: bold; }
 
         #quadro { position: relative; width: 100%; max-width: 500px; }
         .fundo { width: 100%; display: block; border-radius: 8px; }
@@ -56,13 +42,11 @@
 </head>
 <body>
 
-    <div id="titulo-geral">LABORATÓRIO SMT PRO</div>
-
     <div id="container-instrucao">
         <div id="caixa-instrucao">
-            <span class="txt-laranja">FIAÇÃO CONCLUÍDA!</span> <span class="txt-verde">LIGUE OS DISJUNTORES E O INTERRUPTOR.</span>
+            <span style="color: #ffcc00;">FIAÇÃO CONCLUÍDA!</span>
         </div>
-        <!-- Elemento independente -->
+        <!-- Pílula isolada -->
         <div id="pilula-concluido">CONCLUÍDO</div>
     </div>
 
@@ -74,7 +58,7 @@
 
     <script>
         let interLigado = false;
-        let tempoLimite;
+        let tempoReset;
 
         function alternarInterruptor() {
             interLigado = !interLigado;
@@ -83,30 +67,29 @@
             const caixa = document.getElementById('caixa-instrucao');
             const pilula = document.getElementById('pilula-concluido');
 
-            // Troca imagem da tecla
             img.src = `./tec_int_${interLigado ? 'on' : 'off'}.png`;
-
-            // Cancela timers anteriores para evitar bugs
-            clearTimeout(tempoLimite);
+            
+            // SEMPRE limpa o timer anterior para não "piscar" e sumir antes da hora
+            clearTimeout(tempoReset);
 
             if (interLigado) {
-                // ACENDEU
+                // ESTADO LIGADO
                 lamp.style.display = 'block';
                 caixa.innerHTML = "LÂMPADA ACESA";
                 caixa.className = "status-acesa";
-                pilula.style.visibility = "hidden"; 
+                pilula.style.display = "none"; // Esconde o concluído se ligar de novo
             } else {
-                // APAGOU
+                // ESTADO DESLIGADO
                 lamp.style.display = 'none';
                 caixa.innerHTML = "LÂMPADA APAGADA";
                 caixa.className = "status-apagada";
                 
-                // MOSTRA O CONCLUÍDO
-                pilula.style.visibility = "visible";
+                // MOSTRA O CONCLUÍDO COM FORÇA
+                pilula.style.display = "block";
 
-                // PROGRAMA PARA SUMIR EM 3 SEGUNDOS
-                tempoLimite = setTimeout(() => {
-                    pilula.style.visibility = "hidden";
+                // SÓ APÓS 3 SEGUNDOS ELE MUDA TUDO
+                tempoReset = setTimeout(() => {
+                    pilula.style.display = "none";
                     caixa.className = "";
                     caixa.innerHTML = '<span class="msg-final">FIAÇÃO CONCLUÍDA! LIGUE OS DISJUNTORES E O INTERRUPTOR.</span>';
                 }, 3000);
