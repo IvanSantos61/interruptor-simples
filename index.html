@@ -10,6 +10,7 @@
             width: 95%; max-width: 800px; padding: 15px; border: 1px solid #1a2a4a; 
             border-radius: 10px; background: rgba(5, 10, 24, 0.9); 
             margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 50px;
+            position: relative;
         }
         
         #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; }
@@ -22,6 +23,17 @@
         .status-apagada { 
             background-color: #b30000; color: #ffcccc; padding: 6px 25px; border-radius: 50px; 
             box-shadow: 0 0 15px #b30000; display: inline-block; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Estilo para a mensagem de conclusão */
+        #msg-concluido {
+            position: absolute;
+            top: 110%; /* Posicionado logo abaixo do container de instrução */
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 0 5px #00ff00;
+            display: none;
         }
 
         #quadro { position: relative; width: 100%; max-width: 500px; }
@@ -37,6 +49,7 @@
         <div id="caixa-instrucao">
             <span style="color: #ffcc00;">FIAÇÃO CONCLUÍDA! LIGUE O INTERRUPTOR.</span>
         </div>
+        <div id="msg-concluido">CONCLUÍDO</div>
     </div>
 
     <div id="quadro">
@@ -47,12 +60,14 @@
 
     <script>
         let interLigado = false;
+        let timerConcluido;
 
         function alternarInterruptor() {
             interLigado = !interLigado;
             const img = document.getElementById('tecla-int');
             const lamp = document.getElementById('lampada-acesa');
             const caixa = document.getElementById('caixa-instrucao');
+            const msgConcluido = document.getElementById('msg-concluido');
 
             // Troca a imagem da tecla
             img.src = `./tec_int_${interLigado ? 'on' : 'off'}.png`;
@@ -62,11 +77,22 @@
                 lamp.style.display = 'block';
                 caixa.innerHTML = "LÂMPADA ACESA";
                 caixa.className = "status-acesa";
+                
+                // Esconde a mensagem CONCLUÍDO se ligar novamente
+                msgConcluido.style.display = 'none';
+                clearTimeout(timerConcluido);
             } else {
-                // ESTADO DESLIGADO: Fica vermelho e mantém (sem piscar/resetar)
+                // ESTADO DESLIGADO: Fica vermelho e mantém
                 lamp.style.display = 'none';
                 caixa.innerHTML = "LÂMPADA APAGADA";
                 caixa.className = "status-apagada";
+
+                // Mostra a mensagem CONCLUÍDO por 3 segundos
+                msgConcluido.style.display = 'block';
+                clearTimeout(timerConcluido);
+                timerConcluido = setTimeout(() => {
+                    msgConcluido.style.display = 'none';
+                }, 3000);
             }
         }
     </script>
