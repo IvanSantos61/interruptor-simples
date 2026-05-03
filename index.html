@@ -11,25 +11,26 @@
         #container-instrucao {
             width: 95%; max-width: 800px; padding: 15px 20px; border: 1px solid #1a2a4a; 
             border-radius: 10px; background: rgba(5, 10, 24, 0.8); 
-            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 50px;
+            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60px;
             position: relative;
         }
         
-        #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+        #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; min-height: 25px; }
         
-        /* Pílula CONCLUÍDO - Estilo conforme sua indicação (Seta Amarela) */
+        /* PÍLULA AMARELA - POSICIONAMENTO GARANTIDO */
         #pilula-concluido {
-            display: none;
+            visibility: hidden; /* Usando visibility para não afetar o layout quando sumir */
             background-color: #ffcc00;
             color: #000;
-            padding: 4px 20px;
+            padding: 5px 25px;
             border-radius: 50px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            margin-top: 10px;
-            box-shadow: 0 0 10px #ffcc00;
-            border: 1px solid #fff;
+            margin-top: 12px;
+            box-shadow: 0 0 15px #ffcc00;
+            border: 2px solid #fff;
+            z-index: 999;
         }
 
         .status-acesa { 
@@ -44,17 +45,11 @@
 
         .txt-laranja { color: #ff8c00; }
         .txt-verde { color: #90ee90; }
-        .txt-vermelho { color: #ff3333; }
-        .txt-branco { color: #ffffff; }
         .msg-final { color: #ffcc00; }
 
         #quadro { position: relative; width: 100%; max-width: 500px; }
         .fundo { width: 100%; display: block; border-radius: 8px; }
-        .cabo { position: absolute; top: 0; left: 0; width: 100%; height: auto; display: none; pointer-events: none; }
-        
-        .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.4); border: 1px solid #00ffff; border-radius: 50%; z-index: 100; cursor: pointer; transform: translate(-50%, -50%); display: none; }
         .interativo { position: absolute; z-index: 50; cursor: pointer; }
-
         #tecla-int { top: 73%; left: 72%; width:27px; }
         #lampada-acesa { position: absolute; top: 47%; left: 76.3%; width:118px; display: none; z-index: 45; pointer-events: none; }
     </style>
@@ -65,60 +60,57 @@
 
     <div id="container-instrucao">
         <div id="caixa-instrucao">
-            <span class="txt-laranja">CONECTE A FASE.</span> <span class="txt-verde">CLIQUE NA REFERÊNCIA DO DR.</span>
+            <span class="txt-laranja">FIAÇÃO CONCLUÍDA!</span> <span class="txt-verde">LIGUE OS DISJUNTORES E O INTERRUPTOR.</span>
         </div>
+        <!-- Elemento independente -->
         <div id="pilula-concluido">CONCLUÍDO</div>
     </div>
 
     <div id="quadro">
         <img src="./ambiente.jpg" class="fundo">
         <img id="lampada-acesa" src="./lamp_on.png">
-        
-        <!-- Elementos Interativos Simplificados para o exemplo -->
         <img id="tecla-int" class="interativo" src="./tec_int_off.png" onclick="alternarInterruptor()">
     </div>
 
     <script>
-        let dispositivos = { int: false };
-        let statusFiacao = true; // Simulado como concluído para o teste da lógica
-        let timerGeral;
+        let interLigado = false;
+        let tempoLimite;
 
-        function atualizarLuz() {
-            const lampada = document.getElementById('lampada-acesa');
+        function alternarInterruptor() {
+            interLigado = !interLigado;
+            const img = document.getElementById('tecla-int');
+            const lamp = document.getElementById('lampada-acesa');
             const caixa = document.getElementById('caixa-instrucao');
             const pilula = document.getElementById('pilula-concluido');
 
-            clearTimeout(timerGeral);
+            // Troca imagem da tecla
+            img.src = `./tec_int_${interLigado ? 'on' : 'off'}.png`;
 
-            if (dispositivos.int && statusFiacao) {
-                // LIGA
-                lampada.style.display = 'block';
+            // Cancela timers anteriores para evitar bugs
+            clearTimeout(tempoLimite);
+
+            if (interLigado) {
+                // ACENDEU
+                lamp.style.display = 'block';
                 caixa.innerHTML = "LÂMPADA ACESA";
                 caixa.className = "status-acesa";
-                pilula.style.display = "none";
+                pilula.style.visibility = "hidden"; 
             } else {
-                // DESLIGA
-                lampada.style.display = 'none';
+                // APAGOU
+                lamp.style.display = 'none';
                 caixa.innerHTML = "LÂMPADA APAGADA";
                 caixa.className = "status-apagada";
                 
-                // Mostra o CONCLUÍDO separado
-                pilula.style.display = "block";
+                // MOSTRA O CONCLUÍDO
+                pilula.style.visibility = "visible";
 
-                // Após 3 segundos, reseta para a mensagem padrão de fiação concluída
-                timerGeral = setTimeout(() => {
+                // PROGRAMA PARA SUMIR EM 3 SEGUNDOS
+                tempoLimite = setTimeout(() => {
+                    pilula.style.visibility = "hidden";
                     caixa.className = "";
                     caixa.innerHTML = '<span class="msg-final">FIAÇÃO CONCLUÍDA! LIGUE OS DISJUNTORES E O INTERRUPTOR.</span>';
-                    pilula.style.display = "none";
                 }, 3000);
             }
-        }
-
-        function alternarInterruptor() {
-            dispositivos.int = !dispositivos.int;
-            const img = document.getElementById('tecla-int');
-            img.src = `./tec_int_${dispositivos.int ? 'on' : 'off'}.png`;
-            atualizarLuz();
         }
     </script>
 </body>
