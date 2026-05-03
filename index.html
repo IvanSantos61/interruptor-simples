@@ -2,42 +2,41 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Laboratório SMT - Simulação Completa</title>
     <style>
-        body { margin: 0; background-color: #050a18; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        body { margin: 0; background-color: #050a18; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
         
         #container-instrucao {
-            width: 95%; max-width: 800px; padding: 15px; border: 1px solid #1a2a4a; 
+            width: 95%; max-width: 800px; padding: 20px; border: 1px solid #1a2a4a; 
             border-radius: 10px; background: rgba(5, 10, 24, 0.9); 
-            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80px;
+            margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90px;
         }
         
         #caixa-instrucao { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase; }
         
-        /* ESTILO DA PÍLULA - CORRIGIDO */
+        /* PÍLULA CONCLUÍDO - ESTILO FORTE */
         #pilula-concluido {
-            display: none; /* Começa escondido */
+            display: none; 
             background-color: #ffcc00;
             color: #000;
-            padding: 8px 30px;
+            padding: 8px 35px;
             border-radius: 50px;
             font-size: 14px;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
             box-shadow: 0 0 20px #ffcc00;
             border: 2px solid #fff;
             z-index: 9999;
         }
 
-        .status-acesa { background-color: #008000; color: #90ee90; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #008000; border: 1px solid rgba(255,255,255,0.2); }
-        .status-apagada { background-color: #b30000; color: #ffcccc; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #b30000; border: 1px solid rgba(255,255,255,0.2); }
-        .msg-final { color: #ffcc00; font-weight: bold; }
+        .status-acesa { background-color: #008000; color: #90ee90; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #008000; }
+        .status-apagada { background-color: #b30000; color: #ffcccc; padding: 6px 25px; border-radius: 50px; box-shadow: 0 0 15px #b30000; }
+        .msg-final { color: #ffcc00; }
 
         #quadro { position: relative; width: 100%; max-width: 500px; }
         .fundo { width: 100%; display: block; border-radius: 8px; }
         .interativo { position: absolute; z-index: 50; cursor: pointer; }
         #tecla-int { top: 73%; left: 72%; width:27px; }
-        #lampada-acesa { position: absolute; top: 47%; left: 76.3%; width:118px; display: none; z-index: 45; pointer-events: none; }
+        #lampada-acesa { position: absolute; top: 47%; left: 76.3%; width:118px; display: none; z-index: 45; }
     </style>
 </head>
 <body>
@@ -46,7 +45,6 @@
         <div id="caixa-instrucao">
             <span style="color: #ffcc00;">FIAÇÃO CONCLUÍDA!</span>
         </div>
-        <!-- Pílula isolada -->
         <div id="pilula-concluido">CONCLUÍDO</div>
     </div>
 
@@ -58,9 +56,12 @@
 
     <script>
         let interLigado = false;
-        let tempoReset;
+        let timerReset;
 
         function alternarInterruptor() {
+            // Cancela qualquer contagem que já esteja rodando (evita o "piscar")
+            clearTimeout(timerReset);
+
             interLigado = !interLigado;
             const img = document.getElementById('tecla-int');
             const lamp = document.getElementById('lampada-acesa');
@@ -68,27 +69,24 @@
             const pilula = document.getElementById('pilula-concluido');
 
             img.src = `./tec_int_${interLigado ? 'on' : 'off'}.png`;
-            
-            // SEMPRE limpa o timer anterior para não "piscar" e sumir antes da hora
-            clearTimeout(tempoReset);
 
             if (interLigado) {
-                // ESTADO LIGADO
+                // LIGA
                 lamp.style.display = 'block';
                 caixa.innerHTML = "LÂMPADA ACESA";
                 caixa.className = "status-acesa";
-                pilula.style.display = "none"; // Esconde o concluído se ligar de novo
+                pilula.style.display = "none"; 
             } else {
-                // ESTADO DESLIGADO
+                // DESLIGA
                 lamp.style.display = 'none';
                 caixa.innerHTML = "LÂMPADA APAGADA";
                 caixa.className = "status-apagada";
                 
-                // MOSTRA O CONCLUÍDO COM FORÇA
+                // Força a pílula a aparecer
                 pilula.style.display = "block";
 
-                // SÓ APÓS 3 SEGUNDOS ELE MUDA TUDO
-                tempoReset = setTimeout(() => {
+                // Espera 3 segundos para resetar
+                timerReset = setTimeout(() => {
                     pilula.style.display = "none";
                     caixa.className = "";
                     caixa.innerHTML = '<span class="msg-final">FIAÇÃO CONCLUÍDA! LIGUE OS DISJUNTORES E O INTERRUPTOR.</span>';
