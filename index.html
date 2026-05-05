@@ -39,38 +39,71 @@
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* --- OVERLAY DE ENTRADA --- */
+        /* 
+           --- ALTERAÇÃO PONTUAL: PADRONIZAÇÃO DA TELA DE ENTRADA ---
+           Ajustado para coincidir com a gravura: Borda Neon Ciano, 
+           Border-radius maior e estrutura de texto centralizada.
+        */
         #overlay-inicio {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 3px solid #00ffff; 
-            padding: 25px 45px;
-            border-radius: 15px;
+            background: #050a18; /* Fundo sólido escuro conforme imagem */
+            border: 4px solid #00ffff; /* Borda ciano grossa */
+            padding: 40px 30px;
+            border-radius: 25px; /* Bordas bem arredondadas */
             z-index: 1000;
             text-align: center;
             pointer-events: none;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
-            animation: entradaSaidaZoom 3s ease-in-out forwards;
-            line-height: 1.8;
-            width: 280px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); /* Brilho neon externo */
+            animation: entradaSaidaZoom 4s ease-in-out forwards;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        #overlay-inicio h1 { margin: 0; font-size: 18px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); }
-        #overlay-inicio span { font-size: 11px; color: #ffffff; display: block; margin-top: 5px; font-weight: 300; opacity: 0.9; }
-        .creditos-inicio { font-size: 7px !important; margin-top: 20px !important; opacity: 0.7 !important; letter-spacing: 1px; font-weight: normal !important; }
+
+        #overlay-inicio h1 { 
+            margin: 0; 
+            font-size: 20px; 
+            color: #00ffff; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            line-height: 1.2;
+        }
+
+        #overlay-inicio .subtitulo { 
+            font-size: 14px; 
+            color: #ffffff; 
+            margin-top: 20px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+        }
+
+        #overlay-inicio .divisor {
+            width: 150px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 20px 0;
+        }
+
+        #overlay-inicio .creditos-inicio { 
+            font-size: 9px; 
+            color: rgba(255, 255, 255, 0.8); 
+            margin-top: 10px;
+        }
 
         @keyframes entradaSaidaZoom {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); filter: blur(15px); }
-            12% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
-            88% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0px); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); filter: blur(8px); visibility: hidden; }
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); visibility: hidden; }
         }
+        /* --- FIM DA ALTERAÇÃO PONTUAL --- */
 
-        /* --- BALÕES COM SETAS --- */
+        /* BALÕES COM SETAS */
         .tooltip-balao {
             position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
@@ -128,13 +161,17 @@
     <div id="tela-concluido">CONCLUÍDO !!!!!</div>
 
     <div id="quadro" onclick="fecharBaloes();">
+        
+        <!-- ALTERAÇÃO PONTUAL: HTML DA NOVA TELA DE ENTRADA PADRONIZADA -->
         <div id="overlay-inicio">
             <h1>Interruptor Simples</h1>
-            <span>CIRCUITO MONOFÁSICO - 127V</span>
-            <span class="creditos-inicio">© Desenvolvido por Ivan Santos - ConectaeadPLUS - 2026</span>
+            <div class="subtitulo">Circuito Monofásico - 127V</div>
+            <div class="divisor"></div>
+            <div class="creditos-inicio">© Desenvolvido por Ivan Santos</div>
+            <div class="creditos-inicio">ConectaeadPLUS - 2026</div>
         </div>
+        <!-- FIM DA ALTERAÇÃO PONTUAL -->
 
-        <!-- REFERÊNCIAS PADRONIZADAS COM <SMALL> -->
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(Item 6.1.5.3.4 da NBR-5410)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo<br><small>(Item 6.3.7.2.1 da NBR-5410)</small></div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor<br><small>(Continuidade da Fase - NBR-5410)</small></div>
