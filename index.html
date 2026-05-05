@@ -39,15 +39,15 @@
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* --- CORREÇÃO: OVERLAY AO REDOR (FUNDO TODO) --- */
+        /* --- OVERLAY AO REDOR --- */
         #overlay-inicio {
-            position: fixed; /* Ocupa a tela toda */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5); /* Escurece o fundo */
-            backdrop-filter: blur(10px); /* Vidro ao redor */
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
@@ -56,7 +56,6 @@
             animation: sumirOverlay 4s ease-in-out forwards;
         }
 
-        /* Caixa de mensagem centralizada */
         #caixa-mensagem {
             background: #050a18; 
             border: 4px solid #00ffff;
@@ -70,37 +69,10 @@
             align-items: center;
         }
 
-        #caixa-mensagem h1 { 
-            margin: 0; 
-            font-size: 20px; 
-            color: #00ffff; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            line-height: 1.2;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        #caixa-mensagem .subtitulo { 
-            font-size: 14px; 
-            color: #ffffff; 
-            margin-top: 20px; 
-            font-weight: bold; 
-            text-transform: uppercase;
-        }
-
-        #caixa-mensagem .divisor {
-            width: 150px;
-            height: 1px;
-            background: rgba(0, 255, 255, 0.3);
-            margin: 20px 0;
-        }
-
-        #caixa-mensagem .creditos-inicio { 
-            font-size: 9px; 
-            color: rgba(255, 255, 255, 0.9); 
-            margin-top: 10px;
-            font-weight: normal;
-        }
+        #caixa-mensagem h1 { margin: 0; font-size: 20px; color: #00ffff; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+        #caixa-mensagem .subtitulo { font-size: 14px; color: #ffffff; margin-top: 20px; font-weight: bold; text-transform: uppercase; }
+        #caixa-mensagem .divisor { width: 150px; height: 1px; background: rgba(0, 255, 255, 0.3); margin: 20px 0; }
+        #caixa-mensagem .creditos-inicio { font-size: 9px; color: rgba(255, 255, 255, 0.9); margin-top: 10px; font-weight: normal; }
 
         @keyframes sumirOverlay {
             0% { opacity: 0; }
@@ -108,9 +80,8 @@
             85% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
-        /* --- FIM DA CORREÇÃO --- */
 
-        /* BALÕES COM SETAS */
+        /* BALÕES */
         .tooltip-balao {
             position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
         }
@@ -130,7 +101,22 @@
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
-        .borne { position: absolute; width: 12px; height: 12px; background: rgba(0, 255, 255, 0.2); border: 1px solid rgba(0, 255, 255, 0.6); border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); }
+        
+        /* BORNES DINÂMICOS */
+        .borne { 
+            position: absolute; 
+            width: 14px; 
+            height: 14px; 
+            background: rgba(0, 255, 255, 0.4); 
+            border: 2px solid #00ffff; 
+            border-radius: 50%; 
+            z-index: 150; 
+            cursor: pointer; 
+            transform: translate(-50%, -50%); 
+            display: none; /* Começam ocultos */
+        }
+        .borne.ativo { display: block; }
+        .borne.selecionado { background: #00ff00; border-color: #ffffff; box-shadow: 0 0 15px #00ff00; }
 
         #borne-dj16-saida { top: 38%; left: 27%; } 
         #borne-inter-entrada { top: 81%; left: 68%; } 
@@ -172,7 +158,7 @@
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box" id="caixa-status">
-        <span id="status-texto">CONECTE A FASE: CLIQUE NA REFERÊNCIA DO DR</span>
+        <span id="status-texto">CONECTE A FASE: CLIQUE NA SAÍDA DO DJ16</span>
     </div>
 
     <div id="tela-concluido">CONCLUÍDO !!!!!</div>
@@ -198,10 +184,15 @@
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
-        <div id="borne-dj16-saida" class="borne" onclick="cliqueBorne('dj16')"></div>
-        <div id="borne-inter-entrada" class="borne" onclick="cliqueBorne('inter_in')"></div>
+        <!-- Bornes iniciais (Par Fase) -->
+        <div id="borne-dj16-saida" class="borne ativo" onclick="cliqueBorne('dj16')"></div>
+        <div id="borne-inter-entrada" class="borne ativo" onclick="cliqueBorne('inter_in')"></div>
+        
+        <!-- Bornes ocultos (Par Retorno) -->
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
         <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
+        
+        <!-- Bornes ocultos (Par Neutro) -->
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
@@ -219,37 +210,76 @@
         const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
         const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        function fecharBaloes() {
-            document.querySelectorAll('.tooltip-balao').forEach(balao => {
-                balao.classList.remove('show-balao');
-            });
-        }
-
-        function exibirBaloes(ids) {
-            ids.forEach(id => {
-                const balao = document.getElementById(id);
-                if (balao) {
-                    balao.classList.add('show-balao');
-                }
-            });
-        }
-
+        function fecharBaloes() { document.querySelectorAll('.tooltip-balao').forEach(balao => balao.classList.remove('show-balao')); }
+        function exibirBaloes(ids) { ids.forEach(id => document.getElementById(id)?.classList.add('show-balao')); }
         function reiniciarSimulador() { location.reload(); }
 
+        // Função para trocar os pares de bolinhas
+        function trocarPares(esconder, mostrar) {
+            esconder.forEach(id => document.getElementById(id).classList.remove('ativo'));
+            mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
+        }
+
+        function cliqueBorne(local) {
+            const txt = document.getElementById('status-texto');
+            const som = document.getElementById('som-conexao');
+            
+            // LÓGICA FASE
+            if (local === 'dj16' && faseStatus === 'desconectado') {
+                faseStatus = 'iniciado'; som.play();
+                document.getElementById('borne-dj16-saida').classList.add('selecionado');
+                txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR.";
+            } 
+            else if (local === 'inter_in' && faseStatus === 'iniciado') {
+                faseStatus = 'concluido'; som.play();
+                document.getElementById('borne-inter-entrada').classList.add('selecionado');
+                animarFio('fio-fase', arquivosFase, 0, () => { 
+                    exibirBaloes(['fase-b1', 'fase-b2']);
+                    trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
+                    txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR.";
+                });
+            } 
+            // LÓGICA RETORNO
+            else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
+                retornoStatus = 'iniciado'; som.play();
+                document.getElementById('borne-inter-saida').classList.add('selecionado');
+                txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA.";
+            }
+            else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
+                retornoStatus = 'concluido'; som.play();
+                document.getElementById('borne-lampada-retorno').classList.add('selecionado');
+                animarFio('fio-retorno', arquivosRetorno, 0, () => { 
+                    exibirBaloes(['retorno-b1']);
+                    trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
+                    txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO.";
+                });
+            }
+            // LÓGICA NEUTRO
+            else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
+                neutroStatus = 'iniciado'; som.play();
+                document.getElementById('borne-barramento-neutro').classList.add('selecionado');
+                txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA.";
+            }
+            else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
+                neutroStatus = 'concluido'; som.play();
+                document.getElementById('borne-lampada-neutro').classList.add('selecionado');
+                animarFio('fio-neutro', arquivosNeutro, 0, () => { 
+                    exibirBaloes(['neutro-b1']);
+                    trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
+                    txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR.";
+                    txt.style.color = "#00ff00";
+                });
+            }
+            else { dispararErro("SIGA OS PONTOS INDICADOS!"); }
+        }
+
         function dispararErro(mensagem) {
-            const box = document.getElementById('caixa-status');
             const txt = document.getElementById('status-texto');
             const somErro = document.getElementById('som-erro');
             somErro.currentTime = 0; somErro.play();
-            const textoOriginal = txt.innerText; 
-            txt.innerText = mensagem; 
-            txt.style.color = "#ff4444";
-            box.classList.add('erro-flash');
-            setTimeout(() => {
-                box.classList.remove('erro-flash');
-                txt.innerText = textoOriginal; 
-                restaurarTextoStatus(); 
-            }, 2000); 
+            const original = txt.innerText;
+            txt.innerText = mensagem; txt.style.color = "#ff4444";
+            setTimeout(() => { txt.innerText = original; restaurarTextoStatus(); }, 2000);
         }
 
         function restaurarTextoStatus() {
@@ -267,22 +297,13 @@
             const imgLampada = document.getElementById('img-lampada');
             const txt = document.getElementById('status-texto');
             const telaConcluido = document.getElementById('tela-concluido');
-
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
-                txt.innerText = "LUZ ACESA!";
-                txt.style.color = "#00ff00";
+                txt.innerText = "LUZ ACESA!"; txt.style.color = "#00ff00";
                 telaConcluido.classList.add('mostrar-concluido');
-                setTimeout(() => {
-                    telaConcluido.classList.remove('mostrar-concluido');
-                }, 3000);
             } else {
                 imgLampada.style.display = "none";
                 telaConcluido.classList.remove('mostrar-concluido');
-                if (neutroStatus === 'concluido') {
-                    txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
-                    txt.style.color = "RED";
-                }
             }
         }
 
@@ -296,74 +317,24 @@
             } else if (callback) { callback(); }
         }
 
-        function cliqueBorne(local) {
-            const txt = document.getElementById('status-texto');
-            const som = document.getElementById('som-conexao');
-            
-            if (local === 'dj16' && faseStatus === 'desconectado') {
-                faseStatus = 'iniciado'; som.play();
-                txt.innerText = "FASE: SAÍDA CONECTADA. CLIQUE NA REFERENCIA DO INTERRUPTOR.";
-            } 
-            else if (local === 'inter_in' && faseStatus === 'iniciado') {
-                faseStatus = 'concluido'; som.play();
-                animarFio('fio-fase', arquivosFase, 0, () => { exibirBaloes(['fase-b1', 'fase-b2']); });
-                txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA REFERENCIA DO INTERRUPTOR.";
-            } 
-            else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
-                retornoStatus = 'iniciado'; som.play();
-                txt.innerText = "RETORNO: SAÍDA CONECTADA. CLIQUE NO FIO ESQUERDO DA LÂMPADA.";
-            }
-            else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
-                retornoStatus = 'concluido'; som.play();
-                animarFio('fio-retorno', arquivosRetorno, 0, () => { exibirBaloes(['retorno-b1']); });
-                txt.innerText = "RETORNO OK! AGORA O NEUTRO: CLIQUE NA REFERENCIA DO BARRAMENTO.";
-            }
-            else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
-                neutroStatus = 'iniciado'; som.play();
-                txt.innerText = "NEUTRO: BARRAMENTO CONECTADO. CLIQUE NO FIO DIREITO DA LÂMPADA.";
-            }
-            else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
-                neutroStatus = 'concluido'; som.play();
-                animarFio('fio-neutro', arquivosNeutro, 0, () => { exibirBaloes(['neutro-b1']); });
-                txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR.";
-                txt.style.color = "#00ff00";
-            }
-            else { dispararErro("SEQUÊNCIA INCORRETA!"); }
-        }
-
         function alternarDG() {
             if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
-            playSomDisj();
-            dgLigado = !dgLigado;
+            playSomDisj(); dgLigado = !dgLigado;
             document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
             atualizarEstadoLampada();
         }
 
         function alternarDR() {
             if (!dgLigado && !drLigado) { dispararErro("LIGUE O GERAL (DG) PRIMEIRO!"); return; }
-            playSomDisj();
-            drLigado = !drLigado;
+            playSomDisj(); drLigado = !drLigado;
             const img = document.getElementById('img-dr');
-            if (drLigado) {
-                img.src = "./al_dr_on.png"; img.style.top = "25.3%"; img.style.left = "23%";
-            } else {
-                img.src = "./al_dr_off.png"; img.style.top = "27.8%"; img.style.left = "23%";
-            }
+            if (drLigado) { img.src = "./al_dr_on.png"; img.style.top = "25.3%"; img.style.left = "23%"; } 
+            else { img.src = "./al_dr_off.png"; img.style.top = "27.8%"; img.style.left = "23%"; }
             atualizarEstadoLampada();
         }
 
-        function alternarDJ16() {
-            playSomDisj();
-            djLigado = !djLigado;
-            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png";
-        }
-
-        function alternarInterruptor() {
-            playSomInter();
-            interLigado = !interLigado;
-            document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png";
-            atualizarEstadoLampada();
-        }
+        function alternarDJ16() { playSomDisj(); djLigado = !djLigado; document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; }
+        function alternarInterruptor() { playSomInter(); interLigado = !interLigado; document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; atualizarEstadoLampada(); }
     </script>
 </body>
 </html>
