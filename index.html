@@ -113,7 +113,7 @@
             z-index: 150; 
             cursor: pointer; 
             transform: translate(-50%, -50%); 
-            display: none; /* Começam ocultos */
+            display: none; 
         }
         .borne.ativo { display: block; }
         .borne.selecionado { background: #00ff00; border-color: #ffffff; box-shadow: 0 0 15px #00ff00; }
@@ -184,15 +184,12 @@
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
         <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
-        <!-- Bornes iniciais (Par Fase) -->
         <div id="borne-dj16-saida" class="borne ativo" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne ativo" onclick="cliqueBorne('inter_in')"></div>
         
-        <!-- Bornes ocultos (Par Retorno) -->
         <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
         <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
         
-        <!-- Bornes ocultos (Par Neutro) -->
         <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
         <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
@@ -214,7 +211,6 @@
         function exibirBaloes(ids) { ids.forEach(id => document.getElementById(id)?.classList.add('show-balao')); }
         function reiniciarSimulador() { location.reload(); }
 
-        // Função para trocar os pares de bolinhas
         function trocarPares(esconder, mostrar) {
             esconder.forEach(id => document.getElementById(id).classList.remove('ativo'));
             mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
@@ -224,14 +220,16 @@
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
             
-            // LÓGICA FASE
+            // FASE
             if (local === 'dj16' && faseStatus === 'desconectado') {
-                faseStatus = 'iniciado'; som.play();
+                faseStatus = 'iniciado'; 
+                // REMOVIDO SOM DO PRIMEIRO CLIQUE
                 document.getElementById('borne-dj16-saida').classList.add('selecionado');
                 txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR.";
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
-                faseStatus = 'concluido'; som.play();
+                faseStatus = 'concluido'; 
+                som.play(); // SOM NO SEGUNDO CLIQUE
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
                 animarFio('fio-fase', arquivosFase, 0, () => { 
                     exibirBaloes(['fase-b1', 'fase-b2']);
@@ -239,14 +237,15 @@
                     txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR.";
                 });
             } 
-            // LÓGICA RETORNO
+            // RETORNO
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
-                retornoStatus = 'iniciado'; som.play();
+                retornoStatus = 'iniciado'; 
                 document.getElementById('borne-inter-saida').classList.add('selecionado');
                 txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA.";
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
-                retornoStatus = 'concluido'; som.play();
+                retornoStatus = 'concluido'; 
+                som.play(); // SOM NO SEGUNDO CLIQUE
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { 
                     exibirBaloes(['retorno-b1']);
@@ -254,14 +253,15 @@
                     txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO.";
                 });
             }
-            // LÓGICA NEUTRO
+            // NEUTRO
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
-                neutroStatus = 'iniciado'; som.play();
+                neutroStatus = 'iniciado'; 
                 document.getElementById('borne-barramento-neutro').classList.add('selecionado');
                 txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA.";
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
-                neutroStatus = 'concluido'; som.play();
+                neutroStatus = 'concluido'; 
+                som.play(); // SOM NO SEGUNDO CLIQUE
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     exibirBaloes(['neutro-b1']);
