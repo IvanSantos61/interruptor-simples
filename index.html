@@ -1,23 +1,186 @@
-/* --- PARAFUSOS REALISTAS --- */
-.parafuso { 
-    position: absolute; 
-    width: 16px; 
-    height: 16px; 
-    background: radial-gradient(circle at 30% 30%, #888, #444); /* Reflexo de metal */
-    border-radius: 50%; 
-    border: 1px solid #222; 
-    box-shadow: 2px 2px 3px rgba(0,0,0,0.5); /* Sombra projetada para fora */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMT Pro - Laboratório</title>
+    <style>
+        body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
+        
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; }
+        #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-/* A fenda do parafuso (traço da chave) */
-.parafuso::after {
-    content: '';
-    width: 80%;
-    height: 2px;
-    background: rgba(0,0,0,0.6);
-    transform: rotate(45deg); /* Inclinação da fenda */
-    border-radius: 1px;
-}
+        /* --- PAINEL FINAL MELHORADO --- */
+        #painel-concluido {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            width: 320px; height: 160px;
+            background: #1a1a1a;
+            border: 4px solid #333;
+            border-radius: 15px;
+            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            opacity: 0; visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        
+        /* --- PARAFUSOS PHILIPS REAIS --- */
+        .parafuso { 
+            position: absolute; width: 16px; height: 16px; 
+            background: radial-gradient(circle at 30% 30%, #999, #444); 
+            border-radius: 50%; border: 1px solid #222; 
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* Fendas em Cruz */
+        .parafuso::before, .parafuso::after {
+            content: ''; position: absolute; background: rgba(0,0,0,0.7); border-radius: 1px;
+        }
+        .parafuso::before { width: 10px; height: 2px; transform: rotate(45deg); }
+        .parafuso::after { width: 10px; height: 2px; transform: rotate(-45deg); }
+
+        .p-tl { top: 10px; left: 10px; } .p-tr { top: 10px; right: 10px; }
+        .p-bl { bottom: 10px; left: 10px; } .p-br { bottom: 10px; right: 10px; }
+
+        #check-concluido { color: #00ff00; font-size: 60px; font-weight: bold; line-height: 1; }
+        #texto-concluido { color: #00ff00; font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+
+        /* QUADRO */
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
+        .fundo { width: 100%; display: block; pointer-events: none; }
+        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; }
+        
+        #img-dg { width: 25.5px; top: 25%; left: 11.2%; }
+        #img-dr { width: 30px; top: 27.8%; left: 23%; }
+        #img-dj16 { width: 20px; top: 25%; left: 32%; }
+        #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
+        #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
+
+        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; }
+        .borne { position: absolute; width: 14px; height: 14px; background: rgba(0, 255, 255, 0.4); border: 2px solid #00ffff; border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); display: none; }
+        .borne.ativo { display: block; }
+        .borne.selecionado { background: #00ff00; border-color: #fff; box-shadow: 0 0 15px #00ff00; }
+
+        /* Posições dos Bornes */
+        #b-dj { top: 38%; left: 27%; } #b-int-in { top: 81%; left: 68%; } 
+        #b-int-out { top: 75%; left: 68%; } #b-lamp-ret { top: 56%; left: 89%; }
+        #b-barr-neu { top: 33%; left: 44%; } #b-lamp-neu { top: 56%; left: 92%; }
+
+        #btn-reiniciar { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); padding: 5px 15px; background: #e60000; border: none; color: white; border-radius: 20px; font-size: 10px; cursor: pointer; z-index: 500; font-weight: bold; }
+
+        /* Overlay */
+        #overlay-inicio { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; animation: fadeOut 3s forwards 1s; }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    </style>
+</head>
+<body>
+
+    <div id="overlay-inicio">
+        <div style="text-align:center; border: 4px solid #0ff; padding: 30px; border-radius: 20px; background: #050a18;">
+            <h1 style="color:#0ff; margin:0;">Interruptor Simples</h1>
+            <p>Circuito Monofásico - 127V</p>
+        </div>
+    </div>
+
+    <h2>Laboratório SMT Pro</h2>
+    
+    <div class="status-box">
+        <span id="status-texto">CONECTE A FASE: CLIQUE NA SAÍDA DO DJ16</span>
+    </div>
+
+    <div id="painel-concluido">
+        <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
+        <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
+        <div id="check-concluido">✓</div>
+        <div id="texto-concluido">CONCLUÍDO !!!!!</div>
+    </div>
+
+    <div id="quadro">
+        <img src="./ambiente.jpg" class="fundo">
+        <button id="btn-reiniciar" onclick="location.reload()">Reiniciar</button>
+
+        <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
+        <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
+        <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
+
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="acao('dg')">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="acao('dr')">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="acao('dj')">
+        <img id="img-lampada" src="./lamp_on.png" class="lampada">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="acao('int')">
+
+        <div id="b-dj" class="borne ativo" onclick="fiar(1)"></div>
+        <div id="b-int-in" class="borne ativo" onclick="fiar(2)"></div>
+        <div id="b-int-out" class="borne" onclick="fiar(3)"></div>
+        <div id="b-lamp-ret" class="borne" onclick="fiar(4)"></div>
+        <div id="b-barr-neu" class="borne" onclick="fiar(5)"></div>
+        <div id="b-lamp-neu" class="borne" onclick="fiar(6)"></div>
+    </div>
+
+    <audio id="s-con" src="./conexão.mp3"></audio>
+    <audio id="s-dis" src="./disj.mp3"></audio>
+    <audio id="s-int" src="./int.mp3"></audio>
+    <audio id="s-err" src="./erro.mp3"></audio>
+
+    <script>
+        let passo = 0, dg = false, dr = false, dj = false, inter = false, ok = false;
+
+        function fiar(n) {
+            const txt = document.getElementById('status-texto');
+            if (n === 1 && passo === 0) { passo = 1; bSel('b-dj'); txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR."; som('s-con'); }
+            else if (n === 2 && passo === 1) { passo = 2; bSel('b-int-in'); som('s-con'); animar('fio-fase', 6, () => { bOn(['b-int-out', 'b-lamp-ret']); txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR."; }); }
+            else if (n === 3 && passo === 2) { passo = 3; bSel('b-int-out'); txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA."; som('s-con'); }
+            else if (n === 4 && passo === 3) { passo = 4; bSel('b-lamp-ret'); som('s-con'); animar('fio-retorno', 7, () => { bOn(['b-barr-neu', 'b-lamp-neu']); txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO."; }); }
+            else if (n === 5 && passo === 4) { passo = 5; bSel('b-barr-neu'); txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA."; som('s-con'); }
+            else if (n === 6 && passo === 5) { passo = 6; bSel('b-lamp-neu'); som('s-con'); animar('fio-neutro', 14, () => { bOn([]); txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR."; txt.style.color = "#0f0"; }); }
+            else { som('s-err'); }
+        }
+
+        function acao(t) {
+            if (passo < 6) return;
+            if (t === 'dg') { dg = !dg; img('img-dg', dg?'al_dg_on':'al_dg_off'); som('s-dis'); }
+            if (t === 'dr') { if(!dg)return; dr = !dr; const i=document.getElementById('img-dr'); i.src=dr?'./al_dr_on.png':'./al_dr_off.png'; i.style.top=dr?'25.3%':'27.8%'; som('s-dis'); }
+            if (t === 'dj') { dj = !dj; img('img-dj16', dj?'al_dj16_on':'al_dj16_off'); som('s-dis'); }
+            if (t === 'int') { inter = !inter; img('img-interruptor', inter?'tec_int_on':'tec_int_off'); som('s-int'); }
+            
+            const lamp = document.getElementById('img-lampada');
+            const txt = document.getElementById('status-texto');
+            
+            if (dg && dr && dj && inter) {
+                lamp.style.display = 'block'; txt.innerText = "LUZ ACESA!"; ok = true;
+            } else {
+                lamp.style.display = 'none';
+                if (ok && !inter) {
+                    txt.innerText = "LÂMPADA APAGADA"; ok = false;
+                    setTimeout(() => {
+                        document.getElementById('painel-concluido').classList.add('mostrar');
+                        setTimeout(() => document.getElementById('painel-concluido').classList.remove('mostrar'), 3000);
+                    }, 3000);
+                } else if (passo === 6) { txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR."; }
+            }
+        }
+
+        function animar(id, total, cb) {
+            const el = document.getElementById(id); el.style.display = 'block';
+            let i = 0; const pasta = id.split('-')[1].toUpperCase();
+            const inv = setInterval(() => {
+                el.src = `./${pasta}/quadro${String(i*6).padStart(4,'0')}.png`;
+                if (i >= total) { clearInterval(inv); cb(); } i++;
+            }, 70);
+        }
+
+        function bSel(id) { document.getElementById(id).classList.add('selecionado'); }
+        function bOn(lista) { 
+            document.querySelectorAll('.borne').forEach(b => b.classList.remove('ativo'));
+            lista.forEach(id => document.getElementById(id).classList.add('ativo'));
+        }
+        function img(id, src) { document.getElementById(id).src = `./${src}.png`; }
+        function som(id) { const s=document.getElementById(id); s.currentTime=0; s.play(); }
+    </script>
+</body>
+</html>
