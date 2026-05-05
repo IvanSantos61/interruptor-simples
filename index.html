@@ -39,35 +39,38 @@
         #tela-concluido::before { content: '✓ '; margin-right: 10px; }
         .mostrar-concluido { opacity: 1 !important; visibility: visible !important; transform: translateX(-50%) scale(1) !important; }
 
-        /* --- ALTERAÇÃO PONTUAL: TELA DE ENTRADA COM EFEITO DE VIDRO ---
-           Adicionado backdrop-filter para o efeito de transparência/vidro.
-        */
+        /* --- CORREÇÃO: OVERLAY AO REDOR (FUNDO TODO) --- */
         #overlay-inicio {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* Fundo escuro semitransparente */
-            background: rgba(5, 10, 24, 0.75); 
-            /* Efeito de vidro (blur no fundo) */
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            position: fixed; /* Ocupa a tela toda */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5); /* Escurece o fundo */
+            backdrop-filter: blur(10px); /* Vidro ao redor */
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: sumirOverlay 4s ease-in-out forwards;
+        }
+
+        /* Caixa de mensagem centralizada */
+        #caixa-mensagem {
+            background: #050a18; 
             border: 4px solid #00ffff;
             padding: 40px 30px;
             border-radius: 25px;
-            z-index: 1000;
             text-align: center;
-            pointer-events: none;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6), inset 0 0 15px rgba(255,255,255,0.05);
-            animation: entradaSaidaZoom 4s ease-in-out forwards;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
             width: 320px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }
 
-        #overlay-inicio h1 { 
+        #caixa-mensagem h1 { 
             margin: 0; 
             font-size: 20px; 
             color: #00ffff; 
@@ -77,7 +80,7 @@
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
 
-        #overlay-inicio .subtitulo { 
+        #caixa-mensagem .subtitulo { 
             font-size: 14px; 
             color: #ffffff; 
             margin-top: 20px; 
@@ -85,27 +88,27 @@
             text-transform: uppercase;
         }
 
-        #overlay-inicio .divisor {
+        #caixa-mensagem .divisor {
             width: 150px;
             height: 1px;
             background: rgba(0, 255, 255, 0.3);
             margin: 20px 0;
         }
 
-        #overlay-inicio .creditos-inicio { 
+        #caixa-mensagem .creditos-inicio { 
             font-size: 9px; 
             color: rgba(255, 255, 255, 0.9); 
             margin-top: 10px;
             font-weight: normal;
         }
 
-        @keyframes entradaSaidaZoom {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); visibility: hidden; }
+        @keyframes sumirOverlay {
+            0% { opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
-        /* --- FIM DA ALTERAÇÃO --- */
+        /* --- FIM DA CORREÇÃO --- */
 
         /* BALÕES COM SETAS */
         .tooltip-balao {
@@ -156,6 +159,16 @@
 </head>
 <body onclick="fecharBaloes()">
 
+    <div id="overlay-inicio">
+        <div id="caixa-mensagem">
+            <h1>Interruptor Simples</h1>
+            <div class="subtitulo">Circuito Monofásico - 127V</div>
+            <div class="divisor"></div>
+            <div class="creditos-inicio">© Desenvolvido por Ivan Santos</div>
+            <div class="creditos-inicio">ConectaeadPLUS - 2026</div>
+        </div>
+    </div>
+
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box" id="caixa-status">
@@ -166,14 +179,6 @@
 
     <div id="quadro" onclick="fecharBaloes();">
         
-        <div id="overlay-inicio">
-            <h1>Interruptor Simples</h1>
-            <div class="subtitulo">Circuito Monofásico - 127V</div>
-            <div class="divisor"></div>
-            <div class="creditos-inicio">© Desenvolvido por Ivan Santos</div>
-            <div class="creditos-inicio">ConectaeadPLUS - 2026</div>
-        </div>
-
         <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(Item 6.1.5.3.4 da NBR-5410)</small></div>
         <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo<br><small>(Item 6.3.7.2.1 da NBR-5410)</small></div>
         <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor<br><small>(Continuidade da Fase - NBR-5410)</small></div>
