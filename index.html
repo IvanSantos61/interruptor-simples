@@ -36,7 +36,29 @@
         }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        .parafuso { position: absolute; width: 12px; height: 12px; background: #444; border-radius: 50%; border: 2px solid #222; }
+        /* --- AJUSTE DOS PARAFUSOS (ESTILO PHILIPS REALISTA) --- */
+        .parafuso { 
+            position: absolute; 
+            width: 14px; 
+            height: 14px; 
+            background: radial-gradient(circle at 30% 30%, #888, #444); /* Efeito Metal */
+            border-radius: 50%; 
+            border: 1px solid #222; 
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.6); /* Sombra para fora */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Fenda Philips (Cruz) */
+        .parafuso::before, .parafuso::after {
+            content: '';
+            position: absolute;
+            background: rgba(0,0,0,0.7);
+            border-radius: 1px;
+        }
+        .parafuso::before { width: 10px; height: 2px; transform: rotate(45deg); }
+        .parafuso::after { width: 10px; height: 2px; transform: rotate(-45deg); }
+
         .p-tl { top: 10px; left: 10px; } .p-tr { top: 10px; right: 10px; }
         .p-bl { bottom: 10px; left: 10px; } .p-br { bottom: 10px; right: 10px; }
 
