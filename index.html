@@ -8,7 +8,6 @@
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 45px; display: flex; align-items: center; justify-content: center; }
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
@@ -18,7 +17,7 @@
         .ligada { background-color: #ff0000; border: 2px solid #800000; }
         .desligada { background-color: #00ff00; border: 2px solid #006400; color: #003300; }
 
-        /* --- NOVA PLACA CONCLUÍDO (IGUAL À IMAGEM) --- */
+        /* --- PLACA CONCLUÍDO AJUSTADA --- */
         #painel-concluido { 
             position: absolute; top: 50%; left: 50%; 
             transform: translate(-50%, -50%) scale(0.7); 
@@ -32,17 +31,21 @@
         }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        /* Parafusos Industriais */
         .parafuso { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #777, #222); border-radius: 50%; box-shadow: 1px 1px 2px #000; }
         .parafuso::before { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 2px; background: #111; transform: translateY(-50%) rotate(45deg); }
         .p-tl { top: 12px; left: 12px; } .p-tr { top: 12px; right: 12px; }
         .p-bl { bottom: 12px; left: 12px; } .p-br { bottom: 12px; right: 12px; }
 
-        /* Texto e Check Verde Neon */
         #check-concluido { color: #00ff00; font-size: 60px; font-weight: bold; text-shadow: 0 0 20px #00ff00; }
-        #texto-concluido { color: #00ff00; font-size: 38px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px #00ff00; }
+        #texto-concluido { 
+            color: #00ff00; 
+            font-size: 38px; 
+            font-weight: normal; /* REMOVIDO NEGRITO */
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 20px #00ff00; 
+        }
 
-        /* --- QUADRO --- */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -79,7 +82,6 @@
         </span>
     </div>
 
-    <!-- PAINEL ESTILO INDUSTRIAL -->
     <div id="painel-concluido">
         <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
         <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
@@ -95,11 +97,11 @@
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
-        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
-        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
+        <img id="img-dg" src="./al_dg_on.png" class="alavanca" onclick="alternarDG()">
+        <img id="img-dr" src="./al_dr_on.png" class="alavanca" onclick="alternarDR()">
+        <img id="img-dj16" src="./al_dj16_on.png" class="alavanca" onclick="alternarDJ16()">
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
-        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
+        <img id="img-interruptor" src="./tec_int_on.png" class="tecla" onclick="alternarInterruptor()">
 
         <div id="borne-dj16-saida" class="borne ativo" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne ativo" onclick="cliqueBorne('inter_in')"></div>
@@ -182,12 +184,11 @@
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // Delay solicitado de 3 segundos após desligar para mostrar a placa
+                // TEMPO DE ENTRADA DIMINUÍDO PARA 2 SEGUNDOS
                 setTimeout(() => {
                     painel.classList.add('mostrar');
-                    // A placa some após 3 segundos
                     setTimeout(() => { painel.classList.remove('mostrar'); }, 3000);
-                }, 3000);
+                }, 2000);
                 
                 jaAcedeuUmaVez = false; 
             }
