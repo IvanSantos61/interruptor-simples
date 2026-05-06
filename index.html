@@ -14,7 +14,7 @@
         
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
-        #status-texto { font-size: 11px; letter-spacing: 1px; }
+        #status-texto { font-size: 11px; letter-spacing: 1px; line-height: 1.4; }
 
         /* --- ESTILO PÍLULA --- */
         .pilula { padding: 8px 20px; border-radius: 50px; color: white; font-weight: 900; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 1px; }
@@ -143,13 +143,11 @@
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { 
                     trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
-                    // Alteração solicitada aqui
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO BARRAMENTO</span>';
                 });
             }
             else if (local === 'neutro_bar' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; document.getElementById('borne-barramento-neutro').classList.add('selecionado');
-                // Feedback visual para o destino do neutro
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
@@ -157,7 +155,8 @@
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
-                    atualizarEstadoLampada();
+                    // Alteração solicitada: Nova mensagem de conclusão da fiação
+                    txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR. SÓ APÓS ESTAREM TODOS LIGADOS, PODE APARECER A MENSAGEM LÂMPADA LIGADA OU LÂMPADA DESLIGADA, A DEPENDER DO POSICIONAMENTO DO DG-DR-INTERRUPTOR.</span>';
                 });
             }
         }
@@ -167,16 +166,21 @@
             const txt = document.getElementById('status-texto');
             const painel = document.getElementById('painel-concluido');
             
+            // Só executa a lógica de status se a fiação (neutro) estiver concluída
             if (neutroStatus !== 'concluido') return;
 
+            // Só mostra as pílulas de LIGADA/DESLIGADA se DG, DR e INTERRUPTOR estiverem ativos
+            // Se algum estiver desligado, o texto de instrução permanece (conforme seu pedido)
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
                 jaAcedeuUmaVez = true;
-            } else {
+            } else if (dgLigado || drLigado || interLigado || jaAcedeuUmaVez) {
+                // Se o usuário começar a mexer nos componentes após a fiação, mostramos o status
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
+                // Lógica da tela de conclusão (ao desligar o interruptor após ter ligado)
                 if (jaAcedeuUmaVez && !interLigado) {
                     jaAcedeuUmaVez = false;
                     setTimeout(() => {
