@@ -125,7 +125,6 @@
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; 
                 document.getElementById('borne-dj16-saida').classList.add('selecionado');
-                // Atualiza texto ao clicar no borne do DR (origem da fase no simulador)
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE A FASE:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
@@ -133,7 +132,8 @@
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
                 animarFio('fio-fase', arquivosFase, 0, () => { 
                     trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
-                    txt.innerHTML = '<span class="msg-vermelha">FASE OK!</span> <span class="msg-branca">CONECTE O RETORNO.</span>';
+                    // Alteração solicitada aqui
+                    txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
                 });
             } 
             else if (local === 'inter_out' && retornoStatus === 'desconectado') {
