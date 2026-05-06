@@ -155,8 +155,8 @@
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
-                    // Alteração solicitada: Nova mensagem de conclusão da fiação
-                    txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR. SÓ APÓS ESTAREM TODOS LIGADOS, PODE APARECER A MENSAGEM LÂMPADA LIGADA OU LÂMPADA DESLIGADA, A DEPENDER DO POSICIONAMENTO DO DG-DR-INTERRUPTOR.</span>';
+                    // Mensagem final exata solicitada
+                    txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
                 });
             }
         }
@@ -166,21 +166,19 @@
             const txt = document.getElementById('status-texto');
             const painel = document.getElementById('painel-concluido');
             
-            // Só executa a lógica de status se a fiação (neutro) estiver concluída
             if (neutroStatus !== 'concluido') return;
 
-            // Só mostra as pílulas de LIGADA/DESLIGADA se DG, DR e INTERRUPTOR estiverem ativos
-            // Se algum estiver desligado, o texto de instrução permanece (conforme seu pedido)
+            // Se os três estiverem ligados, mostra pílula vermelha
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
                 jaAcedeuUmaVez = true;
-            } else if (dgLigado || drLigado || interLigado || jaAcedeuUmaVez) {
-                // Se o usuário começar a mexer nos componentes após a fiação, mostramos o status
+            } 
+            // Se algum for desligado após o sistema já ter sido "ativado" pelo menos uma vez
+            else if (jaAcedeuUmaVez || (dgLigado || drLigado || interLigado)) {
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // Lógica da tela de conclusão (ao desligar o interruptor após ter ligado)
                 if (jaAcedeuUmaVez && !interLigado) {
                     jaAcedeuUmaVez = false;
                     setTimeout(() => {
