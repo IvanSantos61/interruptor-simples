@@ -36,20 +36,19 @@
         }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        /* --- AJUSTE DOS PARAFUSOS (ESTILO PHILIPS REALISTA) --- */
+        /* --- PARAFUSOS PHILIPS --- */
         .parafuso { 
             position: absolute; 
             width: 14px; 
             height: 14px; 
-            background: radial-gradient(circle at 30% 30%, #888, #444); /* Efeito Metal */
+            background: radial-gradient(circle at 30% 30%, #888, #444);
             border-radius: 50%; 
             border: 1px solid #222; 
-            box-shadow: 2px 2px 3px rgba(0,0,0,0.6); /* Sombra para fora */
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.6);
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        /* Fenda Philips (Cruz) */
         .parafuso::before, .parafuso::after {
             content: '';
             position: absolute;
@@ -65,7 +64,7 @@
         #check-concluido { color: #00ff00; font-size: 55px; font-weight: bold; line-height: 1; }
         #texto-concluido { color: #00ff00; font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- OVERLAY AO REDOR --- */
+        /* --- OVERLAY --- */
         #overlay-inicio {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -152,7 +151,6 @@
         <span id="status-texto">CONECTE A FASE: CLIQUE NA SAÍDA DO DJ16</span>
     </div>
 
-    <!-- PAINEL CONCLUÍDO (SUBSTITUIÇÃO DA TELA ANTERIOR) -->
     <div id="painel-concluido">
         <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
         <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
@@ -206,7 +204,7 @@
         function exibirBaloes(ids) { ids.forEach(id => document.getElementById(id)?.classList.add('show-balao')); }
         function reiniciarSimulador() { location.reload(); }
         function trocarPares(esconder, mostrar) {
-            esconder.forEach(id => document.getElementById(id).classList.remove('ativo'));
+            esconder.forEach(id => document.getElementById(id).classList.remove('ativo', 'selecionado'));
             mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
         }
 
@@ -214,13 +212,15 @@
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
             
+            // --- LÓGICA DO CABO FASE ---
             if (local === 'dj16' && faseStatus === 'desconectado') {
-                faseStatus = 'iniciado'; som.play();
+                faseStatus = 'iniciado'; 
                 document.getElementById('borne-dj16-saida').classList.add('selecionado');
                 txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR.";
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
-                faseStatus = 'concluido'; som.play();
+                faseStatus = 'concluido'; 
+                som.play(); // Som apenas no segundo clique
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
                 animarFio('fio-fase', arquivosFase, 0, () => { 
                     exibirBaloes(['fase-b1', 'fase-b2']);
@@ -228,13 +228,16 @@
                     txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR.";
                 });
             } 
+            
+            // --- LÓGICA DO CABO RETORNO ---
             else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
-                retornoStatus = 'iniciado'; som.play();
+                retornoStatus = 'iniciado'; 
                 document.getElementById('borne-inter-saida').classList.add('selecionado');
                 txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA.";
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
-                retornoStatus = 'concluido'; som.play();
+                retornoStatus = 'concluido'; 
+                som.play(); // Som apenas no segundo clique
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { 
                     exibirBaloes(['retorno-b1']);
@@ -242,13 +245,16 @@
                     txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO.";
                 });
             }
+            
+            // --- LÓGICA DO CABO NEUTRO ---
             else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
-                neutroStatus = 'iniciado'; som.play();
+                neutroStatus = 'iniciado'; 
                 document.getElementById('borne-barramento-neutro').classList.add('selecionado');
                 txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA.";
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
-                neutroStatus = 'concluido'; som.play();
+                neutroStatus = 'concluido'; 
+                som.play(); // Som apenas no segundo clique
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     exibirBaloes(['neutro-b1']);
@@ -285,22 +291,15 @@
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerText = "LUZ ACESA!"; txt.style.color = "#00ff00";
-                jaAcedeuUmaVez = true; // Marcou que o teste de ligar foi feito
+                jaAcedeuUmaVez = true;
             } else {
                 imgLampada.style.display = "none";
-                
-                // Se já tinha ligado e agora desligou o interruptor
                 if (jaAcedeuUmaVez && !interLigado) {
                     txt.innerText = "LÂMPADA APAGADA"; 
-                    jaAcedeuUmaVez = false; // Reseta para não repetir sem novo acionamento
-                    
-                    // Delay de 3 segundos para mostrar o Concluído
+                    jaAcedeuUmaVez = false;
                     setTimeout(() => {
                         painel.classList.add('mostrar');
-                        // Fica 3 segundos na tela e some
-                        setTimeout(() => {
-                            painel.classList.remove('mostrar');
-                        }, 3000);
+                        setTimeout(() => { painel.classList.remove('mostrar'); }, 3000);
                     }, 3000);
                 } else if (neutroStatus === 'concluido') {
                     txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
