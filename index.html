@@ -8,8 +8,8 @@
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
+        /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 45px; display: flex; align-items: center; justify-content: center; }
-        
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
         #status-texto { font-size: 11px; letter-spacing: 1px; line-height: 1.4; }
@@ -18,16 +18,31 @@
         .ligada { background-color: #ff0000; border: 2px solid #800000; }
         .desligada { background-color: #00ff00; border: 2px solid #006400; color: #003300; }
 
-        /* Painel Concluído */
-        #painel-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.7); width: 300px; height: 150px; background: #1a1a1a; border: 4px solid #333; border-radius: 15px; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 50px rgba(0,0,0,0.9); opacity: 0; visibility: hidden; transition: all 0.5s; pointer-events: none; }
+        /* --- NOVA PLACA CONCLUÍDO (IGUAL À IMAGEM) --- */
+        #painel-concluido { 
+            position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%) scale(0.7); 
+            width: 420px; height: 180px; 
+            background: linear-gradient(145deg, #323639, #1e2124); 
+            border: 2px solid #444; border-radius: 12px; 
+            z-index: 1000; display: flex; flex-direction: row; 
+            justify-content: center; align-items: center; gap: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.1); 
+            opacity: 0; visibility: hidden; transition: all 0.5s; pointer-events: none; 
+        }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        .parafuso { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #888, #444); border-radius: 50%; border: 1px solid #222; }
-        .p-tl { top: 10px; left: 10px; } .p-tr { top: 10px; right: 10px; }
-        .p-bl { bottom: 10px; left: 10px; } .p-br { bottom: 10px; right: 10px; }
-        #check-concluido { color: #00ff00; font-size: 55px; font-weight: bold; }
-        #texto-concluido { color: #00ff00; font-size: 22px; font-weight: 900; text-transform: uppercase; }
+        /* Parafusos Industriais */
+        .parafuso { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #777, #222); border-radius: 50%; box-shadow: 1px 1px 2px #000; }
+        .parafuso::before { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 2px; background: #111; transform: translateY(-50%) rotate(45deg); }
+        .p-tl { top: 12px; left: 12px; } .p-tr { top: 12px; right: 12px; }
+        .p-bl { bottom: 12px; left: 12px; } .p-br { bottom: 12px; right: 12px; }
 
+        /* Texto e Check Verde Neon */
+        #check-concluido { color: #00ff00; font-size: 60px; font-weight: bold; text-shadow: 0 0 20px #00ff00; }
+        #texto-concluido { color: #00ff00; font-size: 38px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px #00ff00; }
+
+        /* --- QUADRO --- */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -64,11 +79,12 @@
         </span>
     </div>
 
+    <!-- PAINEL ESTILO INDUSTRIAL -->
     <div id="painel-concluido">
         <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
         <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
-        <div id="check-concluido">✓</div>
-        <div id="texto-concluido">CONCLUÍDO !!!!!</div>
+        <div id="check-concluido">✔</div>
+        <div id="texto-concluido">CONCLUÍDO</div>
     </div>
 
     <div id="quadro">
@@ -102,10 +118,6 @@
         let dgLigado = false, drLigado = false, dj16Ligado = false, interLigado = false;
         let jaAcedeuUmaVez = false;
 
-        const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
-        const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
-        const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
-
         function trocarPares(esconder, mostrar) {
             esconder.forEach(id => document.getElementById(id).classList.remove('ativo', 'selecionado'));
             mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
@@ -123,7 +135,7 @@
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
-                animarFio('fio-fase', arquivosFase, 0, () => { 
+                animarFio('fio-fase', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"], 0, () => { 
                     trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
                 });
@@ -135,7 +147,7 @@
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
-                animarFio('fio-retorno', arquivosRetorno, 0, () => { 
+                animarFio('fio-retorno', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"], 0, () => { 
                     trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO BARRAMENTO</span>';
                 });
@@ -147,7 +159,7 @@
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
-                animarFio('fio-neutro', arquivosNeutro, 0, () => { 
+                animarFio('fio-neutro', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"], 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
                     txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
                 });
@@ -161,31 +173,24 @@
             
             if (neutroStatus !== 'concluido') return;
 
-            // CASO 1: TUDO LIGADO (Lâmpada Acende)
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
-                jaAcedeuUmaVez = true; // Registra que o sistema funcionou
+                jaAcedeuUmaVez = true;
             } 
-            // CASO 2: LÂMPADA FOI DESLIGADA (Após ter sido ligada uma vez)
             else if (jaAcedeuUmaVez) {
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // Delay de 3 segundos para aparecer a placa de concluído
+                // Delay solicitado de 3 segundos após desligar para mostrar a placa
                 setTimeout(() => {
                     painel.classList.add('mostrar');
-                    
-                    // Delay de mais 3 segundos para a placa sumir
-                    setTimeout(() => {
-                        painel.classList.remove('mostrar');
-                    }, 3000);
-                    
+                    // A placa some após 3 segundos
+                    setTimeout(() => { painel.classList.remove('mostrar'); }, 3000);
                 }, 3000);
                 
-                jaAcedeuUmaVez = false; // Reseta para evitar loops de placa
+                jaAcedeuUmaVez = false; 
             }
-            // CASO 3: AINDA NÃO ACENDEU (Mantém instrução inicial)
             else {
                 imgLampada.style.display = "none";
                 if (!painel.classList.contains('mostrar')) {
