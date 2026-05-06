@@ -5,55 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
+        /* Estilos Globais */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; }
+        /* --- STATUS BOX --- */
+        .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 35px; transition: background-color 0.3s; position: relative; }
         #status-texto { color: #ffcc00; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* --- PAINEL FINAL MELHORADO --- */
+        /* --- NOVA TELA FINAL (ESTILO GRAVURA) --- */
         #painel-concluido {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.7);
-            width: 320px; height: 160px;
+            width: 300px;
+            height: 150px;
             background: #1a1a1a;
             border: 4px solid #333;
             border-radius: 15px;
             z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            opacity: 0; visibility: hidden;
+            opacity: 0;
+            visibility: hidden;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
         }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        /* --- PARAFUSOS PHILIPS REAIS --- */
-        .parafuso { 
-            position: absolute; width: 16px; height: 16px; 
-            background: radial-gradient(circle at 30% 30%, #999, #444); 
-            border-radius: 50%; border: 1px solid #222; 
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-            display: flex; justify-content: center; align-items: center;
-        }
-        /* Fendas em Cruz */
-        .parafuso::before, .parafuso::after {
-            content: ''; position: absolute; background: rgba(0,0,0,0.7); border-radius: 1px;
-        }
-        .parafuso::before { width: 10px; height: 2px; transform: rotate(45deg); }
-        .parafuso::after { width: 10px; height: 2px; transform: rotate(-45deg); }
-
+        .parafuso { position: absolute; width: 12px; height: 12px; background: #444; border-radius: 50%; border: 2px solid #222; }
         .p-tl { top: 10px; left: 10px; } .p-tr { top: 10px; right: 10px; }
         .p-bl { bottom: 10px; left: 10px; } .p-br { bottom: 10px; right: 10px; }
 
-        #check-concluido { color: #00ff00; font-size: 60px; font-weight: bold; line-height: 1; }
-        #texto-concluido { color: #00ff00; font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+        #check-concluido { color: #00ff00; font-size: 55px; font-weight: bold; line-height: 1; }
+        #texto-concluido { color: #00ff00; font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* QUADRO */
-        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #000; margin-top: 10px; }
+        /* --- OVERLAY AO REDOR --- */
+        #overlay-inicio {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
+            animation: sumirOverlay 4s ease-in-out forwards;
+        }
+
+        #caixa-mensagem {
+            background: #050a18; border: 4px solid #00ffff; padding: 40px 30px; border-radius: 25px;
+            text-align: center; box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); width: 320px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        #caixa-mensagem h1 { margin: 0; font-size: 20px; color: #00ffff; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+        #caixa-mensagem .subtitulo { font-size: 14px; color: #ffffff; margin-top: 20px; font-weight: bold; text-transform: uppercase; }
+        #caixa-mensagem .divisor { width: 150px; height: 1px; background: rgba(0, 255, 255, 0.3); margin: 20px 0; }
+        #caixa-mensagem .creditos-inicio { font-size: 9px; color: rgba(255, 255, 255, 0.9); margin-top: 10px; font-weight: normal; }
+
+        @keyframes sumirOverlay {
+            0% { opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+
+        /* BALÕES */
+        .tooltip-balao {
+            position: absolute; background: #fff; color: #222; padding: 6px; border-radius: 8px; font-size: 9px; font-weight: bold; line-height: 1.1; width: 110px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); z-index: 400; opacity: 0; transition: opacity 0.3s, transform 0.3s; transform: scale(0.7); pointer-events: none; text-align: center;
+        }
+        .tooltip-balao::after { content: ''; position: absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; bottom: -7px; left: 50%; transform: translateX(-50%); }
+        .tooltip-balao small { display: block; margin-top: 2px; color: #d32f2f; font-size: 7px; }
+        .show-balao { opacity: 1 !important; transform: scale(1) !important; }
+
+        /* QUADRO PRINCIPAL */
+        #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
-        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; }
+        .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
         
         #img-dg { width: 25.5px; top: 25%; left: 11.2%; }
         #img-dr { width: 30px; top: 27.8%; left: 23%; }
@@ -61,38 +85,52 @@
         #img-interruptor { width: 29px; top: 72.4%; left: 72%; z-index: 110; }
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
-        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; }
-        .borne { position: absolute; width: 14px; height: 14px; background: rgba(0, 255, 255, 0.4); border: 2px solid #00ffff; border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); display: none; }
+        .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
+        
+        .borne { 
+            position: absolute; width: 14px; height: 14px; background: rgba(0, 255, 255, 0.4); border: 2px solid #00ffff; border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); display: none; 
+        }
         .borne.ativo { display: block; }
-        .borne.selecionado { background: #00ff00; border-color: #fff; box-shadow: 0 0 15px #00ff00; }
+        .borne.selecionado { background: #00ff00; border-color: #ffffff; box-shadow: 0 0 15px #00ff00; }
 
-        /* Posições dos Bornes */
-        #b-dj { top: 38%; left: 27%; } #b-int-in { top: 81%; left: 68%; } 
-        #b-int-out { top: 75%; left: 68%; } #b-lamp-ret { top: 56%; left: 89%; }
-        #b-barr-neu { top: 33%; left: 44%; } #b-lamp-neu { top: 56%; left: 92%; }
+        #borne-dj16-saida { top: 38%; left: 27%; } 
+        #borne-inter-entrada { top: 81%; left: 68%; } 
+        #borne-inter-saida { top: 75%; left: 68%; }    
+        #borne-lampada-retorno { top: 56%; left: 89%; }
+        #borne-barramento-neutro { top: 33%; left: 44%; }
+        #borne-lampada-neutro { top: 56%; left: 92%; }
 
-        #btn-reiniciar { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); padding: 5px 15px; background: #e60000; border: none; color: white; border-radius: 20px; font-size: 10px; cursor: pointer; z-index: 500; font-weight: bold; }
+        #btn-reiniciar {
+            position: absolute; top: 95%; left: 50%; transform: translate(-50%, -50%); padding: 4px 18px;
+            background: linear-gradient(to bottom, #e60000, #990000); border: none; border-bottom: 3px solid #660000;
+            color: white; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 50px; z-index: 200; text-transform: uppercase;
+        }
 
-        /* Overlay */
-        #overlay-inicio { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; animation: fadeOut 3s forwards 1s; }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        #fase-b1 { top: 62%; left: 35%; transform: translateX(-50%); } 
+        #fase-b2 { top: 41%; left: 61%; } 
+        #retorno-b1 { top: 21%; left: 63%; } 
+        #neutro-b1 { top: 16%; left: 61%; } 
     </style>
 </head>
-<body>
+<body onclick="fecharBaloes()">
 
     <div id="overlay-inicio">
-        <div style="text-align:center; border: 4px solid #0ff; padding: 30px; border-radius: 20px; background: #050a18;">
-            <h1 style="color:#0ff; margin:0;">Interruptor Simples</h1>
-            <p>Circuito Monofásico - 127V</p>
+        <div id="caixa-mensagem">
+            <h1>Interruptor Simples</h1>
+            <div class="subtitulo">Circuito Monofásico - 127V</div>
+            <div class="divisor"></div>
+            <div class="creditos-inicio">© Desenvolvido por Ivan Santos</div>
+            <div class="creditos-inicio">ConectaeadPLUS - 2026</div>
         </div>
     </div>
 
     <h2>Laboratório SMT Pro</h2>
     
-    <div class="status-box">
+    <div class="status-box" id="caixa-status">
         <span id="status-texto">CONECTE A FASE: CLIQUE NA SAÍDA DO DJ16</span>
     </div>
 
+    <!-- PAINEL CONCLUÍDO (SUBSTITUIÇÃO DA TELA ANTERIOR) -->
     <div id="painel-concluido">
         <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
         <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
@@ -100,87 +138,195 @@
         <div id="texto-concluido">CONCLUÍDO !!!!!</div>
     </div>
 
-    <div id="quadro">
+    <div id="quadro" onclick="fecharBaloes();">
+        <div id="fase-b1" class="tooltip-balao">A Fase pode ser de qualquer cor.<br><small>(Item 6.1.5.3.4 da NBR-5410)</small></div>
+        <div id="fase-b2" class="tooltip-balao">O interruptor deve seccionar o condutor vivo<br><small>(Item 6.3.7.2.1 da NBR-5410)</small></div>
+        <div id="retorno-b1" class="tooltip-balao">O retorno, também, pode ser de qualquer cor<br><small>(Continuidade da Fase - NBR-5410)</small></div>
+        <div id="neutro-b1" class="tooltip-balao">O neutro deve ser de cor azul claro<br><small>(Item 6.1.5.3.1 da NBR-5410)</small></div>
+
         <img src="./ambiente.jpg" class="fundo">
-        <button id="btn-reiniciar" onclick="location.reload()">Reiniciar</button>
+        <button id="btn-reiniciar" onclick="reiniciarSimulador()">Reiniciar</button>
 
         <img id="fio-fase" src="./FASE/quadro0000.png" class="fio">
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="acao('dg')">
-        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="acao('dr')">
-        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="acao('dj')">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
+        
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
-        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="acao('int')">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
-        <div id="b-dj" class="borne ativo" onclick="fiar(1)"></div>
-        <div id="b-int-in" class="borne ativo" onclick="fiar(2)"></div>
-        <div id="b-int-out" class="borne" onclick="fiar(3)"></div>
-        <div id="b-lamp-ret" class="borne" onclick="fiar(4)"></div>
-        <div id="b-barr-neu" class="borne" onclick="fiar(5)"></div>
-        <div id="b-lamp-neu" class="borne" onclick="fiar(6)"></div>
+        <div id="borne-dj16-saida" class="borne ativo" onclick="cliqueBorne('dj16')"></div>
+        <div id="borne-inter-entrada" class="borne ativo" onclick="cliqueBorne('inter_in')"></div>
+        <div id="borne-inter-saida" class="borne" onclick="cliqueBorne('inter_out')"></div>
+        <div id="borne-lampada-retorno" class="borne" onclick="cliqueBorne('lamp_ret')"></div>
+        <div id="borne-barramento-neutro" class="borne" onclick="cliqueBorne('neutro_bar')"></div>
+        <div id="borne-lampada-neutro" class="borne" onclick="cliqueBorne('lamp_neu')"></div>
     </div>
 
-    <audio id="s-con" src="./conexão.mp3"></audio>
-    <audio id="s-dis" src="./disj.mp3"></audio>
-    <audio id="s-int" src="./int.mp3"></audio>
-    <audio id="s-err" src="./erro.mp3"></audio>
+    <audio id="som-conexao" src="./conexão.mp3" preload="auto"></audio>
+    <audio id="som-disjuntor" src="./disj.mp3" preload="auto"></audio>
+    <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
+    <audio id="som-erro" src="./erro.mp3" preload="auto"></audio>
 
     <script>
-        let passo = 0, dg = false, dr = false, dj = false, inter = false, ok = false;
+        let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
+        let dgLigado = false, drLigado = false, djLigado = false, interLigado = false;
+        let jaAcedeuUmaVez = false; 
+        
+        const arquivosFase = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"];
+        const arquivosRetorno = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"];
+        const arquivosNeutro = ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"];
 
-        function fiar(n) {
-            const txt = document.getElementById('status-texto');
-            if (n === 1 && passo === 0) { passo = 1; bSel('b-dj'); txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR."; som('s-con'); }
-            else if (n === 2 && passo === 1) { passo = 2; bSel('b-int-in'); som('s-con'); animar('fio-fase', 6, () => { bOn(['b-int-out', 'b-lamp-ret']); txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR."; }); }
-            else if (n === 3 && passo === 2) { passo = 3; bSel('b-int-out'); txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA."; som('s-con'); }
-            else if (n === 4 && passo === 3) { passo = 4; bSel('b-lamp-ret'); som('s-con'); animar('fio-retorno', 7, () => { bOn(['b-barr-neu', 'b-lamp-neu']); txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO."; }); }
-            else if (n === 5 && passo === 4) { passo = 5; bSel('b-barr-neu'); txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA."; som('s-con'); }
-            else if (n === 6 && passo === 5) { passo = 6; bSel('b-lamp-neu'); som('s-con'); animar('fio-neutro', 14, () => { bOn([]); txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR."; txt.style.color = "#0f0"; }); }
-            else { som('s-err'); }
+        function fecharBaloes() { document.querySelectorAll('.tooltip-balao').forEach(balao => balao.classList.remove('show-balao')); }
+        function exibirBaloes(ids) { ids.forEach(id => document.getElementById(id)?.classList.add('show-balao')); }
+        function reiniciarSimulador() { location.reload(); }
+        function trocarPares(esconder, mostrar) {
+            esconder.forEach(id => document.getElementById(id).classList.remove('ativo'));
+            mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
         }
 
-        function acao(t) {
-            if (passo < 6) return;
-            if (t === 'dg') { dg = !dg; img('img-dg', dg?'al_dg_on':'al_dg_off'); som('s-dis'); }
-            if (t === 'dr') { if(!dg)return; dr = !dr; const i=document.getElementById('img-dr'); i.src=dr?'./al_dr_on.png':'./al_dr_off.png'; i.style.top=dr?'25.3%':'27.8%'; som('s-dis'); }
-            if (t === 'dj') { dj = !dj; img('img-dj16', dj?'al_dj16_on':'al_dj16_off'); som('s-dis'); }
-            if (t === 'int') { inter = !inter; img('img-interruptor', inter?'tec_int_on':'tec_int_off'); som('s-int'); }
-            
-            const lamp = document.getElementById('img-lampada');
+        function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
+            const som = document.getElementById('som-conexao');
             
-            if (dg && dr && dj && inter) {
-                lamp.style.display = 'block'; txt.innerText = "LUZ ACESA!"; ok = true;
+            if (local === 'dj16' && faseStatus === 'desconectado') {
+                faseStatus = 'iniciado'; som.play();
+                document.getElementById('borne-dj16-saida').classList.add('selecionado');
+                txt.innerText = "ORIGEM CONECTADA. AGORA CLIQUE NA ENTRADA DO INTERRUPTOR.";
+            } 
+            else if (local === 'inter_in' && faseStatus === 'iniciado') {
+                faseStatus = 'concluido'; som.play();
+                document.getElementById('borne-inter-entrada').classList.add('selecionado');
+                animarFio('fio-fase', arquivosFase, 0, () => { 
+                    exibirBaloes(['fase-b1', 'fase-b2']);
+                    trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
+                    txt.innerText = "FASE OK! CONECTE O RETORNO: CLIQUE NA SAÍDA DO INTERRUPTOR.";
+                });
+            } 
+            else if (local === 'inter_out' && faseStatus === 'concluido' && retornoStatus === 'desconectado') {
+                retornoStatus = 'iniciado'; som.play();
+                document.getElementById('borne-inter-saida').classList.add('selecionado');
+                txt.innerText = "RETORNO INICIADO. CLIQUE NO BORNE DA LÂMPADA.";
+            }
+            else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
+                retornoStatus = 'concluido'; som.play();
+                document.getElementById('borne-lampada-retorno').classList.add('selecionado');
+                animarFio('fio-retorno', arquivosRetorno, 0, () => { 
+                    exibirBaloes(['retorno-b1']);
+                    trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
+                    txt.innerText = "RETORNO OK! CONECTE O NEUTRO: CLIQUE NO BARRAMENTO.";
+                });
+            }
+            else if (local === 'neutro_bar' && retornoStatus === 'concluido' && neutroStatus === 'desconectado') {
+                neutroStatus = 'iniciado'; som.play();
+                document.getElementById('borne-barramento-neutro').classList.add('selecionado');
+                txt.innerText = "NEUTRO INICIADO. CLIQUE NO BORNE DIREITO DA LÂMPADA.";
+            }
+            else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
+                neutroStatus = 'concluido'; som.play();
+                document.getElementById('borne-lampada-neutro').classList.add('selecionado');
+                animarFio('fio-neutro', arquivosNeutro, 0, () => { 
+                    exibirBaloes(['neutro-b1']);
+                    trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
+                    txt.innerText = "FIAÇÃO CONCLUÍDA! LIGUE O GERAL, O DR E O INTERRUPTOR.";
+                    txt.style.color = "#00ff00";
+                });
+            }
+            else { dispararErro("SIGA OS PONTOS INDICADOS!"); }
+        }
+
+        function dispararErro(mensagem) {
+            const txt = document.getElementById('status-texto');
+            const somErro = document.getElementById('som-erro');
+            somErro.currentTime = 0; somErro.play();
+            const original = txt.innerText;
+            txt.innerText = mensagem; txt.style.color = "#ff4444";
+            setTimeout(() => { txt.innerText = original; restaurarTextoStatus(); }, 2000);
+        }
+
+        function restaurarTextoStatus() {
+            const txt = document.getElementById('status-texto');
+            if (neutroStatus === 'concluido') {
+                txt.innerText = dgLigado && drLigado && interLigado ? "LUZ ACESA!" : "LIGUE O GERAL, O DR E O INTERRUPTOR.";
+                txt.style.color = "#00ff00";
+            } else { txt.style.color = "#ffcc00"; }
+        }
+
+        function atualizarEstadoLampada() {
+            const imgLampada = document.getElementById('img-lampada');
+            const txt = document.getElementById('status-texto');
+            const painel = document.getElementById('painel-concluido');
+            
+            if (dgLigado && drLigado && interLigado) {
+                imgLampada.style.display = "block";
+                txt.innerText = "LUZ ACESA!"; txt.style.color = "#00ff00";
+                jaAcedeuUmaVez = true; // Marcou que o teste de ligar foi feito
             } else {
-                lamp.style.display = 'none';
-                if (ok && !inter) {
-                    txt.innerText = "LÂMPADA APAGADA"; ok = false;
+                imgLampada.style.display = "none";
+                
+                // Se já tinha ligado e agora desligou o interruptor
+                if (jaAcedeuUmaVez && !interLigado) {
+                    txt.innerText = "LÂMPADA APAGADA"; 
+                    jaAcedeuUmaVez = false; // Reseta para não repetir sem novo acionamento
+                    
+                    // Delay de 3 segundos para mostrar o Concluído
                     setTimeout(() => {
-                        document.getElementById('painel-concluido').classList.add('mostrar');
-                        setTimeout(() => document.getElementById('painel-concluido').classList.remove('mostrar'), 3000);
+                        painel.classList.add('mostrar');
+                        // Fica 3 segundos na tela e some
+                        setTimeout(() => {
+                            painel.classList.remove('mostrar');
+                        }, 3000);
                     }, 3000);
-                } else if (passo === 6) { txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR."; }
+                } else if (neutroStatus === 'concluido') {
+                    txt.innerText = "LIGUE O GERAL, O DR E O INTERRUPTOR.";
+                }
             }
         }
 
-        function animar(id, total, cb) {
-            const el = document.getElementById(id); el.style.display = 'block';
-            let i = 0; const pasta = id.split('-')[1].toUpperCase();
-            const inv = setInterval(() => {
-                el.src = `./${pasta}/quadro${String(i*6).padStart(4,'0')}.png`;
-                if (i >= total) { clearInterval(inv); cb(); } i++;
-            }, 70);
+        function animarFio(id, lista, index, callback) {
+            const el = document.getElementById(id);
+            if (index === 0) el.style.display = 'block';
+            if (index < lista.length) {
+                const pasta = id.replace('fio-', '').toUpperCase();
+                el.src = `./${pasta}/${lista[index]}`;
+                setTimeout(() => animarFio(id, lista, index + 1, callback), 80);
+            } else if (callback) { callback(); }
         }
 
-        function bSel(id) { document.getElementById(id).classList.add('selecionado'); }
-        function bOn(lista) { 
-            document.querySelectorAll('.borne').forEach(b => b.classList.remove('ativo'));
-            lista.forEach(id => document.getElementById(id).classList.add('ativo'));
+        function alternarDG() {
+            if (neutroStatus !== 'concluido') { dispararErro("TERMINE A FIAÇÃO!"); return; }
+            const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play();
+            dgLigado = !dgLigado;
+            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png";
+            atualizarEstadoLampada();
         }
-        function img(id, src) { document.getElementById(id).src = `./${src}.png`; }
-        function som(id) { const s=document.getElementById(id); s.currentTime=0; s.play(); }
+
+        function alternarDR() {
+            if (!dgLigado && !drLigado) { dispararErro("LIGUE O GERAL (DG) PRIMEIRO!"); return; }
+            const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play();
+            drLigado = !drLigado;
+            const img = document.getElementById('img-dr');
+            if (drLigado) { img.src = "./al_dr_on.png"; img.style.top = "25.3%"; img.style.left = "23%"; } 
+            else { img.src = "./al_dr_off.png"; img.style.top = "27.8%"; img.style.left = "23%"; }
+            atualizarEstadoLampada();
+        }
+
+        function alternarDJ16() { 
+            const som = document.getElementById('som-disjuntor'); som.currentTime = 0; som.play();
+            djLigado = !djLigado; 
+            document.getElementById('img-dj16').src = djLigado ? "./al_dj16_on.png" : "./al_dj16_off.png"; 
+            atualizarEstadoLampada();
+        }
+
+        function alternarInterruptor() { 
+            const som = document.getElementById('som-interruptor'); som.currentTime = 0; som.play();
+            interLigado = !interLigado; 
+            document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; 
+            atualizarEstadoLampada(); 
+        }
     </script>
 </body>
 </html>
