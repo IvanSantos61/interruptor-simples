@@ -5,34 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT Pro - Laboratório</title>
     <style>
-        /* Estilos Globais */
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
-        /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 45px; display: flex; align-items: center; justify-content: center; }
         
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
         #status-texto { font-size: 11px; letter-spacing: 1px; line-height: 1.4; }
 
-        /* --- ESTILO PÍLULA --- */
         .pilula { padding: 8px 20px; border-radius: 50px; color: white; font-weight: 900; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 1px; }
         .ligada { background-color: #ff0000; border: 2px solid #800000; }
         .desligada { background-color: #00ff00; border: 2px solid #006400; color: #003300; }
 
-        /* --- TELA FINAL --- */
         #painel-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.7); width: 300px; height: 150px; background: #1a1a1a; border: 4px solid #333; border-radius: 15px; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 50px rgba(0,0,0,0.9); opacity: 0; visibility: hidden; transition: all 0.5s; pointer-events: none; }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
         .parafuso { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #888, #444); border-radius: 50%; border: 1px solid #222; }
         .p-tl { top: 10px; left: 10px; } .p-tr { top: 10px; right: 10px; }
         .p-bl { bottom: 10px; left: 10px; } .p-br { bottom: 10px; right: 10px; }
-
         #check-concluido { color: #00ff00; font-size: 55px; font-weight: bold; }
         #texto-concluido { color: #00ff00; font-size: 22px; font-weight: 900; text-transform: uppercase; }
 
-        /* QUADRO PRINCIPAL */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -44,7 +38,6 @@
         #img-lampada { width: 120px; top: 46.8%; left: 76%; z-index: 105; display: none; }
 
         .fio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 40; display: none; pointer-events: none; filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.7)); }
-        
         .borne { position: absolute; width: 14px; height: 14px; background: rgba(0, 255, 255, 0.4); border: 2px solid #00ffff; border-radius: 50%; z-index: 150; cursor: pointer; transform: translate(-50%, -50%); display: none; }
         .borne.ativo { display: block; }
         .borne.selecionado { background: #00ff00; border-color: #ffffff; box-shadow: 0 0 15px #00ff00; }
@@ -155,7 +148,6 @@
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
-                    // Mensagem final exata solicitada
                     txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
                 });
             }
@@ -168,24 +160,30 @@
             
             if (neutroStatus !== 'concluido') return;
 
-            // Se os três estiverem ligados, mostra pílula vermelha
+            // LÓGICA LIGAR
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
                 jaAcedeuUmaVez = true;
             } 
-            // Se algum for desligado após o sistema já ter sido "ativado" pelo menos uma vez
-            else if (jaAcedeuUmaVez || (dgLigado || drLigado || interLigado)) {
+            // LÓGICA DESLIGAR (Só acontece se já tiver acendido pelo menos uma vez)
+            else if (jaAcedeuUmaVez) {
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                if (jaAcedeuUmaVez && !interLigado) {
-                    jaAcedeuUmaVez = false;
-                    setTimeout(() => {
-                        painel.classList.add('mostrar');
-                        setTimeout(() => { painel.classList.remove('mostrar'); }, 3000);
-                    }, 1000);
-                }
+                // Mostrar painel concluído por 3 segundos
+                painel.classList.add('mostrar');
+                setTimeout(() => {
+                    painel.classList.remove('mostrar');
+                }, 3000);
+                
+                // Reset para poder acionar a placa novamente se ligar e desligar de novo
+                jaAcedeuUmaVez = false; 
+            }
+            // Se ainda não acendeu, mantém a mensagem da fiação
+            else {
+                imgLampada.style.display = "none";
+                txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
             }
         }
 
