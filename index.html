@@ -18,6 +18,7 @@
         .ligada { background-color: #ff0000; border: 2px solid #800000; }
         .desligada { background-color: #00ff00; border: 2px solid #006400; color: #003300; }
 
+        /* Painel Concluído */
         #painel-concluido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.7); width: 300px; height: 150px; background: #1a1a1a; border: 4px solid #333; border-radius: 15px; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 50px rgba(0,0,0,0.9); opacity: 0; visibility: hidden; transition: all 0.5s; pointer-events: none; }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
@@ -160,30 +161,36 @@
             
             if (neutroStatus !== 'concluido') return;
 
-            // LÓGICA LIGAR
+            // CASO 1: TUDO LIGADO (Lâmpada Acende)
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
-                jaAcedeuUmaVez = true;
+                jaAcedeuUmaVez = true; // Registra que o sistema funcionou
             } 
-            // LÓGICA DESLIGAR (Só acontece se já tiver acendido pelo menos uma vez)
+            // CASO 2: LÂMPADA FOI DESLIGADA (Após ter sido ligada uma vez)
             else if (jaAcedeuUmaVez) {
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // Mostrar painel concluído por 3 segundos
-                painel.classList.add('mostrar');
+                // Delay de 3 segundos para aparecer a placa de concluído
                 setTimeout(() => {
-                    painel.classList.remove('mostrar');
+                    painel.classList.add('mostrar');
+                    
+                    // Delay de mais 3 segundos para a placa sumir
+                    setTimeout(() => {
+                        painel.classList.remove('mostrar');
+                    }, 3000);
+                    
                 }, 3000);
                 
-                // Reset para poder acionar a placa novamente se ligar e desligar de novo
-                jaAcedeuUmaVez = false; 
+                jaAcedeuUmaVez = false; // Reseta para evitar loops de placa
             }
-            // Se ainda não acendeu, mantém a mensagem da fiação
+            // CASO 3: AINDA NÃO ACENDEU (Mantém instrução inicial)
             else {
                 imgLampada.style.display = "none";
-                txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
+                if (!painel.classList.contains('mostrar')) {
+                    txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
+                }
             }
         }
 
