@@ -131,13 +131,11 @@
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
                 animarFio('fio-fase', arquivosFase, 0, () => { 
                     trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
-                    // Correção do posicionamento aplicada aqui
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
                 });
             } 
             else if (local === 'inter_out' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; document.getElementById('borne-inter-saida').classList.add('selecionado');
-                // Adicionado feedback intermediário para o retorno se desejar:
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
@@ -145,11 +143,14 @@
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
                 animarFio('fio-retorno', arquivosRetorno, 0, () => { 
                     trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
-                    txt.innerHTML = '<span class="msg-vermelha">RETORNO OK!</span> <span class="msg-branca">CONECTE O NEUTRO.</span>';
+                    // Alteração solicitada aqui
+                    txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO BARRAMENTO</span>';
                 });
             }
             else if (local === 'neutro_bar' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; document.getElementById('borne-barramento-neutro').classList.add('selecionado');
+                // Feedback visual para o destino do neutro
+                txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
