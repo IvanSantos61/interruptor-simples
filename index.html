@@ -50,7 +50,6 @@
         }
         #painel-concluido.mostrar { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        /* PARAFUSOS PHILIPS */
         .parafuso { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle at 30% 30%, #888, #444); border-radius: 50%; border: 1px solid #222; box-shadow: 2px 2px 3px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; }
         .parafuso::before, .parafuso::after { content: ''; position: absolute; background: rgba(0,0,0,0.7); border-radius: 1px; }
         .parafuso::before { width: 10px; height: 2px; transform: rotate(45deg); }
@@ -93,7 +92,7 @@
     <h2>Laboratório SMT Pro</h2>
     
     <div class="status-box" id="caixa-status">
-        <span id="status-texto">CONECTE A FASE: CLIQUE NA SAÍDA DO DJ16</span>
+        <span id="status-texto">CONECTE A FASE: CLIQUE NA REFERENCIA INDICADO NO DR</span>
     </div>
 
     <div id="painel-concluido">
@@ -130,7 +129,6 @@
     <audio id="som-interruptor" src="./int.mp3" preload="auto"></audio>
 
     <script>
-        // ESTADOS DE FIAÇÃO E COMPONENTES
         let faseStatus = 'desconectado', retornoStatus = 'desconectado', neutroStatus = 'desconectado';
         let dgLigado = false, drLigado = false, dj16Ligado = false, interLigado = false;
         let jaAcedeuUmaVez = false;
@@ -144,12 +142,10 @@
             mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
         }
 
-        // LÓGICA DE CONEXÃO POR CLIQUES EM PARES
         function cliqueBorne(local) {
             const txt = document.getElementById('status-texto');
             const som = document.getElementById('som-conexao');
             
-            // FASE
             if (local === 'dj16' && faseStatus === 'desconectado') {
                 faseStatus = 'iniciado'; document.getElementById('borne-dj16-saida').classList.add('selecionado');
             } 
@@ -161,7 +157,6 @@
                     txt.innerText = "FASE OK! CONECTE O RETORNO.";
                 });
             } 
-            // RETORNO
             else if (local === 'inter_out' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; document.getElementById('borne-inter-saida').classList.add('selecionado');
             }
@@ -173,7 +168,6 @@
                     txt.innerText = "RETORNO OK! CONECTE O NEUTRO.";
                 });
             }
-            // NEUTRO
             else if (local === 'neutro_bar' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; document.getElementById('borne-barramento-neutro').classList.add('selecionado');
             }
@@ -182,12 +176,11 @@
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
                 animarFio('fio-neutro', arquivosNeutro, 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
-                    atualizarEstadoLampada(); // Inicia o estado de pílula desligada
+                    atualizarEstadoLampada();
                 });
             }
         }
 
-        // LÓGICA DE ACENDIMENTO (DG + DR + INTERRUPTOR)
         function atualizarEstadoLampada() {
             const imgLampada = document.getElementById('img-lampada');
             const txt = document.getElementById('status-texto');
@@ -195,7 +188,6 @@
             
             if (neutroStatus !== 'concluido') return;
 
-            // SEQUÊNCIA EXIGIDA: GERAL (DG) + DR + INTERRUPTOR
             if (dgLigado && drLigado && interLigado) {
                 imgLampada.style.display = "block";
                 txt.innerHTML = '<span class="pilula ligada">LAMPADA LIGADA</span>';
@@ -204,7 +196,6 @@
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // Exibe painel final se o usuário desligar após ter testado
                 if (jaAcedeuUmaVez && !interLigado) {
                     jaAcedeuUmaVez = false;
                     setTimeout(() => {
@@ -215,7 +206,6 @@
             }
         }
 
-        // FUNÇÃO DE ANIMAÇÃO DOS FIOS
         function animarFio(id, lista, index, callback) {
             const el = document.getElementById(id);
             if (index === 0) el.style.display = 'block';
@@ -226,31 +216,10 @@
             } else if (callback) { callback(); }
         }
 
-        // ACIONAMENTOS DOS COMPONENTES
-        function alternarDG() { 
-            dgLigado = !dgLigado; 
-            document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; 
-            document.getElementById('som-disjuntor').play(); 
-            atualizarEstadoLampada(); 
-        }
-        function alternarDR() { 
-            drLigado = !drLigado; 
-            document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; 
-            document.getElementById('som-disjuntor').play(); 
-            atualizarEstadoLampada(); 
-        }
-        function alternarDJ16() { 
-            dj16Ligado = !dj16Ligado; 
-            document.getElementById('img-dj16').src = dj16Ligado ? "./al_dj16_on.png" : "./al_dj16_off.png"; 
-            document.getElementById('som-disjuntor').play(); 
-            // DJ16 não interfere na lâmpada conforme solicitado
-        }
-        function alternarInterruptor() { 
-            interLigado = !interLigado; 
-            document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; 
-            document.getElementById('som-interruptor').play(); 
-            atualizarEstadoLampada(); 
-        }
+        function alternarDG() { dgLigado = !dgLigado; document.getElementById('img-dg').src = dgLigado ? "./al_dg_on.png" : "./al_dg_off.png"; document.getElementById('som-disjuntor').play(); atualizarEstadoLampada(); }
+        function alternarDR() { drLigado = !drLigado; document.getElementById('img-dr').src = drLigado ? "./al_dr_on.png" : "./al_dr_off.png"; document.getElementById('som-disjuntor').play(); atualizarEstadoLampada(); }
+        function alternarDJ16() { dj16Ligado = !dj16Ligado; document.getElementById('img-dj16').src = dj16Ligado ? "./al_dj16_on.png" : "./al_dj16_off.png"; document.getElementById('som-disjuntor').play(); }
+        function alternarInterruptor() { interLigado = !interLigado; document.getElementById('img-interruptor').src = interLigado ? "./tec_int_on.png" : "./tec_int_off.png"; document.getElementById('som-interruptor').play(); atualizarEstadoLampada(); }
     </script>
 </body>
 </html>
