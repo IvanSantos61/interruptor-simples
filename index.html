@@ -12,7 +12,6 @@
         /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 45px; display: flex; align-items: center; justify-content: center; }
         
-        /* Estilização das cores das mensagens */
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
         #status-texto { font-size: 11px; letter-spacing: 1px; }
@@ -132,12 +131,14 @@
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
                 animarFio('fio-fase', arquivosFase, 0, () => { 
                     trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
-                    // Alteração solicitada aqui
-                    txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
+                    // Correção do posicionamento aplicada aqui
+                    txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
                 });
             } 
             else if (local === 'inter_out' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; document.getElementById('borne-inter-saida').classList.add('selecionado');
+                // Adicionado feedback intermediário para o retorno se desejar:
+                txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
