@@ -8,6 +8,7 @@
         body { margin: 0; background-color: #050a18; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; touch-action: none; }
         h2 { color: #00ffff; margin-top: 15px; font-size: 18px; text-shadow: 0 0 10px #00ffff; text-transform: uppercase; }
         
+        /* --- STATUS BOX --- */
         .status-box { margin: 15px 0; padding: 10px; width: 90%; max-width: 480px; text-align: center; background: rgba(5, 15, 30, 0.9); border-radius: 8px; border: 1px solid #1a2a3a; min-height: 45px; display: flex; align-items: center; justify-content: center; }
         .msg-vermelha { color: #ff0000; font-weight: bold; text-transform: uppercase; }
         .msg-branca { color: #ffffff; font-weight: bold; text-transform: uppercase; }
@@ -17,14 +18,27 @@
         .ligada { background-color: #ff0000; border: 2px solid #800000; }
         .desligada { background-color: #00ff00; border: 2px solid #006400; color: #003300; }
 
-        /* --- PLACA CONCLUÍDO AJUSTADA --- */
+        /* --- BALÕES DE MENSAGEM (RECUPERADOS) --- */
+        .fala { 
+            position: absolute; background: white; color: #000; padding: 8px 12px; 
+            border-radius: 10px; font-size: 12px; font-weight: bold; z-index: 1000; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); pointer-events: none;
+            display: none; transform: translate(-50%, -100%);
+        }
+        .fala::after { 
+            content: ""; position: absolute; top: 100%; left: 50%; 
+            margin-left: -8px; border-width: 8px; border-style: solid; 
+            border-color: white transparent transparent transparent; 
+        }
+
+        /* --- PLACA CONCLUÍDO --- */
         #painel-concluido { 
             position: absolute; top: 50%; left: 50%; 
             transform: translate(-50%, -50%) scale(0.7); 
             width: 420px; height: 180px; 
             background: linear-gradient(145deg, #323639, #1e2124); 
             border: 2px solid #444; border-radius: 12px; 
-            z-index: 1000; display: flex; flex-direction: row; 
+            z-index: 1100; display: flex; flex-direction: row; 
             justify-content: center; align-items: center; gap: 15px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.1); 
             opacity: 0; visibility: hidden; transition: all 0.5s; pointer-events: none; 
@@ -35,17 +49,10 @@
         .parafuso::before { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 2px; background: #111; transform: translateY(-50%) rotate(45deg); }
         .p-tl { top: 12px; left: 12px; } .p-tr { top: 12px; right: 12px; }
         .p-bl { bottom: 12px; left: 12px; } .p-br { bottom: 12px; right: 12px; }
-
         #check-concluido { color: #00ff00; font-size: 60px; font-weight: bold; text-shadow: 0 0 20px #00ff00; }
-        #texto-concluido { 
-            color: #00ff00; 
-            font-size: 38px; 
-            font-weight: normal; /* REMOVIDO NEGRITO */
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            text-shadow: 0 0 20px #00ff00; 
-        }
+        #texto-concluido { color: #00ff00; font-size: 38px; font-weight: normal; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px #00ff00; }
 
+        /* --- QUADRO --- */
         #quadro { position: relative; width: 100%; max-width: 500px; border: 2px solid #1a2a3a; border-radius: 12px; overflow: hidden; background: #02050d; margin-top: 10px; }
         .fundo { width: 100%; display: block; pointer-events: none; }
         .alavanca, .tecla, .lampada { position: absolute; z-index: 100; cursor: pointer; display: block; }
@@ -82,6 +89,9 @@
         </span>
     </div>
 
+    <!-- BALÃO DE FALA -->
+    <div id="balao" class="fala"></div>
+
     <div id="painel-concluido">
         <div class="parafuso p-tl"></div><div class="parafuso p-tr"></div>
         <div class="parafuso p-bl"></div><div class="parafuso p-br"></div>
@@ -97,11 +107,11 @@
         <img id="fio-retorno" src="./RETORNO/quadro0000.png" class="fio">
         <img id="fio-neutro" src="./NEUTRO/quadro0000.png" class="fio">
 
-        <img id="img-dg" src="./al_dg_on.png" class="alavanca" onclick="alternarDG()">
-        <img id="img-dr" src="./al_dr_on.png" class="alavanca" onclick="alternarDR()">
-        <img id="img-dj16" src="./al_dj16_on.png" class="alavanca" onclick="alternarDJ16()">
+        <img id="img-dg" src="./al_dg_off.png" class="alavanca" onclick="alternarDG()">
+        <img id="img-dr" src="./al_dr_off.png" class="alavanca" onclick="alternarDR()">
+        <img id="img-dj16" src="./al_dj16_off.png" class="alavanca" onclick="alternarDJ16()">
         <img id="img-lampada" src="./lamp_on.png" class="lampada">
-        <img id="img-interruptor" src="./tec_int_on.png" class="tecla" onclick="alternarInterruptor()">
+        <img id="img-interruptor" src="./tec_int_off.png" class="tecla" onclick="alternarInterruptor()">
 
         <div id="borne-dj16-saida" class="borne ativo" onclick="cliqueBorne('dj16')"></div>
         <div id="borne-inter-entrada" class="borne ativo" onclick="cliqueBorne('inter_in')"></div>
@@ -120,6 +130,15 @@
         let dgLigado = false, drLigado = false, dj16Ligado = false, interLigado = false;
         let jaAcedeuUmaVez = false;
 
+        function exibirMensagem(texto, top, left, tempo = 3000) {
+            const balao = document.getElementById('balao');
+            balao.innerText = texto;
+            balao.style.top = top;
+            balao.style.left = left;
+            balao.style.display = 'block';
+            setTimeout(() => { balao.style.display = 'none'; }, tempo);
+        }
+
         function trocarPares(esconder, mostrar) {
             esconder.forEach(id => document.getElementById(id).classList.remove('ativo', 'selecionado'));
             mostrar.forEach(id => document.getElementById(id).classList.add('ativo'));
@@ -133,10 +152,12 @@
                 faseStatus = 'iniciado'; 
                 document.getElementById('borne-dj16-saida').classList.add('selecionado');
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE A FASE:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
+                exibirMensagem("SAÍDA FASE DJ16", "36%", "27%");
             } 
             else if (local === 'inter_in' && faseStatus === 'iniciado') {
                 faseStatus = 'concluido'; som.play();
                 document.getElementById('borne-inter-entrada').classList.add('selecionado');
+                exibirMensagem("ENTRADA FASE INTERRUPTOR", "79%", "68%");
                 animarFio('fio-fase', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png"], 0, () => { 
                     trocarPares(['borne-dj16-saida', 'borne-inter-entrada'], ['borne-inter-saida', 'borne-lampada-retorno']);
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO INTERRUPTOR</span>';
@@ -145,10 +166,12 @@
             else if (local === 'inter_out' && retornoStatus === 'desconectado') {
                 retornoStatus = 'iniciado'; document.getElementById('borne-inter-saida').classList.add('selecionado');
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE O RETORNO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
+                exibirMensagem("SAÍDA RETORNO INTERRUPTOR", "73%", "68%");
             }
             else if (local === 'lamp_ret' && retornoStatus === 'iniciado') {
                 retornoStatus = 'concluido'; som.play();
                 document.getElementById('borne-lampada-retorno').classList.add('selecionado');
+                exibirMensagem("ENTRADA RETORNO LÂMPADA", "54%", "89%");
                 animarFio('fio-retorno', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png"], 0, () => { 
                     trocarPares(['borne-inter-saida', 'borne-lampada-retorno'], ['borne-barramento-neutro', 'borne-lampada-neutro']);
                     txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DO BARRAMENTO</span>';
@@ -157,10 +180,12 @@
             else if (local === 'neutro_bar' && neutroStatus === 'desconectado') {
                 neutroStatus = 'iniciado'; document.getElementById('borne-barramento-neutro').classList.add('selecionado');
                 txt.innerHTML = '<span class="msg-vermelha">CONECTE O NEUTRO:</span> <span class="msg-branca">CLIQUE NA REFERÊNCIA DA LÂMPADA</span>';
+                exibirMensagem("BARRAMENTO NEUTRO", "31%", "44%");
             }
             else if (local === 'lamp_neu' && neutroStatus === 'iniciado') {
                 neutroStatus = 'concluido'; som.play();
                 document.getElementById('borne-lampada-neutro').classList.add('selecionado');
+                exibirMensagem("SAÍDA NEUTRO LÂMPADA", "54%", "92%");
                 animarFio('fio-neutro', ["quadro0000.png", "quadro0006.png", "quadro0012.png", "quadro0018.png", "quadro0024.png", "quadro0030.png", "quadro0036.png", "quadro0042.png", "quadro0048.png", "quadro0054.png", "quadro0060.png", "quadro0066.png", "quadro0072.png", "quadro0078.png"], 0, () => { 
                     trocarPares(['borne-barramento-neutro', 'borne-lampada-neutro'], []);
                     txt.innerHTML = '<span class="msg-branca">FIAÇÃO CONCLUÍDA. LIGUE O DG, O DR E O INTERRUPTOR.</span>';
@@ -184,7 +209,6 @@
                 imgLampada.style.display = "none";
                 txt.innerHTML = '<span class="pilula desligada">LAMPADA DESLIGADA</span>';
                 
-                // TEMPO DE ENTRADA DIMINUÍDO PARA 2 SEGUNDOS
                 setTimeout(() => {
                     painel.classList.add('mostrar');
                     setTimeout(() => { painel.classList.remove('mostrar'); }, 3000);
